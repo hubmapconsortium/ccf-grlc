@@ -1,0 +1,10 @@
+#+ summary: Find cell parent classes by label
+#+ description: Enter a cell type rdfs label, get back a list of parent cell type IRIs and labels
+
+#+ defaults:
+#+   - qlabel: "mature B cell"
+
+SELECT ?label
+WHERE {
+    ?_qlabel a rdfs:Literal .
+}
