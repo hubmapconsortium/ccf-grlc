@@ -9,4 +9,5 @@ WHERE {
     ?_qlabel a rdfs:Literal .
     ?s ?p ?o .
     ?s ?p ?_qlabel .
+    FILTER ( STR(?o) = ?_qlabel ) .
 }
