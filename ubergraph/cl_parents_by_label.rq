@@ -21,6 +21,6 @@ WHERE {
         # ?_qlabel a rdfs:Literal .
         # ?cell rdfs:label ?_qlabel .
     }
-    FILTER( STR(?cell_label) = ?_qlabel ).
-    # FILTER(regex(?cell_label, ?_qlabel, "i")) .
+    # FILTER( STR(?cell_label) = ?_qlabel ).
+    FILTER(regex(?cell_label, ?_qlabel, "i")) .
 }
