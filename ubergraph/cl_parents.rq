@@ -1,8 +1,6 @@
-#+ summary: Find cell parent classes by label
-#+ description: Enter a cell type rdfs label, get back a list of parent cell type IRIs and labels
+#+ summary: Find cell parent classes
+#+ description: Get back a list of cell types and parent cell type IRIs and labels
 
-#+ defaults:
-#+   - qlabel: "mature B cell"
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -12,11 +10,8 @@ PREFIX cell: <http://purl.obolibrary.org/obo/CL_0000000>
 SELECT DISTINCT ?cell ?cell_label ?parent_cell ?parent_label
 WHERE { 
     ?cell rdfs:label ?cell_label .
-    ?cell rdfs:label ?_qlabel_en .
     ?cell rdfs:subClassOf cell: .
     ?cell rdfs:subClassOf ?parent_cell .
     ?parent_cell rdfs:subClassOf cell: .
     ?parent_cell rdfs:label ?parent_label .
-    
-    # FILTER( STR(?cell_label) = ?_qlabel_en ) .
 }
