@@ -18,5 +18,5 @@ WHERE {
     ?parent_cell rdfs:label ?parent_label .
     ?_qlabel a rdfs:Literal .
 
-    FILTER( STR(?cell_label) = ?_qlabel ).
+    FILTER( STR(?cell_label) = STR(?_qlabel) ).
 }
