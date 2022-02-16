@@ -4,7 +4,7 @@
 #+ defaults:
 #+   - qlabel: "mature B cell"
 
-SELECT ?s ?p ?o
+SELECT DISTINCT ?o
 WHERE {
     ?s ?p ?o .
     FILTER(regex(?o, ?_qlabel, "i")) .

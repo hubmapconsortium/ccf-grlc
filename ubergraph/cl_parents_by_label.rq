@@ -21,4 +21,5 @@ WHERE {
     ?cell rdfs:label ?_qlabel_en .
 
     # FILTER( STR(?cell_label) = STR(?_qlabel_en) ).
+    FILTER(regex(?cell_label, ?_qlabel)) .
 }
