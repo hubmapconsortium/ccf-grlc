@@ -17,5 +17,5 @@ WHERE {
     ?parent_cell rdfs:subClassOf cell: .
     ?parent_cell rdfs:label ?parent_label .
     
-    FILTER(STR(?label) = ?_label_string) .
+    FILTER(STR(?qlabel) = STR(?_label_iri)) .
 }
