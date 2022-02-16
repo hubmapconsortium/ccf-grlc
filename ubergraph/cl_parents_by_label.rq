@@ -9,13 +9,13 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX overlaps: <http://purl.obolibrary.org/obo/RO_0002131>
 PREFIX cell: <http://purl.obolibrary.org/obo/CL_0000000>
 
-SELECT DISTINCT ?cell STR(?_label_iri) ?parent_cell ?parent_label
+SELECT DISTINCT ?cell (STR(?qlabel) as ?cell_label) ?parent_cell ?parent_label
 WHERE { 
-    ?cell rdfs:label STR(?_label_iri) .
+    ?cell rdfs:label ?qlabel .
     ?cell rdfs:subClassOf cell: .
     ?cell rdfs:subClassOf ?parent_cell .
     ?parent_cell rdfs:subClassOf cell: .
     ?parent_cell rdfs:label ?parent_label .
     
-    # FILTER(STR(?label) = ?_label_iri) .
+    FILTER(STR(?label) = ?_label) .
 }
