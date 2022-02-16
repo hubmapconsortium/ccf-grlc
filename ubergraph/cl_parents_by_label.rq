@@ -2,20 +2,20 @@
 #+ description: Enter a cell type rdfs label, get back a list of parent cell type IRIs and labels
 
 #+ defaults:
-#+   - label: "mature B cell"
+#+   - qlabel: "mature B cell"
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX overlaps: <http://purl.obolibrary.org/obo/RO_0002131>
 PREFIX cell: <http://purl.obolibrary.org/obo/CL_0000000>
 
-SELECT DISTINCT ?cell (STR(?qlabel) as ?cell_label) ?parent_cell ?parent_label
+SELECT DISTINCT ?cell (STR(?label) as ?cell_label) ?parent_cell ?parent_label
 WHERE { 
-    ?cell rdfs:label ?qlabel .
+    ?cell rdfs:label ?label .
     ?cell rdfs:subClassOf cell: .
     ?cell rdfs:subClassOf ?parent_cell .
     ?parent_cell rdfs:subClassOf cell: .
     ?parent_cell rdfs:label ?parent_label .
     
-    FILTER(STR(?qlabel) = ?_label_en ) .
+    FILTER(STR(?label) = "?_qlabel_en" ) .
 }
