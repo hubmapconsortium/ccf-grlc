@@ -10,16 +10,17 @@ PREFIX overlaps: <http://purl.obolibrary.org/obo/RO_0002131>
 PREFIX cell: <http://purl.obolibrary.org/obo/CL_0000000>
 
 SELECT DISTINCT ?cell ?cell_label ?parent_cell ?parent_label
-WHERE { 
-    ?cell rdfs:label ?cell_label .
-    ?cell rdfs:subClassOf cell: .
-    ?cell rdfs:subClassOf ?parent_cell .
-    ?parent_cell rdfs:subClassOf cell: .
-    ?parent_cell rdfs:label ?parent_label .
+WHERE {
+    {    
+        ?cell rdfs:label ?cell_label .
+        ?cell rdfs:subClassOf cell: .
+        ?cell rdfs:subClassOf ?parent_cell .
+        ?parent_cell rdfs:subClassOf cell: .
+        ?parent_cell rdfs:label ?parent_label .
 
-    # ?_qlabel a rdfs:Literal .
-    ?cell rdfs:label ?_qlabel .
-
-    # FILTER( STR(?cell_label) = STR(?_qlabel) ).
+        # ?_qlabel a rdfs:Literal .
+        # ?cell rdfs:label ?_qlabel .
+    }
+    FILTER( STR(?cell_label) = ?_qlabel ).
     # FILTER(regex(?cell_label, ?_qlabel, "i")) .
 }
