@@ -13,7 +13,7 @@ SELECT *
 WHERE
 {
     {
-        GRAPH {
+        {
             SELECT DISTINCT ?cell ?cell_label ?parent_cell ?parent_label
             WHERE { 
                 ?cell rdfs:label ?cell_label .
@@ -26,8 +26,7 @@ WHERE
                 # ?cell rdfs:label ?_qlabel .
             }
         }
-
     }
-    # FILTER( STR(?cell_label) = ?_qlabel ).
-    FILTER(regex(?cell_label, ?_qlabel_en, "i")) .
+    FILTER( STR(?cell_label) = ?_qlabel ).
+    # FILTER(regex(?cell_label, "B cell", "i")) .
 }
