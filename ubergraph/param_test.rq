@@ -4,7 +4,9 @@
 #+ defaults:
 #+   - qlabel: "mature B cell"
 
-SELECT ?label
+SELECT ?s ?p ?o
 WHERE {
     ?_qlabel a rdfs:Literal .
+    ?s ?p ?o .
+    ?s ?p ?_qlabel .
 }
