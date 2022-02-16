@@ -2,7 +2,7 @@
 #+ description: Enter a cell type rdfs label, get back a list of parent cell type IRIs and labels
 
 #+ defaults:
-#+   - qlabel: "mature B cell"
+#+   - label: "mature B cell"
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
@@ -23,5 +23,5 @@ WHERE {
       }
     }
   }
-  FILTER( STR(?cell_label) = ?_qlabel ) .
+  FILTER( STR(?cell_label) = ?_label ) .
 }
