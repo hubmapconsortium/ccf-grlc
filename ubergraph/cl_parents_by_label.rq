@@ -17,9 +17,9 @@ WHERE {
     ?parent_cell rdfs:subClassOf cell: .
     ?parent_cell rdfs:label ?parent_label .
 
-    ?_qlabel_en a rdfs:Literal .
-    ?cell rdfs:label ?_qlabel_en .
+    #?_qlabel a rdfs:Literal .
+    #?cell rdfs:label ?_qlabel .
 
-    # FILTER( STR(?cell_label) = STR(?_qlabel_en) ).
+    # FILTER( STR(?cell_label) = STR(?_qlabel) ).
     FILTER(regex(?cell_label, ?_qlabel)) .
 }
