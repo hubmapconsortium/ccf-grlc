@@ -1,0 +1,13 @@
+#+ summary: Ref Organ AS count
+#+ description: Number of Anatomical Structures per Reference Organ
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/latest/ccf.owl#>
+
+SELECT (SAMPLE(?organ) AS ?organName) (COUNT(?structure) AS ?asCount)
+WHERE {
+  ?structure ccf:anatomical_structure_of ?organ .
+}
+GROUP BY ?organ
+ORDER BY ?organName
