@@ -1,0 +1,13 @@
+#+ summary: Tissue Block Annotations
+#+ description: Get tissue block (and rui location) annotations
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/latest/ccf.owl#>
+PREFIX entity: <http://purl.org/ccf/latest/ccf-entity.owl#>
+
+SELECT ?block ?ruiLocation ?term
+WHERE {
+  ?block entity:has_spatial_entity ?ruiLocation .
+  ?ruiLocation ccf:ccf_annotation ?term .
+}
