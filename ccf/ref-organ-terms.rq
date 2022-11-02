@@ -1,0 +1,24 @@
+#+ summary: Reference Organ Terms
+#+ description: Top-level terms associated with Reference Organs
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/latest/ccf.owl#>
+
+SELECT DISTINCT ?ref_organ ?representation_of WHERE {
+ {
+    SELECT ?ref_organ ?representation_of WHERE {
+      ?ref_organ ccf:anatomical_structure_of ?ref_organ .
+      ?ref_organ ccf:ccf_representation_of ?representation_of .
+    }
+ }
+ UNION
+ {
+	SELECT ?ref_organ ?representation_of WHERE {
+      ?ref_organ ccf:anatomical_structure_of ?ref_organ .
+      ?ref_organ ccf:ccf_representation_of ?direct_rep .
+      ?direct_rep ccf:ccf_part_of ?representation_of .
+      FILTER ( ?representation_of != <http://purl.obolibrary.org/obo/UBERON_0013702> )
+    }
+  }
+}
