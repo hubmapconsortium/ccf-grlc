@@ -1,0 +1,11 @@
+#+ summary: cell types located in an anatomical structure
+#+ description: cell types located in an anatomical structure
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccfo: <http://purl.org/ccf/>
+
+SELECT DISTINCT ?as_iri ?cell_iri (STR(?qlabel) as ?cell_label) WHERE {
+  ?cell_iri ccfo:ccf_located_in ?as_iri .
+  ?cell_iri rdfs:label ?qlabel .
+}
