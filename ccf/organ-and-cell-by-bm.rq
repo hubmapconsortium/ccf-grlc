@@ -20,7 +20,7 @@ WHERE {
 
   # Find cell types located in the organ
   ?ct ccf:ccf_located_in ?organ .  
-  ?ct ccf:ccf_asctb_type 'CT' .
+  #?ct ccf:ccf_asctb_type 'CT' .
   
   # Find biomarkers that characterize the cell type
   ?ct rdfs:subClassOf [
@@ -28,9 +28,9 @@ WHERE {
   	owl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .
   ?bn3 rdf:rest*/rdf:first [
   	owl:onProperty ccf:has_marker_component ;
-    # Target biomarker
-    owl:someValuesFrom ?_biomarker_iri
+    owl:someValuesFrom ?bm
   ] .
+  ?_biomarker_id rdfs:label ?bm_label .
 
   # Grab labels
   ?organ rdfs:label ?organ_label .
