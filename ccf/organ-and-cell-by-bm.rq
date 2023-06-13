@@ -35,6 +35,4 @@ WHERE {
   ?organ rdfs:label ?organ_label .
   ?ct rdfs:label ?ct_label .
   ?bm rdfs:label ?bm_label .
-
-  ?_biomarker_id rdfs:label ?bm_label .
 }
