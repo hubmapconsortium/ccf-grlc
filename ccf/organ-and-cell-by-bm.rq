@@ -1,6 +1,7 @@
 #+ summary: organs and cell types characterized by a given biomarker
 #+ description: Enter a biomarker IRI, get back a list of cell type and organ IRIs and labels
 
+#+ endpoint: https://lod.humanatlas.io/sparql
 #+ defaults:
 #+   - biomarker: http://identifiers.org/hgnc/1678
 
