@@ -1,0 +1,39 @@
+#+ summary: organs and cell types characterized by a given biomarker
+#+ description: Enter a biomarker IRI, get back a list of cell type and organ IRIs and labels
+
+#+ defaults:
+#+   - biomarker: http://identifiers.org/hgnc/1678
+#+ endpoint: https://lod.humanatlas.io/sparql
+
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>
+
+SELECT DISTINCT ?organ ?organ_label
+FROM <http://purl.org/ccf/ccf.owl>
+WHERE {
+  # Find reference organ's AS / Uberon Term
+  ?ref_organ ccf:has_reference_organ ?ref_organ .
+  ?ref_organ ccf:representation_of ?organ .
+
+  # Find cell types located in the organ
+  ?ct ccf:ccf_located_in ?representation_of .  
+  #?ct ccf:ccf_asctb_type 'CT' .
+
+  # Find biomarkers that characterize the cell type
+  ?ct rdfs:subClassOf [
+    owl:onProperty has_characterizing_biomarker_set: ;
+    owl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .
+  ?bn3 rdf:rest*/rdf:first [
+    owl:onProperty ccf:has_marker_component ;
+    owl:someValuesFrom <http://identifiers.org/hgnc/1678> ;
+    owl:someValuesFrom ?bm
+  ] .
+
+  # Grab labels
+  ?organ rdfs:label ?organ_label .
+  ?ct rdfs:label ?ct_label .
+  ?bm rdfs:label ?bm_label .
+}
