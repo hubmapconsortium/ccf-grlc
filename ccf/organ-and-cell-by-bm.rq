@@ -30,10 +30,13 @@ WHERE {
   	owl:onProperty ccf:has_marker_component ;
     owl:someValuesFrom ?bm
   ] .
-  ?_biomarker_id rdfs:label ?bm_label .
+  # ?_biomarker_id rdfs:label ?bm_label .
 
   # Grab labels
   ?organ rdfs:label ?organ_label .
   ?ct rdfs:label ?ct_label .
   ?bm rdfs:label ?bm_label .
+
+  # Filter by specific biomarker
+  FILTER (?bm = ?_biomarker_iri)
 }
