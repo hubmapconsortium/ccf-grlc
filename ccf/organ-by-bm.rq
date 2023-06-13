@@ -28,7 +28,7 @@ WHERE {
     owl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .
   ?bn3 rdf:rest*/rdf:first [
     owl:onProperty ccf:has_marker_component ;
-    owl:someValuesFrom <http://identifiers.org/hgnc/1678> ;
+    owl:someValuesFrom ?_biomarker_iri ;
     owl:someValuesFrom ?bm
   ] .
 
