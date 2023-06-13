@@ -1,9 +1,9 @@
 #+ summary: organs and cell types characterized by a given biomarker
 #+ description: Enter a biomarker IRI, get back a list of cell type and organ IRIs and labels
 
-#+ endpoint: https://lod.humanatlas.io/sparql
 #+ defaults:
 #+   - biomarker: http://identifiers.org/hgnc/1678
+#+ endpoint: https://lod.humanatlas.io/sparql
 
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -28,14 +28,12 @@ WHERE {
   	owl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .
   ?bn3 rdf:rest*/rdf:first [
   	owl:onProperty ccf:has_marker_component ;
-    owl:someValuesFrom ?bm
+    # Target biomarker
+    owl:someValuesFrom ?_biomarker_iri
   ] .
 
   # Grab labels
   ?organ rdfs:label ?organ_label .
   ?ct rdfs:label ?ct_label .
   ?bm rdfs:label ?bm_label .
-  
-  # Filter by biomarker
-  FILTER (?bm = ?_biomarker_iri)
 }
