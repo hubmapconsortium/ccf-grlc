@@ -14,4 +14,4 @@ SELECT DISTINCT (STR(?refOrgan) as ?ref_organ) ?glb_url ?scene_node WHERE {
   ] .
   FILTER ( ?target = ccf-spo:VHFemale || ?target = ccf-spo:VHMale ) 
 }
-ORDER BY ?refOrgan
+ORDER BY ?ref_organ
