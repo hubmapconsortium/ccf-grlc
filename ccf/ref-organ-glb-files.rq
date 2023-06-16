@@ -1,6 +1,9 @@
 #+ summary: Reference Organ GLB information
 #+ description: Reference Organ GLB information
 
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX ccf-spo: <http://purl.org/ccf/latest/ccf.owl#>
+
 SELECT DISTINCT (STR(?refOrgan) as ?ref_organ) ?glb_url ?scene_node WHERE {
   ?n ccf:placement_for ?refOrgan .
   ?n ccf:placement_relative_to ?target .
