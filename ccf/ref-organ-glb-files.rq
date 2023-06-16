@@ -1,0 +1,17 @@
+#+ summary: Reference Organ GLB information
+#+ description: Reference Organ GLB information
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX ccf-spo: <http://purl.org/ccf/latest/ccf.owl#>
+
+SELECT DISTINCT ?ref_organ ?glb_url ?scene_node WHERE {
+  ?n ccf:placement_for ?ref_organ .
+  ?n ccf:placement_relative_to ?target .
+  ?ref_organ ccf:has_reference_organ ?ref_organ .
+  ?ref_organ ccf:has_object_reference [
+  	ccf:file_url ?glb_url ;
+    ccf:file_subpath ?scene_node
+  ] .
+  FILTER ( ?target = ccf-spo:VHFemale || ?target = ccf-spo:VHMale ) 
+}
+ORDER BY ?ref_organ
