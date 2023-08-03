@@ -1,0 +1,11 @@
+#+ summary: RUI Location => Ref Organ
+#+ description: Returns the reference organ (minus version string) associated with each rui location
+
+PREFIX ccf: <http://purl.org/ccf/>
+
+SELECT DISTINCT (STR(?ruiLocation) as ?rui_location) ?reference_organ WHERE {
+  ?placement ccf:placement_for ?ruiLocation .
+  ?placement ccf:placement_relative_to ?refOrgan .
+  ?refOrgan ccf:has_reference_organ ?refOrgan .
+  BIND (REPLACE(REPLACE(STR(?refOrgan), "V1.1", ""), "V1.2", "") as ?reference_organ)
+}
