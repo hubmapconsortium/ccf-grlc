@@ -1,0 +1,1 @@
+https://ccf-api.hubmapconsortium.org/v1/sparql

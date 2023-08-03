@@ -1,0 +1,12 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccfo: <http://purl.org/ccf/>
+
+SELECT DISTINCT ?parent_as ?child_as ?parent_label ?child_label
+FROM <https://purl.org/ccf/releases/2.2.1/ccf.owl>
+WHERE {
+  ?child_as ccfo:ccf_part_of* ?parent_as .
+  ?parent_as rdfs:label ?parent_label .
+  ?child_as rdfs:label ?child_label .
+  VALUES ?parent_as { <http://purl.obolibrary.org/obo/UBERON_0002113> }
+}
