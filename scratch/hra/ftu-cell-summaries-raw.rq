@@ -78,4 +78,6 @@ WHERE {
     }
   }
 }
-ORDER BY ?ftu ?organ ?dataset ?summary
+GROUP BY ?ftu ?cell_id ?cell_label
+ORDER BY ?ftu
+
