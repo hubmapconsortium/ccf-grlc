@@ -1,0 +1,22 @@
+#+ summary: Get glb nodes and terms
+#+ description: Get Reference Organ GLB scene nodes and associated ontology terms
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+
+SELECT DISTINCT ?ref_organ ?glb_url ?scene_node ?node_id ?node_iri ?node_label
+FROM <https://purl.org/ccf/releases/2.2.1/ccf.owl>
+WHERE {
+  ?ref_organ_node ccf:has_object_reference [
+  	ccf:file_url ?glb_url ;
+    ccf:file_subpath ?scene_node ;
+  ] .
+
+  ?ref_organ_node ccf:has_reference_organ ?ref_organ .
+  ?ref_organ_node ccf:representation_of ?node_iri .
+  ?node_iri rdfs:label ?node_label .
+
+  BIND(REPLACE(REPLACE(STR(?node_iri), "http://purl.obolibrary.org/obo/UBERON_", "UBERON:"), "http://purl.org/sig/ont/fma/fma", "FMA:") as ?node_id)
+}
+ORDER BY ?ref_organ ?node_id
