@@ -1,0 +1,100 @@
+#+ summary: Cell Summaries By FTU (Blazegraph version)
+#+ description: Computes the cell summaries for each FTU (uses a SPARQL extension to reduce code duplication via the WITH statement)
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX ctpop: <https://cns-iu.github.io/hra-cell-type-populations-supporting-information/data/enriched_rui_locations.jsonld#graph>
+PREFIX iftu: <https://hubmapconsortium.github.io/hra-ui/apps/ftu-ui/assets/TEMP/2d-ftu-illustrations.jsonld>
+
+SELECT ?ftu ?cell_id ?cell_label ?count (?count / ?total_count as ?percentage)
+
+FROM <https://purl.org/ccf/releases/2.2.1/ccf.owl>
+FROM ctpop:
+FROM iftu:
+
+WITH {
+  SELECT DISTINCT ?ftu ?cell_id ?cell_label (SUM(?count) as ?count)
+
+  WHERE {
+    {
+      ?ftu ccf:organ_id ?organ .
+    } UNION {
+      # Workaround for prostate
+      VALUES (?ftu ?organ) {
+        ( <https://purl.humanatlas.io/2d-ftu/prostate-prostate-glandular-acinus> <http://purl.obolibrary.org/obo/UBERON_0000079> )
+      }
+    }
+
+    # List of query organ iris
+    {
+      ?ftu rdfs:label ?ftu_label .
+      ?ftu ccf:representation_of ?ftu_term .
+    }
+    ?organ rdfs:label ?organ_label .
+
+    # Get all AS part of ?organ
+    {
+      ?child_as ccf:ccf_part_of* ?organ .
+      ?child_as rdfs:label ?child_label .
+    }
+
+    # Get ?ref_organ that represent something part of ?organ
+    {
+      ?ref_organ ccf:has_reference_organ ?ref_organ .
+      ?ref_organ ccf:representation_of ?child_as .
+    }
+
+    # Get ?datasets placed relative to ?ref_organ
+    {
+      ?rui_location a ccf:SpatialEntity .
+      ?dataset a ccf:Dataset .
+      ?sample ccf:generates_dataset ?dataset .
+      ?sample ccf:has_registration_location ?rui_location .
+
+      ?placement ccf:placement_for ?rui_location .
+      ?placement ccf:placement_relative_to ?ref_organ .
+    }
+
+    # Get cells in ftu illustrations by cell label
+    # {
+    #   ?ftu ccf:has_illustration_node [
+    #     ccf:representation_of ?ftu_cell_id ;
+    #   ] .
+    #   ?ftu_cell_id rdfs:label ?cell_label .
+    # }
+
+    # Get cells in ftu illustrations by cell id
+    # {
+    #   ?ftu ccf:has_illustration_node [
+    #     ccf:representation_of ?cell_id ;
+    #   ] .
+    #   ?cell_id rdfs:label ?cell_label .
+    # }
+
+    # Get cell summaries attached to ?datasets
+    {
+      ?dataset ccf:has_cell_summary ?summary .
+      ?summary ccf:cell_annotation_method ?cell_annotation_method .
+      ?summary ccf:has_cell_summary_row ?row .
+
+      ?row ccf:cell_id ?cell_id .
+      ?row ccf:cell_label ?cell_label .
+      ?row ccf:cell_count ?count .
+      ?row ccf:percentage_of_total ?percentage .
+    }
+  }
+  GROUP BY ?ftu ?cell_id ?cell_label ?cell_count
+} AS %summary 
+
+WHERE {
+  INCLUDE %summary
+  {
+    SELECT DISTINCT ?ftu (SUM(?count) as ?total_count)
+    WHERE {
+      INCLUDE %summary
+    }
+    GROUP BY ?ftu
+  }
+}
+ORDER BY ?ftu

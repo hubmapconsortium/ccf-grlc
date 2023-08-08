@@ -1,10 +1,13 @@
+#+ summary: Datasets by FTU
+#+ description: Finds relevant Datasets for each FTU
+
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX ctpop: <https://cns-iu.github.io/hra-cell-type-populations-supporting-information/data/enriched_rui_locations.jsonld#graph>
 PREFIX iftu: <https://hubmapconsortium.github.io/hra-ui/apps/ftu-ui/assets/TEMP/2d-ftu-illustrations.jsonld>
 
-SELECT DISTINCT ?ftu ?cell_id ?cell_label (SUM(?count) as ?count)
+SELECT DISTINCT ?ftu ?organ_label ?dataset ?label ?link ?description
 FROM <https://purl.org/ccf/releases/2.2.1/ccf.owl>
 FROM ctpop:
 FROM iftu:
@@ -48,36 +51,10 @@ WHERE {
     ?placement ccf:placement_relative_to ?ref_organ .
   }
 
-  # Get cells in ftu illustrations by cell label
-  # {
-  #   ?ftu ccf:has_illustration_node [
-  #     ccf:representation_of ?ftu_cell_id ;
-  #   ] .
-  #   ?ftu_cell_id rdfs:label ?cell_label .
-  # }
-
-  # Get cells in ftu illustrations by cell id
-  # {
-  #   ?ftu ccf:has_illustration_node [
-  #     ccf:representation_of ?cell_id ;
-  #   ] .
-  #   ?cell_id rdfs:label ?cell_label .
-  # }
-
-  # Get cell summaries attached to ?datasets
+  # Get ?dataset metadata
   {
-    SELECT * WHERE {
-      ?dataset ccf:has_cell_summary ?summary .
-      ?summary ccf:cell_annotation_method ?cell_annotation_method .
-      ?summary ccf:has_cell_summary_row ?row .
-
-      ?row ccf:cell_id ?cell_id .
-      ?row ccf:cell_label ?cell_label .
-      ?row ccf:cell_count ?count .
-      ?row ccf:percentage_of_total ?percentage .
-    }
+    ?dataset rdfs:label ?label .
+    ?dataset ccf:url ?link .
+    ?dataset rdfs:comment ?description .
   }
 }
-GROUP BY ?ftu ?cell_id ?cell_label
-ORDER BY ?ftu
-
