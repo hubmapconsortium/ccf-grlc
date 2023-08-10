@@ -1,0 +1,10 @@
+#+ summary: Count of 3D Landmarks
+#+ description: Count of 3D Landmarks
+
+PREFIX ccf: <http://purl.org/ccf/>
+
+SELECT (COUNT(?landmark) as ?landmark_count) WHERE {
+  SELECT DISTINCT ?landmark WHERE {
+    ?landmark ccf:has_extraction_set ?y .
+  }
+}
