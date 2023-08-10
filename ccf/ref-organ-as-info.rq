@@ -1,0 +1,12 @@
+#+ summary: Reference Organ AS information
+#+ description: Reference Organ AS information
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX ccf-spo: <http://purl.org/ccf/latest/ccf.owl#>
+
+SELECT DISTINCT ?as_iri ?ref_organ_iri ?ref_organ_term ?sex WHERE {
+  ?as3d ccf:has_reference_organ ?ref_organ_iri .
+  ?as3d ccf:representation_of ?as_iri .
+  ?ref_organ_iri ccf:representation_of ?ref_organ_term .
+  ?ref_organ_iri ccf:organ_owner_sex ?sex .
+}
