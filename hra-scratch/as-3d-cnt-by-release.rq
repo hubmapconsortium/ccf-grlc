@@ -1,0 +1,17 @@
+#+ summary: Count of 3D Anatomical Structures by release
+#+ description: Count of 3D Anatomical Structures by release
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+
+SELECT ?release (SAMPLE(?organ) AS ?organName) (COUNT(?structure) AS ?asCount)
+WHERE {
+  GRAPH ?release {
+    ?structure ccf:has_reference_organ ?ref_organ .
+  }
+  BIND (REPLACE(REPLACE(REPLACE(REPLACE(STR(?ref_organ), "http://purl.org/ccf/latest/ccf.owl#", ""), "V1.1", ""), "V1.2", ""), "V1.0", "") as ?organ)
+  FILTER (STRSTARTS(STR(?release), "https://purl.org/ccf/releases/"))
+}
+GROUP BY ?release ?organ
+ORDER BY DESC(?release) DESC(?asCount)
