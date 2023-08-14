@@ -1,0 +1,50 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>
+PREFIX cl_owl: <http://purl.obolibrary.org/obo/cl.owl>
+PREFIX pcl_owl: <http://purl.obolibrary.org/obo/pcl.owl>
+PREFIX uberon_owl: <http://purl.obolibrary.org/obo/uberon.owl>
+
+# add version iris
+
+CONSTRUCT {
+  ?as_child part_of: ?as_parent .
+  ?ct part_of: ?as_child .
+  ?ct_child rdfs:subClassOf ?ct_parent .
+}
+WHERE {
+  {
+    SELECT ?as_child ?as_parent ?ct WHERE {
+      VALUES (?cl_vocab) {
+        ( cl_owl: ) ( pcl_owl: )
+      }
+    
+      # Limit terms to uberon and cl
+      ?as_child rdfs:isDefinedBy uberon_owl: .
+      ?as_parent rdfs:isDefinedBy uberon_owl: .
+      ?ct rdfs:isDefinedBy ?cl_vocab .
+
+      GRAPH <http://reasoner.renci.org/nonredundant> {
+        ?as_child part_of: ?as_parent .
+      }
+      GRAPH <http://reasoner.renci.org/nonredundant> {
+        ?ct part_of: ?as_child .
+      }
+    }
+  }
+
+  {
+    SELECT ?ct_child ?ct_parent WHERE {
+      VALUES (?cl_vocab) {
+        ( cl_owl: ) ( pcl_owl: )
+      }
+
+      # Limit terms to uberon and cl
+      ?ct_parent rdfs:isDefinedBy ?cl_vocab .
+      ?ct_child rdfs:isDefinedBy ?cl_vocab .
+
+      GRAPH <http://reasoner.renci.org/nonredundant> {
+        ?ct_child rdfs:subClassOf ?ct_parent .
+      }
+    }
+  }
+}
