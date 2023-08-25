@@ -1,0 +1,16 @@
+#+ summary: Landmarks by Organ
+#+ description: Landmarks by Organ
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+
+SELECT DISTINCT ?organ ?landmark_set ?landmark
+WHERE {
+  ?landmark_id ccf:has_extraction_set ?extraction_set .
+  ?landmark_id rdfs:label ?landmark .
+  ?extraction_set ccf:extraction_set_for ?reference_organ .
+  ?extraction_set rdfs:label ?landmark_set .
+  ?reference_organ ccf:representation_of ?organ_id .
+  ?organ_id rdfs:label ?organ .
+}
+ORDER BY ?organ ?landmark_set
