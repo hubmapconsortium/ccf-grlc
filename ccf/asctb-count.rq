@@ -1,0 +1,33 @@
+#+ summary: AS, CT, & B total count
+#+ description: Total number of AS, CT, & B in the HRA-KG
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+
+SELECT (COUNT(DISTINCT ?iri) as ?cnt) WHERE {
+  # AS
+  {
+    ?iri ccf:ccf_part_of [] .
+  }
+  UNION
+  {
+    [] ccf:ccf_part_of ?iri .
+  }
+
+  # CT
+  UNION
+  {
+    ?iri ccf:ccf_located_in [] .
+  }
+  UNION
+  {
+    [] ccf:ccf_located_in ?iri .
+  }
+
+  # AS, CT, & B
+  UNION
+  {
+    ?iri ccf:ccf_asctb_type [] .
+  }
+}
