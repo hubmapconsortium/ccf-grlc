@@ -1,18 +1,20 @@
 #+ summary: Sex Mismatches
 #+ description: Get Tissue Blocks that have a Donor sex different from the Reference Organ sex
 
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX ccf: <http://purl.org/ccf/latest/ccf.owl#>
-PREFIX entity: <http://purl.org/ccf/latest/ccf-entity.owl#>
+PREFIX ccf: <http://purl.org/ccf/>
 
 SELECT ?block ?ruiLocation ?refOrgan ?donorSex ?refOrganSex
 WHERE {
-  ?block entity:has_donor ?donor .
-  ?donor entity:sex ?donorSex .
-  ?block entity:has_spatial_entity ?ruiLocation .
-  ?place ccf:has_placement_source ?ruiLocation .
-  ?place ccf:has_placement_target ?refOrgan .
-  ?refOrgan ccf:has_sex ?refOrganSex .
+  # Find donor sex
+  ?block ccf:comes_from [
+      ccf:sex ?donorSex
+  ] .
+  
+  # Find reference organ sex associated with the block's rui_location 
+  ?block ccf:has_registration_location ?ruiLocation .
+  [] ccf:placement_for ?ruiLocation ;
+    ccf:placement_relative_to ?refOrgan .
+  ?refOrgan ccf:organ_owner_sex ?refOrganSex .
+
   FILTER ( STR(?donorSex) != STR(?refOrganSex) )
 }
