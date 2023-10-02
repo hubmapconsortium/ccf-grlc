@@ -6,7 +6,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>
 
-SELECT ?ct ?bm
+SELECT DISTINCT ?ct ?bm
 FROM <https://purl.org/ccf/ccf.owl>
 WHERE {
   ?ct rdfs:subClassOf [
