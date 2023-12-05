@@ -1,3 +1,5 @@
+#+ summary: Unique AS, CT, and B in HRA
+
 PREFIX ccf: <http://purl.org/ccf/>
 
 SELECT ?asctb_type (COUNT(DISTINCT(?iri)) as ?count)

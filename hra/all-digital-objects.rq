@@ -1,0 +1,18 @@
+#+ summary: Every digital object pushed to lod.humanatlas.io
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX schema: <http://schema.org/>
+PREFIX LOD: <https://lod.humanatlas.io>
+
+SELECT *
+FROM LOD:
+WHERE {
+  ?purl a dcat:Dataset ;
+    schema:name ?name ;
+    schema:additionalType ?type ;
+    schema:version ?version ;
+    schema:dateCreated ?published ;
+  .
+}
+ORDER BY ?type ?name ?version
