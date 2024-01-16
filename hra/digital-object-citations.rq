@@ -1,0 +1,28 @@
+#+ summary: Every digital object and their citations
+
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+
+SELECT DISTINCT ?purl ?type ?name ?version ?published ?citation ?citation_overall
+FROM <https://lod.humanatlas.io>
+WHERE {
+  ?purl a dcat:Dataset ;
+  		schema:name ?name ;
+  		schema:additionalType ?type ;
+        schema:version ?version ;
+        schema:dateCreated ?published ;
+        prov:wasDerivedFrom ?rawData .
+
+  ?rawData ccf:doi ?doi .
+  OPTIONAL {
+    ?rawData schema:citation ?citation .
+  }
+  OPTIONAL {
+    ?rawData ccf:citation_overall ?citation_overall .
+  }
+}
+ORDER BY ?type ?name ?version
