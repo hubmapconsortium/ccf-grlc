@@ -1,0 +1,49 @@
+#+ summary: all results for organs and cell types characterized by a given biomarker
+#+ endpoint: https://lod.humanatlas.io/sparql
+
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
+PREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>
+PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+
+SELECT ?organ_label ?ct_label ?bm_label ?organ ?ct ?bm ?ct_label_syn ?bm_label_syn
+FROM CCF:
+WHERE {
+  # Find reference organ's AS / Uberon Term
+  ?ref_organ ccf:has_reference_organ ?ref_organ .
+  ?ref_organ ccf:representation_of ?organ .
+
+  # Find cell types located in the organ
+  ?ct ccf:ccf_located_in ?organ .
+  
+  # Find biomarkers that characterize the cell type
+  ?ct rdfs:subClassOf [
+  	owl:onProperty has_characterizing_biomarker_set: ;
+  	owl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .
+  ?bn3 rdf:rest*/rdf:first [
+  	owl:onProperty ccf:has_marker_component ;
+    owl:someValuesFrom ?bm
+  ] .
+
+  # Grab labels
+  ?organ rdfs:label ?organ_label .
+  ?ct rdfs:label ?ct_label .
+  ?bm rdfs:label ?bm_label .
+  
+  # Grab synonyms
+  {
+  	?ct ccf:ccf_pref_label ?ct_label_syn .
+  } UNION {
+    ?ct oboInOwl:hasExactSynonym ?ct_label_syn .
+  }
+  
+  # Grab synonyms
+  {
+  	?bm ccf:ccf_pref_label ?bm_label_syn .
+  } UNION {
+    ?bm oboInOwl:hasExactSynonym ?bm_label_syn .
+  }
+}
