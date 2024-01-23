@@ -1,0 +1,15 @@
+#+ summary: Unmapped AS, CT, and B in HRA
+#+ endpoint: https://lod.humanatlas.io/sparql
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
+PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
+
+SELECT ?asctb_type (COUNT(DISTINCT(?iri)) as ?count)
+FROM CCF:
+WHERE {
+  ?iri ccf:ccf_asctb_type ?asctb_type
+  FILTER(STRSTARTS(STR(?iri), STR(ASCTB-TEMP:)))
+}
+GROUP BY ?asctb_type
+ORDER BY ?asctb_type
