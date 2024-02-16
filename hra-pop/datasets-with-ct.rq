@@ -8,7 +8,8 @@ PREFIX ccf: <http://purl.org/ccf/>
 PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
 PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
 
-SELECT DISTINCT ?source ?dataset ?organ ?sex ?tool
+SELECT
+  DISTINCT ?source ?dataset ?organ ?sex ?tool
   (REPLACE(STR(?cell_id), 'http://purl.obolibrary.org/obo/CL_', 'CL:') as ?cell_type) 
   ?cell_label ?cell_type_count ?biomarker 
   (xsd:decimal(?gene_expr) as ?expression_value)
