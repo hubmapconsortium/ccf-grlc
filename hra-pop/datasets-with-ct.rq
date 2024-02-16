@@ -1,9 +1,16 @@
+#+ summary: Atlas Dataset with a given Cell Type
+#+ description: Atlas Datasets that have a given Cell Type. There is one CT-BM expression per row.
+
+#+ defaults:
+#+   - celltype: http://purl.obolibrary.org/obo/CL_0000136
+
+PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
 PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
 
 SELECT DISTINCT ?source ?dataset ?organ ?sex ?tool
-  (REPLACE(STR(?cell_id), 'http://purl.obolibrary.org/obo/CL_', 'CL:') as ?cell_type) 
+  (REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type) 
   ?cell_label ?cell_type_count ?biomarker 
   (xsd:decimal(?gene_expr) as ?expression_value)
 FROM CCF:
@@ -11,8 +18,8 @@ FROM HRApop:
 WHERE {
   ?donor ccf:consortium_name ?source .
   VALUES (?cell_id) {
-    #(<http://purl.obolibrary.org/obo/CL_0000136>)
-    ( ?_celltype_iri )
+    (<http://purl.obolibrary.org/obo/CL_0000136>)
+    #( ?_celltype_iri )
   }
 
   {
