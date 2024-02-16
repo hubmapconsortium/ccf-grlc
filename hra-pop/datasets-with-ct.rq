@@ -2,25 +2,14 @@
 #+ description: Atlas Datasets that have a given Cell Type. There is one CT-BM expression per row.
 
 #+ defaults:
-#+   - cell_type: http://purl.obolibrary.org/obo/CL_0000136
+#+   - celltype: http://purl.obolibrary.org/obo/CL_0000136
 
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
-PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
-PREFIX FMA: <http://purl.org/sig/ont/fma/fma>
-PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
 PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
-PREFIX HRApopFull: <https://purl.humanatlas.io/ds-graph/hra-pop-full>
-PREFIX hra-pop: <https://purl.humanatlas.io/graph/hra-pop#>
-PREFIX dc: <http://purl.org/dc/terms/>
-PREFIX hubmap: <https://entity.api.hubmapconsortium.org/entities/>
-PREFIX rui: <http://purl.org/ccf/1.5/>
 
 SELECT DISTINCT ?source ?dataset ?organ ?sex ?tool
-  (REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type) 
+  (REPLACE(STR(?cell_id), 'http://purl.obolibrary.org/obo/CL_', 'CL:') as ?cell_type) 
   ?cell_label ?cell_type_count ?biomarker 
   (xsd:decimal(?gene_expr) as ?expression_value)
 FROM CCF:
@@ -29,7 +18,7 @@ WHERE {
   ?donor ccf:consortium_name ?source .
   VALUES (?cell_id) {
     #(<http://purl.obolibrary.org/obo/CL_0000136>)
-    (?_cell_type_iri)
+    ( ?_celltype_iri )
   }
 
   {
