@@ -17,10 +17,9 @@ FROM CCF:
 FROM HRApop:
 WHERE {
   ?donor ccf:consortium_name ?source .
-  VALUES (?cell_id) {
-    (<http://purl.obolibrary.org/obo/CL_0000136>)
-    #( ?_celltype_iri )
-  }
+  # VALUES (?cell_id) {
+  #   (<http://purl.obolibrary.org/obo/CL_0000136>)
+  # }
 
   {
     ?sample ccf:comes_from ?donor .
@@ -51,6 +50,7 @@ WHERE {
     ccf:cell_annotation_method ?tool ;
     ccf:has_cell_summary_row [
       ccf:cell_id ?cell_id ;
+      ccf:cell_id ?_celltype_iri ;
       ccf:cell_label ?cell_type_label ;
       ccf:cell_count ?cell_type_count ;
       ccf:gene_expr [
