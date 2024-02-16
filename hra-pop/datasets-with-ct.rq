@@ -9,7 +9,7 @@ PREFIX ccf: <http://purl.org/ccf/>
 PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
 PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
 
-SELECT DISTINCT ?source ?dataset ?organ ?sex ?tool ?cell_type ?cell_type_label ?cell_type_count ?biomarker ?expression_value
+SELECT DISTINCT ?source ?dataset ?organ ?sex ?tool ?cell_type ?cell_type_label ?cell_type_count ?biomarker ?mean_expression_value
 FROM CCF:
 FROM HRApop:
 WHERE {
@@ -55,5 +55,5 @@ WHERE {
   ] .
 
   BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)
-  BIND(xsd:decimal(?gene_expr) as ?expression_value)
+  BIND(xsd:decimal(?gene_expr) as ?mean_expression_value)
 }
