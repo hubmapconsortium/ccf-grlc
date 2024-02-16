@@ -1,0 +1,20 @@
+#+ summary: All cell types seen in Atlas Datasets
+
+PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
+PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
+
+SELECT DISTINCT ?cell_type_label ?cell_id
+FROM CCF:
+FROM HRApop:
+WHERE {
+  [] ccf:generates_dataset ?dataset .
+  ?dataset ccf:has_cell_summary [
+    ccf:has_cell_summary_row [
+      ccf:cell_id ?cell_id ;
+      ccf:cell_label ?cell_type_label ;
+    ]
+  ] .
+}
+ORDER BY ?cell_type_label
