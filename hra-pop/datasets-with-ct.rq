@@ -9,17 +9,11 @@ PREFIX ccf: <http://purl.org/ccf/>
 PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
 PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
 
-SELECT DISTINCT ?source ?dataset ?organ ?sex ?tool
-  (REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type) 
-  ?cell_label ?cell_type_count ?biomarker 
-  (xsd:decimal(?gene_expr) as ?expression_value)
+SELECT DISTINCT ?source ?dataset ?organ ?sex ?tool ?cell_type ?cell_label ?cell_type_count ?biomarker ?expression_value
 FROM CCF:
 FROM HRApop:
 WHERE {
   ?donor ccf:consortium_name ?source .
-  # VALUES (?cell_id) {
-  #   (<http://purl.obolibrary.org/obo/CL_0000136>)
-  # }
 
   {
     ?sample ccf:comes_from ?donor .
@@ -33,8 +27,8 @@ WHERE {
   }
 
   {
-    ?dataset ccf:organ_id ?_reportedOrganIri .
-    BIND(IRI(?_reportedOrganIri) as ?reportedOrganIri)
+    ?dataset ccf:organ_id ?reportedOrganIriString .
+    BIND(IRI(?reportedOrganIriString) as ?reportedOrganIri)
 
     OPTIONAL {
       ?reportedOrganIri rdfs:label ?reportedOrganRdfsLabel .
@@ -60,6 +54,6 @@ WHERE {
     ]
   ] .
 
-
-
+  BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)
+  BIND(xsd:decimal(?gene_expr) as ?expression_value)
 }
