@@ -9,7 +9,7 @@ PREFIX ccf: <http://purl.org/ccf/>
 PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
 PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
 
-SELECT DISTINCT ?source ?dataset ?organ ?sex ?tool ?cell_type ?cell_label ?cell_type_count ?biomarker ?expression_value
+SELECT DISTINCT ?source ?dataset ?organ ?sex ?tool ?cell_type ?cell_type_label ?cell_type_count ?biomarker ?expression_value
 FROM CCF:
 FROM HRApop:
 WHERE {
