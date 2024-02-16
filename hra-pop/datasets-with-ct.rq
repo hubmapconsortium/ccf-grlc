@@ -1,4 +1,4 @@
-#+ summary: Atlas Dataset with a given Cell Type
+#+ summary: Atlas Datasets with a given Cell Type
 #+ description: Atlas Datasets that have a given Cell Type. There is one CT-BM expression per row.
 
 #+ defaults:
