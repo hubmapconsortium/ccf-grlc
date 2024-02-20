@@ -1,0 +1,12 @@
+#+ summary: Organs supported by CTAnn
+#+ description: A list of organs supported by Azimuth, CellTypist, or Popv in the hra-workflows-runner
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+
+SELECT DISTINCT ?organ_id
+FROM <https://purl.humanatlas.io/graph/ctann-crosswalks>
+WHERE {
+  ?tool ccf:organ_id ?organ_id
+}
