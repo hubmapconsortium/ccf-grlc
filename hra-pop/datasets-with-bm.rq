@@ -63,10 +63,10 @@ WHERE {
         ]
       ]
     ] .
-    FILTER(CONTAINS(?_bmlabel, ?biomarker_label))
+    FILTER(?_bmlabel = ?biomarker_label)
   })
 
-  FILTER(CONTAINS(?_bmlabel, ?biomarker) || TRUE)
+  FILTER(?_bmlabel = ?biomarker_label || TRUE)
 
   BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)
   BIND(xsd:decimal(?gene_expr) as ?mean_expression_value)
