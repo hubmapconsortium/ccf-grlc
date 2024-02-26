@@ -53,8 +53,6 @@ WHERE {
     ]
   ] .
 
-  BIND(?_bmlabel as ?biomarker_string)
-
   FILTER(EXISTS {
     ?dataset ccf:has_cell_summary [
       ccf:sex ?sex ;
@@ -65,9 +63,12 @@ WHERE {
         ]
       ]
     ] .
-    FILTER(CONTAINS(?biomarker_string, ?biomarker_label))
+    FILTER(CONTAINS(?_bmlabel, ?biomarker_label))
   })
 
+  FILTER(CONTAINS(?_bmlabel, ?biomarker))
+  FILTER(CONTAINS(?biomarker, ?_bmlabel))
+  
   BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)
   BIND(xsd:decimal(?gene_expr) as ?mean_expression_value)
 }
