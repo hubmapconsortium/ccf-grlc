@@ -1,6 +1,9 @@
 #+ summary: Atlas Datasets with a given Biomarker
 #+ description: Atlas Datasets that have a given Biomarker. There is one CT-BM expression per row.
 
+#+ defaults:
+#+   - biomarker: ENSG00000169710
+
 PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
@@ -56,11 +59,11 @@ WHERE {
       ccf:cell_annotation_method ?tool ;
       ccf:has_cell_summary_row [
         ccf:gene_expr [
-          ccf:gene_label ?biomarker ;
+          ccf:gene_label ?biomarker_label ;
         ]
       ]
     ] .
-    FILTER(CONTAINS(?_biomarker_en, ?biomarker))
+    FILTER(CONTAINS(?_biomarker_en, ?biomarker_label))
   })
 
   BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)
