@@ -2,7 +2,7 @@
 #+ description: Atlas Datasets that have a given Biomarker. There is one CT-BM expression per row.
 
 #+ defaults:
-#+   - biomarker: ENSG00000169710
+#+   - biomarkerlabel: ENSG00000169710
 
 PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
 PREFIX ccf: <http://purl.org/ccf/>
@@ -63,7 +63,7 @@ WHERE {
         ]
       ]
     ] .
-    FILTER(CONTAINS(?_biomarker_en, ?biomarker_label))
+    FILTER(CONTAINS(?_biomarkerlabel_en, ?biomarker_label))
   })
 
   BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)
