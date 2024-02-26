@@ -53,8 +53,6 @@ WHERE {
     ]
   ] .
 
-  BIND(?_biomarkerlabel_en as ?biomarker_label_string)
-
   FILTER(EXISTS {
     ?dataset ccf:has_cell_summary [
       ccf:sex ?sex ;
@@ -65,7 +63,7 @@ WHERE {
         ]
       ]
     ] .
-    FILTER(CONTAINS(?biomarker_label_string, ?biomarker_label))
+    FILTER(CONTAINS(?_biomarkerlabel, ?biomarker_label))
   })
 
   BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)
