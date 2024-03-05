@@ -1,0 +1,15 @@
+{
+  "name": "ccf-grlc",
+  "version": "1.0.0",
+  "description": "Repository of useful SPARQL queries for CCF work + API via grlc.io",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "glob": "^10.3.10"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "title": "HRA Queries (hra-pop)",
+  "description": "HRA Queries (hra-pop)",
+  "contact": {
+    "name": "Cyberinfrastructure for Network Science Center",
+    "url": "https://github.com/hubmapconsortium/ccf-grlc/issues"
+  },
+  "license": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/LICENSE",
+  "queries": [
+    "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-ct.rq",
+    "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-bm.rq",
+    "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/ctann-organs.rq",
+    "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell-types-in-atlas.rq",
+    "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/biomarkers-in-atlas.rq"
+  ]
+}
