@@ -9,7 +9,7 @@ const DEFAULT_CONFIG = {
     name: 'Human Reference Atlas (HRA)',
     url: 'https://humanatlas.io',
   },
-  license: 'https://github.com/hubmapconsortium/ccf-grlc/main/LICENSE',
+  license: 'https://github.com/hubmapconsortium/ccf-grlc/blob/main/LICENSE',
 };
 
 const results = {};
