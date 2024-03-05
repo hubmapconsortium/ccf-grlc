@@ -2,10 +2,10 @@
   "title": "HRA Queries (hra-pop)",
   "description": "HRA Queries (hra-pop)",
   "contact": {
-    "name": "Cyberinfrastructure for Network Science Center",
-    "url": "https://github.com/hubmapconsortium/ccf-grlc/issues"
+    "name": "Human Reference Atlas (HRA)",
+    "url": "https://humanatlas.io"
   },
-  "license": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/LICENSE",
+  "license": "https://github.com/hubmapconsortium/ccf-grlc/main/LICENSE",
   "queries": [
     "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-ct.rq",
     "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-bm.rq",

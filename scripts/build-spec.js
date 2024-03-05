@@ -6,10 +6,10 @@ const DEFAULT_CONFIG = {
   title: 'HRA Queries',
   description: 'HRA Queries',
   contact: {
-    name: 'Cyberinfrastructure for Network Science Center',
-    url: 'https://github.com/hubmapconsortium/ccf-grlc/issues',
+    name: 'Human Reference Atlas (HRA)',
+    url: 'https://humanatlas.io',
   },
-  license: 'https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/LICENSE',
+  license: 'https://github.com/hubmapconsortium/ccf-grlc/main/LICENSE',
 };
 
 const results = {};
