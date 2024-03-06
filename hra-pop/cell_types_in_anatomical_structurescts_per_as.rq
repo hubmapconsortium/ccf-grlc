@@ -1,3 +1,6 @@
+#+ summary: Cell Summaries by Anatomical Structure 
+#+ description: Computes the cell summaries for each organ by anatomical strcutrure.
+
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
