@@ -1,3 +1,3 @@
 Random (potentially unspported and broken) sparql queries for use/reuse/reference
 
-grlc magick: <http://grlc.io/api/hubmapconsortium/ccf-grlc/ccf-scratch/>
+grlc magick: <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/ccf-scratch/>

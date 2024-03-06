@@ -1,7 +1,13 @@
 # ccf-grlc
-Repository of useful SPARQL queries for CCF work + API via grlc.io
 
-* Ubergraph queries are here: <http://grlc.io/api/hubmapconsortium/ccf-grlc/ubergraph/>
-* CCF queries are here:  <http://grlc.io/api/hubmapconsortium/ccf-grlc/ccf/>
-* HRA queries are here:  <http://grlc.io/api/hubmapconsortium/ccf-grlc/hra/>
-* HRApop queries are here:  <http://grlc.io/api/hubmapconsortium/ccf-grlc/hra-pop/>
+Repository of useful SPARQL queries for HRA work + API via grlc.io
+
+⚠️ March 6, 2024: grlc.io API links have changed. Please use the links below.
+
+* HRA queries are here:  <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/hra/>
+* HRApop queries are here:  <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/hra-pop/>
+* Ubergraph queries are here: <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/ubergraph/>
+* CCF queries are here:  <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/ccf/>
+
+* HRA scratch queries are here:  <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/hra-scratch/>
+* Ubergraph scratch queries are here: <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/ubergraph-scratch/>
