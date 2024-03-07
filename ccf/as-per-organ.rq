@@ -1,0 +1,25 @@
+#+ summary: AS per Ref. Organ
+#+ description: Number of Anatomical Structures per Reference Organ
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
+PREFIX FMA: <http://purl.org/sig/ont/fma/fma>
+
+SELECT
+  ?organ
+  ?sex
+  (COUNT(?structure) AS ?as_count)
+  (SAMPLE(?uberon_id) as ?uberon_id)
+FROM <https://purl.humanatlas.io/graph/ccf>
+WHERE {
+  ?structure ccf:has_reference_organ ?refOrgan .
+  ?refOrgan rdfs:label ?organ ;
+    ccf:representation_of ?organIri ;
+    ccf:organ_owner_sex ?sex .
+
+  BIND(REPLACE(REPLACE(STR(?organIri), STR(UBERON:), 'UBERON:'), STR(FMA:), 'FMA:') as ?uberon_id)
+}
+GROUP BY ?organ ?sex
+ORDER BY ?organ ?sex
