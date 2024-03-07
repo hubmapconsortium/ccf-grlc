@@ -5,6 +5,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
 
 SELECT DISTINCT ?organ ?landmark_set ?landmark
+FROM <https://purl.humanatlas.io/graph/ccf>
 WHERE {
   ?landmark_id ccf:has_extraction_set ?extraction_set .
   ?landmark_id rdfs:label ?landmark .

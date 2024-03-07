@@ -6,6 +6,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
 
 SELECT (SAMPLE(?organ) AS ?organName) (COUNT(?structure) AS ?asCount)
+FROM <https://purl.humanatlas.io/graph/ccf>
 WHERE {
   ?structure ccf:has_reference_organ ?organ .
 }

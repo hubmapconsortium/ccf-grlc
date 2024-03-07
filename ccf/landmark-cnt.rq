@@ -3,7 +3,9 @@
 
 PREFIX ccf: <http://purl.org/ccf/>
 
-SELECT (COUNT(?landmark) as ?landmark_count) WHERE {
+SELECT (COUNT(?landmark) as ?landmark_count)
+FROM <https://purl.humanatlas.io/graph/ccf>
+WHERE {
   SELECT DISTINCT ?landmark WHERE {
     ?landmark ccf:has_extraction_set ?y .
   }

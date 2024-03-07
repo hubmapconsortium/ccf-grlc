@@ -5,7 +5,9 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
 
-SELECT (COUNT(DISTINCT ?iri) as ?cnt) WHERE {
+SELECT (COUNT(DISTINCT ?iri) as ?cnt)
+FROM <https://purl.humanatlas.io/graph/ccf>
+WHERE {
   # AS
   {
     ?iri ccf:ccf_part_of [] .

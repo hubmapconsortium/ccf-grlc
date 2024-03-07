@@ -4,6 +4,8 @@
 PREFIX ccf: <http://purl.org/ccf/>
 
 SELECT ?block ?ruiLocation ?refOrgan ?donorSex ?refOrganSex
+FROM <https://purl.humanatlas.io/graph/ccf>
+FROM <https://purl.humanatlas.io/collection/ds-graphs>
 WHERE {
   # Find donor sex
   ?block ccf:comes_from [

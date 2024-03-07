@@ -3,7 +3,6 @@
 
 #+ defaults:
 #+   - biomarker: http://identifiers.org/hgnc/1678
-#+ endpoint: https://lod.humanatlas.io/sparql
 
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -12,7 +11,7 @@ PREFIX ccf: <http://purl.org/ccf/>
 PREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>
 
 SELECT DISTINCT ?organ ?organ_label
-FROM <http://purl.org/ccf/ccf.owl>
+FROM <https://purl.humanatlas.io/graph/ccf>
 WHERE {
   # Find reference organ's AS / Uberon Term
   ?ref_organ ccf:has_reference_organ ?ref_organ .

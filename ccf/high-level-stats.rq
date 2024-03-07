@@ -1,4 +1,5 @@
 SELECT ?label ?count
+FROM <https://purl.humanatlas.io/graph/ccf>
 WHERE {
   {
     SELECT ("# Nodes" as ?label) (COUNT(DISTINCT(?s)) as ?count)

@@ -3,11 +3,12 @@
 
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX ccf: <http://purl.org/ccf/latest/ccf.owl#>
-PREFIX entity: <http://purl.org/ccf/latest/ccf-entity.owl#>
+PREFIX ccf: <http://purl.org/ccf/>
 
 SELECT ?block ?ruiLocation ?term
+FROM <https://purl.humanatlas.io/graph/ccf>
+FROM <https://purl.humanatlas.io/collection/ds-graphs>
 WHERE {
-  ?block entity:has_spatial_entity ?ruiLocation .
-  ?ruiLocation ccf:ccf_annotation ?term .
+  ?block ccf:has_registration_location ?ruiLocation .
+  ?ruiLocation ccf:collides_with ?term .
 }
