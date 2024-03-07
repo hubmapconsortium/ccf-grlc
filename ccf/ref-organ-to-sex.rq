@@ -6,7 +6,7 @@ PREFIX ccf: <http://purl.org/ccf/>
 SELECT DISTINCT ?reference_organ ?sex
 FROM <https://purl.humanatlas.io/graph/ccf>
 WHERE {
-  ?refOrgan a ccf:spatial_entity .
+  ?refOrgan a ccf:SpatialEntity .
   ?refOrgan ccf:has_reference_organ ?refOrgan .
   ?refOrgan ccf:organ_owner_sex ?sex .
   BIND (REPLACE(REPLACE(STR(?refOrgan), "V1.1", ""), "V1.2", "") as ?reference_organ)
