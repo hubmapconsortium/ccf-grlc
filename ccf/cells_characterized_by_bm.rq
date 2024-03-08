@@ -1,0 +1,23 @@
+#+ summary: all biomarkers characterizing cell types
+#+ description: all biomarkers characterizing cell types
+
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>
+
+SELECT DISTINCT ?biomarker_iri ?cell_iri (STR(?qlabel) as ?cell_label)
+FROM <https://purl.humanatlas.io/graph/ccf>
+WHERE {
+  ?cell_iri rdfs:label ?qlabel .
+
+  # Find biomarkers that characterize the cell type
+  ?cell_iri rdfs:subClassOf [
+    owl:onProperty has_characterizing_biomarker_set: ;
+    owl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .
+  ?bn3 rdf:rest*/rdf:first [
+    owl:onProperty ccf:has_marker_component ;
+    owl:someValuesFrom ?biomarker_iri
+  ] .
+}
