@@ -1,0 +1,29 @@
+#+ summary: anatomical structures and cell types associated with a given biomarker
+#+ description: Enter an biomarker IRI, get back a list of anatomical structure and cell type IRIs and labels
+
+#+ defaults:
+#+   - biomarker: http://identifiers.org/hgnc/1653
+
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>
+
+SELECT DISTINCT ?location_iri ?location_label ?cell_iri (STR(?qlabel) as ?cell_label)
+FROM <https://purl.humanatlas.io/graph/ccf>
+WHERE {
+  ?location_iri ^ccf:ccf_part_of* ?child . 
+  ?cell_iri ccf:ccf_located_in ?child .
+  ?cell_iri rdfs:label ?qlabel .
+  ?location_iri rdfs:label ?location_label .
+  
+  # Find biomarkers that characterize the cell type
+  ?cell_iri rdfs:subClassOf [
+    owl:onProperty has_characterizing_biomarker_set: ;
+    owl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .
+    ?bn3 rdf:rest*/rdf:first [
+      owl:onProperty ccf:has_marker_component ;
+      owl:someValuesFrom ?_biomarker_iri
+    ] .
+}

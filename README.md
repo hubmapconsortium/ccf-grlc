@@ -11,3 +11,5 @@ Repository of useful SPARQL queries for HRA work + API via grlc.io
 
 * HRA scratch queries are here:  <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/hra-scratch/>
 * Ubergraph scratch queries are here: <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/ubergraph-scratch/>
+
+* HRA queries for FUSION are here: <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/fusion/>

@@ -1,0 +1,17 @@
+#+ summary: cell types located in an anatomical structure
+#+ description: Enter an anatomical structure IRI, get back a list of cell type IRIs and labels
+
+#+ defaults:
+#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+
+SELECT DISTINCT ?cell_iri (STR(?qlabel) as ?cell_label)
+FROM <https://purl.humanatlas.io/graph/ccf>
+WHERE {
+  ?_location_iri ^ccf:ccf_part_of* ?child . 
+  ?cell_iri ccf:ccf_located_in ?child .
+  ?cell_iri rdfs:label ?qlabel .
+}
