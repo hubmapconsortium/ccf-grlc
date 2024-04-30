@@ -1,0 +1,16 @@
+#+ summary: Number of Anatomical Structures with Cell Summaries
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
+
+SELECT (COUNT(DISTINCT ?as) as ?as_count)
+FROM HRApop:
+WHERE {
+  {
+  	?as ccf:has_cell_summary [ ] .
+  } MINUS {
+    ?as a ccf:SpatialEntity .
+  } MINUS {
+    ?as a ccf:Dataset .
+  }
+}
