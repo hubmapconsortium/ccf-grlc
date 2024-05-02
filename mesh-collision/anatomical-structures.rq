@@ -1,0 +1,48 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX schema: <https://schema.org/>
+PREFIX skin: <http://purl.obolibrary.org/obo/UBERON_0002097>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX DSGraphs: <https://purl.humanatlas.io/collection/ds-graphs>
+PREFIX DSGraphsExtra: <https://purl.humanatlas.io/graph/ds-graphs-enrichments>
+PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
+PREFIX FMA: <http://purl.org/sig/ont/fma/fma>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra-kg/draft>
+
+
+SELECT DISTINCT ?reference_organ ?anatomical_structure_of 
+  ?source_spatial_entity ?node_name ?label ?ontologyID ?representation_of ?glb_file
+  ?x_translation ?y_translation ?z_translation
+# FROM HRA:
+FROM <https://purl.humanatlas.io/graph/ccf>
+WHERE {
+  ?anatomical_structure_of rdf:type ccf:SpatialEntity ;
+    ccf:has_reference_organ ?reference_organ ;
+    ccf:representation_of ?representation_of ;
+    # skos:prefLabel ?label ; # When using HRA
+    rdfs:label ?label ; # When using ccf.owl
+    ccf:has_object_reference ?object .
+  ?object rdf:type ccf:SpatialObjectReference ;
+    ccf:file_url ?glb_file ;
+    ccf:file_subpath ?node_name .
+  
+  ?reference_organ ccf:organ_owner_sex ?sex .
+
+  [] rdf:type ccf:SpatialPlacement ;
+    ccf:placement_for ?object ;
+    ccf:placement_relative_to ?anatomical_structure_of ;
+    ccf:x_translation ?_x_translation ;
+    ccf:y_translation ?_y_translation ;
+    ccf:z_translation ?_z_translation .
+  
+  BIND(REPLACE(REPLACE(STR(?representation_of), STR(UBERON:), "UBERON:"), STR(FMA:), "FMA:") as ?ontologyID)
+  BIND(IF(?sex = "Female", "#VHFemaleOrgans", "#VHMaleOrgans") as ?source_spatial_entity)
+  BIND(xsd:decimal(?_x_translation) / -1000 as ?x_translation)
+  BIND(xsd:decimal(?_y_translation) / -1000 as ?y_translation)
+  BIND(xsd:decimal(?_z_translation) / -1000 as ?z_translation)
+}
+ORDER BY ?reference_organ
