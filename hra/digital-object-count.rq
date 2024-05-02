@@ -1,0 +1,13 @@
+#+ summary: Digital objects counts in the latest HRA release
+
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT ?type (COUNT(DISTINCT(?digitalObject)) as ?count)
+FROM HRA:
+WHERE {
+  HRA: prov:hadMember ?digitalObject .
+  BIND(STRBEFORE(REPLACE(STR(?digitalObject), 'https://purl.humanatlas.io/', ''), '/') as ?type)
+}
+GROUP BY ?type
+ORDER BY ?type
