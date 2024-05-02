@@ -17,30 +17,30 @@ WHERE {
     rdf:type ccf:SpatialPlacement ;
     ccf:placement_for ?source ;
     ccf:placement_relative_to ?target ;
-    ccf:x_scaling ?_x_scaling ;
-    ccf:y_scaling ?_y_scaling ;
-    ccf:z_scaling ?_z_scaling ;
-    ccf:x_rotation ?_x_rotation ;
-    ccf:y_rotation ?_y_rotation ;
-    ccf:z_rotation ?_z_rotation ;
-    ccf:x_translation ?_x_translation ;
-    ccf:y_translation ?_y_translation ;
-    ccf:z_translation ?_z_translation ;
+    ccf:x_scaling ?tmp_x_scaling ;
+    ccf:y_scaling ?tmp_y_scaling ;
+    ccf:z_scaling ?tmp_z_scaling ;
+    ccf:x_rotation ?tmp_x_rotation ;
+    ccf:y_rotation ?tmp_y_rotation ;
+    ccf:z_rotation ?tmp_z_rotation ;
+    ccf:x_translation ?tmp_x_translation ;
+    ccf:y_translation ?tmp_y_translation ;
+    ccf:z_translation ?tmp_z_translation ;
     ccf:translation_unit ?translation_units .
 
     FILTER(?target = ccf1:VHBothSexes || ?target = HRAbody:VHBothSexes || 
       !(?source IN (ccf1:VHFemale, ccf1:VHMale, HRAbody:VHFemale, HRAbody:VHMale)))
 
-    BIND(xsd:decimal(?_x_scaling) as ?x_scaling)
-    BIND(xsd:decimal(?_y_scaling) as ?y_scaling)
-    BIND(xsd:decimal(?_z_scaling) as ?z_scaling)
+    BIND(xsd:decimal(?tmp_x_scaling) as ?x_scaling)
+    BIND(xsd:decimal(?tmp_y_scaling) as ?y_scaling)
+    BIND(xsd:decimal(?tmp_z_scaling) as ?z_scaling)
 
-    BIND(xsd:decimal(?_x_rotation) as ?x_rotation)
-    BIND(xsd:decimal(?_y_rotation) as ?y_rotation)
-    BIND(xsd:decimal(?_z_rotation) as ?z_rotation)
+    BIND(xsd:decimal(?tmp_x_rotation) as ?x_rotation)
+    BIND(xsd:decimal(?tmp_y_rotation) as ?y_rotation)
+    BIND(xsd:decimal(?tmp_z_rotation) as ?z_rotation)
 
-    BIND(xsd:decimal(?_x_translation) as ?x_translation)
-    BIND(xsd:decimal(?_y_translation) as ?y_translation)
-    BIND(xsd:decimal(?_z_translation) as ?z_translation)
+    BIND(xsd:decimal(?tmp_x_translation) as ?x_translation)
+    BIND(xsd:decimal(?tmp_y_translation) as ?y_translation)
+    BIND(xsd:decimal(?tmp_z_translation) as ?z_translation)
 }
 ORDER BY ?source
