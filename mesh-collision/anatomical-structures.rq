@@ -11,8 +11,7 @@ PREFIX DSGraphs: <https://purl.humanatlas.io/collection/ds-graphs>
 PREFIX DSGraphsExtra: <https://purl.humanatlas.io/graph/ds-graphs-enrichments>
 PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
 PREFIX FMA: <http://purl.org/sig/ont/fma/fma>
-PREFIX HRA: <https://purl.humanatlas.io/collection/hra-kg/draft>
-
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
 
 SELECT DISTINCT ?reference_organ ?anatomical_structure_of 
   ?source_spatial_entity ?node_name ?label ?ontologyID ?representation_of ?glb_file
