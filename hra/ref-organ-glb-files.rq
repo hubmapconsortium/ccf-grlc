@@ -1,0 +1,16 @@
+#+ summary: Reference Organ GLB information
+#+ description: Reference Organ GLB information
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT DISTINCT (STR(?refOrgan) as ?ref_organ) ?glb_url ?scene_node
+FROM HRA:
+WHERE {
+  ?refOrgan ccf:has_reference_organ ?refOrgan .
+  ?refOrgan ccf:has_object_reference [
+  	ccf:file_url ?glb_url ;
+    ccf:file_subpath ?scene_node  
+  ] .
+}
+ORDER BY ?ref_organ
