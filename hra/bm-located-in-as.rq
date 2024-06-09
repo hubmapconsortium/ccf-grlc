@@ -5,10 +5,11 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 
 #SELECT DISTINCT ?ct ?bm
 CONSTRUCT { ?bm ccf:ccf_bm_located_in ?ct }
-FROM <https://purl.org/ccf/ccf.owl>
+FROM HRA:
 WHERE {
   ?ct rdfs:subClassOf [
   	owl:onProperty has_characterizing_biomarker_set: ;

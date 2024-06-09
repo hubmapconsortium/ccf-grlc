@@ -3,7 +3,6 @@
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX ccf: <http://purl.org/ccf/>
-PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
 PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
 
 SELECT DISTINCT ?table ?asctb_type ?iri

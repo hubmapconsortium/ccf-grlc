@@ -2,11 +2,13 @@
 #+ description: Count of 3D Anatomical Structures
 
 PREFIX ccf: <http://purl.org/ccf/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 
 SELECT (COUNT(?as3d) as ?as_count)
-FROM <https://purl.humanatlas.io/graph/ccf>
+FROM HRA:
 WHERE {
   SELECT DISTINCT ?as3d WHERE {
     ?as3d ccf:has_reference_organ ?y .
+    FILTER(!CONTAINS(STR(?y), '/united-'))
   }
 }

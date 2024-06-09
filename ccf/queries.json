@@ -20,9 +20,11 @@
     "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/ccf/landmark-cnt.rq",
     "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/ccf/high-level-stats.rq",
     "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/ccf/cells_located_in_as.rq",
+    "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/ccf/cells_characterized_by_bm.rq",
     "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/ccf/cell_by_location.rq",
     "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/ccf/block-annotations.rq",
     "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/ccf/asctb-count.rq",
+    "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/ccf/as-per-organ.rq",
     "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/ccf/as-ct-b-counts.rq",
     "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/ccf/as-cnt-by-ref-organ.rq",
     "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/ccf/as-3d-cnt.rq"

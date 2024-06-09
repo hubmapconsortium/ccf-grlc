@@ -2,11 +2,11 @@
 #+ endpoint: https://lod.humanatlas.io/sparql
 
 PREFIX ccf: <http://purl.org/ccf/>
-PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
 
 SELECT ?asctb_type (COUNT(DISTINCT(?iri)) as ?count)
-FROM CCF:
+FROM HRA:
 WHERE {
   ?iri ccf:ccf_asctb_type ?asctb_type
   FILTER(STRSTARTS(STR(?iri), STR(ASCTB-TEMP:)))
