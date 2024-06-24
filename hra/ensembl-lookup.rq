@@ -1,4 +1,4 @@
-#+ description: A lookup table from Ensembl ID to gene name and HGNC ID
+#+ summary: A lookup table from Ensembl ID to gene name and HGNC ID
 
 PREFIX hgnc: <http://purl.bioontology.org/ontology/HGNC/>
 PREFIX hgncId: <http://identifiers.org/hgnc/>
