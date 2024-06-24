@@ -1,0 +1,42 @@
+#+ summary: ref-organ-dois in HRA v2.1
+
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+
+SELECT ?Organ ?Sex ?DOI ?DigitalObject
+FROM <https://lod.humanatlas.io>
+WHERE {
+  {
+    SELECT DISTINCT ?DigitalObject
+    WHERE {
+      ?hraPurl a dcat:Dataset ;
+          schema:name ?hraName ;
+          schema:additionalType ?hraType ;
+          schema:version ?hraVersion ;
+          prov:hadMember ?digitalObjectStr .
+
+	  FILTER(?hraType = 'collection' && ?hraName = 'hra' && ?hraVersion = 'v2.1')
+      FILTER(CONTAINS(STR(?digitalObjectStr), '/ref-organ/'))
+      BIND(IRI(STR(?digitalObjectStr)) as ?DigitalObject)
+    }
+  }
+  
+  {
+    ?DigitalObject a dcat:Dataset ;
+  		schema:name ?name ;
+  		schema:additionalType ?type ;
+        schema:version ?version ;
+        schema:dateCreated ?published ;
+        prov:wasDerivedFrom ?rawData .
+
+    ?rawData ccf:doi ?DOI .
+    BIND(IF(CONTAINS(?name, 'female'), 'F', 'M') as ?Sex)
+    BIND(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(?name, '-female', ''), '-male', ''), '-', ' '), 'left', '(left)'), 'right', '(right)') as ?Organ)
+    FILTER(!CONTAINS(?name, '-crosswalk') && !CONTAINS(?name, 'united-'))
+  }
+}
+ORDER BY ?Organ ?Sex
