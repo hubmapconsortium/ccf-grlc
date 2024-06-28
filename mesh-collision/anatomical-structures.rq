@@ -16,8 +16,7 @@ PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
 SELECT DISTINCT ?reference_organ ?anatomical_structure_of 
   ?source_spatial_entity ?node_name ?label ?ontologyID ?representation_of ?glb_file
   ?x_translation ?y_translation ?z_translation
-# FROM HRA:
-FROM <https://purl.humanatlas.io/graph/ccf>
+FROM HRA:
 WHERE {
   ?anatomical_structure_of rdf:type ccf:SpatialEntity ;
     ccf:has_reference_organ ?reference_organ ;
