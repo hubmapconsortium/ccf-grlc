@@ -12,7 +12,7 @@ PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 
 SELECT DISTINCT ?as_label ?ct_label ?bm_label ?as ?ct ?bm ?bmType
 WHERE {
-  GRAPH <https://purl.humanatlas.io/asct-b/lymph-node> {
+  GRAPH ?_asctb_iri {
     ?ct ccf:ccf_located_in ?as . # Get cell types located in an anatomical structure
 
     # Find all sets of biomarkers that characterize a cell type
