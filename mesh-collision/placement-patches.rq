@@ -5,7 +5,7 @@ PREFIX ccf1: <http://purl.org/ccf/latest/ccf.owl#>
 PREFIX HRAbody: <https://purl.humanatlas.io/graph/hra-ccf-body#>
 PREFIX DSGraphs: <https://purl.humanatlas.io/collection/ds-graphs>
 PREFIX DSGraphsExtra: <https://purl.humanatlas.io/graph/ds-graphs-enrichments>
-PREFIX HRA: <https://purl.humanatlas.io/graph/hra-ccf-patches/draft>
+PREFIX HRA: <https://purl.humanatlas.io/graph/hra-ccf-patches>
 
 SELECT DISTINCT ?source ?target 
   ?x_scaling ?y_scaling ?z_scaling
