@@ -1,0 +1,37 @@
+#+ summary: Count of 3D Anatomical Structures
+#+ description: Count of 3D Anatomical Structures
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
+
+SELECT ?label ?count
+FROM CCF:
+WHERE {
+  {
+    SELECT ("3D reference organs (no united)" as ?label)
+      (COUNT(DISTINCT(?ref_organ)) as ?count)
+    WHERE {
+      ?ref_organ ccf:has_reference_organ ?ref_organ .
+      FILTER(!CONTAINS(STR(?ref_organ), '/ref-organ/united-'))
+    }
+  }
+  UNION
+  {
+    SELECT ("3D anatomical structures (no united)" as ?label)
+      (COUNT(DISTINCT(?as3d)) as ?count)
+    WHERE {
+      ?as3d ccf:has_reference_organ ?y .
+      FILTER(!CONTAINS(STR(?y), '/ref-organ/united-'))
+    }
+  }
+  UNION
+  {
+    SELECT ("3D anatomical structures (no united and no reference organ AS)" as ?label)
+      (COUNT(DISTINCT(?as3d)) as ?count)
+    WHERE {
+      ?as3d ccf:has_reference_organ ?y .
+      FILTER(?as3d != ?y && !CONTAINS(STR(?y), '/ref-organ/united-'))
+    }
+  }
+}
+ORDER BY ?label
