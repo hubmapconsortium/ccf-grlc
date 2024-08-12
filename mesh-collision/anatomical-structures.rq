@@ -21,8 +21,8 @@ WHERE {
   ?anatomical_structure_of rdf:type ccf:SpatialEntity ;
     ccf:has_reference_organ ?reference_organ ;
     ccf:representation_of ?representation_of ;
-    # skos:prefLabel ?label ; # When using HRA
-    rdfs:label ?label ; # When using ccf.owl
+    skos:prefLabel ?label ; # When using HRA
+    # rdfs:label ?label ; # When using ccf.owl
     ccf:has_object_reference ?object .
   ?object rdf:type ccf:SpatialObjectReference ;
     ccf:file_url ?glb_file ;
