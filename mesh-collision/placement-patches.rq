@@ -5,13 +5,14 @@ PREFIX ccf1: <http://purl.org/ccf/latest/ccf.owl#>
 PREFIX HRAbody: <https://purl.humanatlas.io/graph/hra-ccf-body#>
 PREFIX DSGraphs: <https://purl.humanatlas.io/collection/ds-graphs>
 PREFIX DSGraphsExtra: <https://purl.humanatlas.io/graph/ds-graphs-enrichments>
-PREFIX HRA: <https://purl.humanatlas.io/graph/hra-ccf-patches>
+PREFIX HRApatches: <https://purl.humanatlas.io/graph/hra-ccf-patches>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 
 SELECT DISTINCT ?source ?target 
   ?x_scaling ?y_scaling ?z_scaling
   ?x_rotation ?y_rotation ?z_rotation
   ?x_translation ?y_translation ?z_translation ?translation_units
-FROM HRA:
+FROM HRApatches:
 WHERE {
   []
     rdf:type ccf:SpatialPlacement ;
@@ -42,5 +43,20 @@ WHERE {
     BIND(xsd:decimal(?tmp_x_translation) as ?x_translation)
     BIND(xsd:decimal(?tmp_y_translation) as ?y_translation)
     BIND(xsd:decimal(?tmp_z_translation) as ?z_translation)
+
+    FILTER(!STRSTARTS(STR(?source), 'https://purl.humanatlas.io/ref-organ/') ||
+      EXISTS {
+        GRAPH HRA: {
+          ?source a ccf:SpatialEntity .
+        }
+      }
+    )
+    FILTER(!STRSTARTS(STR(?target), 'https://purl.humanatlas.io/ref-organ/') ||
+      EXISTS {
+        GRAPH HRA: {
+          ?target a ccf:SpatialEntity .
+        }
+      }
+    )
 }
-ORDER BY ?source
+ORDER BY ?source ?target
