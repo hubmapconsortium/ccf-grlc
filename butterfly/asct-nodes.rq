@@ -11,7 +11,7 @@ PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
 PREFIX LMHA: <http://purl.obolibrary.org/obo/LMHA_>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
 
-SELECT ?id ?name ?type ?organ ?ontology_id
+SELECT DISTINCT ?id ?name ?type ?organ ?ontology_id
 WHERE {
   GRAPH HRA: {
     # get ID and ASCT+B type, limit to AS + CT
@@ -30,9 +30,14 @@ WHERE {
     OPTIONAL {
       ?id skos:prefLabel ?pref_label .
     }
-    BIND(IF(BOUND(?pref_label), ?pref_label, 
-      IF(BOUND(?rdfs_label), ?rdfs_label, 
-        IF(STRSTARTS(?ontology_id, 'ASCTB-TEMP:'), REPLACE(REPLACE(?ontology_id, 'ASCTB-TEMP:', ''), '-', ' '), ?ontology_id))) as ?name)
+    OPTIONAL {
+      ?id ccf:ccf_pref_label ?ccf_pref_label .
+    }
+    BIND(IF(BOUND(?pref_label), ?pref_label,
+      IF(BOUND(?ccf_pref_label), ?ccf_pref_label,
+        IF(BOUND(?rdfs_label), ?rdfs_label, 
+          IF(STRSTARTS(?ontology_id, 'ASCTB-TEMP:'), REPLACE(REPLACE(?ontology_id, 'ASCTB-TEMP:', ''), '-', ' '),
+            ?ontology_id)))) as ?name)
   }
 
   # Find the ASCT+B tables each term occurs in (and use that for 'organ' name)
@@ -48,4 +53,4 @@ WHERE {
   FILTER(STRSTARTS(STR(?graph), 'https://purl.humanatlas.io/asct-b/'))
   BIND(REPLACE(REPLACE(STR(?graph), 'https://purl.humanatlas.io/asct-b/', ''), '-', '_') as ?organ)
 }
-# ORDER BY ?organ ?name
+ORDER BY ?organ ?id
