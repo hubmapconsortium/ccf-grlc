@@ -14,3 +14,4 @@ Repository of useful SPARQL queries for HRA work + API via grlc.io
 
 * HRA queries for FUSION are here: <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/fusion/>
 * HRA queries for the [Mesh Collision API](https://github.com/hubmapconsortium/hra-tissue-block-annotation) are here: <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/mesh-collision/>
+* HRA queries for the `butterfly visualization` are here: <https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/butterfly/>

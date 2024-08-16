@@ -1,0 +1,25 @@
+#+ summary: AS-CT Edges
+
+PREFIX ccf: <http://purl.org/ccf/>
+
+SELECT ?organ ?source ?target ?source_type ?target_type
+WHERE {
+  GRAPH ?graph {
+    {
+      ?source ccf:ccf_part_of ?target .
+    }
+    UNION
+    {
+      ?source ccf:ccf_located_in ?target .
+    }
+
+    ?source ccf:ccf_asctb_type ?source_type .
+    FILTER(?source_type != 'BM')
+
+    ?target ccf:ccf_asctb_type ?target_type .
+    FILTER(?target_type != 'BM')
+  }
+  FILTER(STRSTARTS(STR(?graph), 'https://purl.humanatlas.io/asct-b/'))
+  BIND(REPLACE(REPLACE(STR(?graph), 'https://purl.humanatlas.io/asct-b/', ''), '-', '_') as ?organ)
+}
+# ORDER BY ?organ
