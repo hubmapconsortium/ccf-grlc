@@ -61,11 +61,19 @@ WHERE {
 
   GRAPH ?graph {
     {
+      [] ccf:ccf_part_of ?id .
+    }
+    UNION
+    {
       ?id ccf:ccf_part_of [] .
     }
     UNION
     {
       ?id ccf:ccf_located_in [] .
+    }
+    UNION
+    {
+      [] ccf:ccf_located_in ?id .
     }
   }
 }
