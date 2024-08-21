@@ -1,5 +1,6 @@
 #+ summary: AS-CT Edges
 
+PREFIX hint: <http://www.bigdata.com/queryHints#> 
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
