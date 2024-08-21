@@ -21,5 +21,7 @@ WHERE {
   }
   FILTER(STRSTARTS(STR(?graph), 'https://purl.humanatlas.io/asct-b/'))
   BIND(REPLACE(REPLACE(STR(?graph), 'https://purl.humanatlas.io/asct-b/', ''), '-', '_') as ?organ)
+
+  FILTER(?source != ?target)
 }
 # ORDER BY ?organ

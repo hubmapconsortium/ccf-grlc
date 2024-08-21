@@ -32,5 +32,6 @@ WHERE {
     }
     GROUP BY ?organ ?source ?target
   }
+  FILTER(?source != ?target)
 }
 GROUP BY ?source ?target
