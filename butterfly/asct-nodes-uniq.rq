@@ -1,0 +1,67 @@
+#+ summary: AS-CT Nodes (unique)
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
+PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
+PREFIX PCL: <http://purl.obolibrary.org/obo/PCL_>
+PREFIX FMA: <http://purl.org/sig/ont/fma/fma>
+PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
+PREFIX LMHA: <http://purl.obolibrary.org/obo/LMHA_>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
+
+SELECT DISTINCT ?id
+  (SAMPLE(?name) as ?name)
+  (SAMPLE(?type) as ?type)
+  (GROUP_CONCAT(?organ;SEPARATOR='|') as ?organ)
+  (SAMPLE(?ontology_id) as ?ontology_id)
+WHERE {
+  {
+    SELECT DISTINCT ?id ?organ (SAMPLE(?name) as ?name) (SAMPLE(?type) as ?type) (SAMPLE(?ontology_id) as ?ontology_id)
+    WHERE {
+      GRAPH HRA: {
+        # get ID and ASCT+B type, limit to AS + CT
+        ?id ccf:ccf_asctb_type ?type .
+        FILTER(?type != 'BM')
+
+        # Reformat URI to a shorter CURIE string, eg UBERON:12345
+        BIND(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(STR(?id), 
+          STR(UBERON:), 'UBERON:'), STR(CL:), 'CL:'), STR(PCL:), 'PCL:'),
+          STR(FMA:), 'FMA:'), STR(LMHA:), 'LMHA:'), STR(ASCTB-TEMP:), 'ASCTB-TEMP:') as ?ontology_id)
+
+        # Grab possible labels and create the node name
+        OPTIONAL {
+          ?id rdfs:label ?rdfs_label .
+        }
+        OPTIONAL {
+          ?id skos:prefLabel ?pref_label .
+        }
+        OPTIONAL {
+          ?id ccf:ccf_pref_label ?ccf_pref_label .
+        }
+        BIND(IF(BOUND(?pref_label), ?pref_label,
+          IF(BOUND(?ccf_pref_label), ?ccf_pref_label,
+            IF(BOUND(?rdfs_label), ?rdfs_label, 
+              IF(STRSTARTS(?ontology_id, 'ASCTB-TEMP:'), REPLACE(REPLACE(?ontology_id, 'ASCTB-TEMP:', ''), '-', ' '),
+                ?ontology_id)))) as ?name)
+      }
+
+      # Find the ASCT+B tables each term occurs in (and use that for 'organ' name)
+      GRAPH ?graph {
+        {
+          ?id ccf:ccf_part_of [] .
+        }
+        UNION
+        {
+          ?id ccf:ccf_located_in [] .
+        }
+      }
+      FILTER(STRSTARTS(STR(?graph), 'https://purl.humanatlas.io/asct-b/'))
+      BIND(REPLACE(REPLACE(STR(?graph), 'https://purl.humanatlas.io/asct-b/', ''), '-', '_') as ?organ)
+    }
+    GROUP BY ?id ?organ
+  }
+}
+GROUP BY ?id
+ORDER BY ?name
