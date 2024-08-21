@@ -1,9 +1,31 @@
 #+ summary: AS-CT Edges
 
 PREFIX ccf: <http://purl.org/ccf/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
 
 SELECT ?organ ?source ?target ?source_type ?target_type
 WHERE {
+  hint:Query hint:optimizer "Runtime" .
+
+  {
+    SELECT DISTINCT ?graph ?organ
+    WHERE {
+      GRAPH HRA: {
+        HRA: a owl:Ontology ;
+          prov:hadMember ?versionedGraph .
+        FILTER(STRSTARTS(STR(?versionedGraph), 'https://purl.humanatlas.io/asct-b/'))
+      }
+      GRAPH ?namedGraph {
+        ?graph a owl:Ontology .
+        FILTER(STRSTARTS(STR(?graph), 'https://purl.humanatlas.io/asct-b/'))
+      }
+      FILTER(STRSTARTS(STR(?versionedGraph), STR(?graph)))
+      BIND(REPLACE(REPLACE(STR(?graph), 'https://purl.humanatlas.io/asct-b/', ''), '-', '_') as ?organ)
+    }
+  }
+
   GRAPH ?graph {
     {
       ?source ccf:ccf_part_of ?target .
@@ -12,6 +34,7 @@ WHERE {
     {
       ?source ccf:ccf_located_in ?target .
     }
+    FILTER(?source != ?target)
 
     ?source ccf:ccf_asctb_type ?source_type .
     FILTER(?source_type != 'BM')
@@ -20,8 +43,4 @@ WHERE {
     FILTER(?target_type != 'BM')
   }
   FILTER(STRSTARTS(STR(?graph), 'https://purl.humanatlas.io/asct-b/'))
-  BIND(REPLACE(REPLACE(STR(?graph), 'https://purl.humanatlas.io/asct-b/', ''), '-', '_') as ?organ)
-
-  FILTER(?source != ?target)
 }
-# ORDER BY ?organ

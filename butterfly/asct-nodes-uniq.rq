@@ -2,6 +2,8 @@
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
 PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
@@ -47,7 +49,23 @@ WHERE {
                 ?ontology_id)))) as ?name)
       }
 
-      # Find the ASCT+B tables each term occurs in (and use that for 'organ' name)
+      {
+        SELECT DISTINCT ?graph ?organ
+        WHERE {
+          GRAPH HRA: {
+            HRA: a owl:Ontology ;
+              prov:hadMember ?versionedGraph .
+            FILTER(STRSTARTS(STR(?versionedGraph), 'https://purl.humanatlas.io/asct-b/'))
+          }
+          GRAPH ?namedGraph {
+            ?graph a owl:Ontology .
+            FILTER(STRSTARTS(STR(?graph), 'https://purl.humanatlas.io/asct-b/'))
+          }
+          FILTER(STRSTARTS(STR(?versionedGraph), STR(?graph)))
+          BIND(REPLACE(REPLACE(STR(?graph), 'https://purl.humanatlas.io/asct-b/', ''), '-', '_') as ?organ)
+        }
+      }
+
       GRAPH ?graph {
         {
           ?id ccf:ccf_part_of [] .
@@ -57,8 +75,6 @@ WHERE {
           ?id ccf:ccf_located_in [] .
         }
       }
-      FILTER(STRSTARTS(STR(?graph), 'https://purl.humanatlas.io/asct-b/'))
-      BIND(REPLACE(REPLACE(STR(?graph), 'https://purl.humanatlas.io/asct-b/', ''), '-', '_') as ?organ)
     }
     GROUP BY ?id ?organ
   }
