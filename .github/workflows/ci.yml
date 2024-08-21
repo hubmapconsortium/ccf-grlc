@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  fetch_specs:
+    runs-on: ubuntu-latest
+    name: Test changed-files
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: '*/*.rq'
+          dir_names: true
+          dir_names_exclude_current_dir: true
+          dir_names_max_depth: 1
+
+      - name: List all changed files
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+        run: |
+          for name in ${ALL_CHANGED_FILES}; do
+            echo $name
+            ./scripts/cache-spec.sh $name
+          done
+
+      # Commit all changed files back to the repository
+      - uses: stefanzweifel/git-auto-commit-action@v5
