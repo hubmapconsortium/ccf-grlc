@@ -1,4 +1,4 @@
-#+ summary: AS-CT Nodes (unique)
+#+ summary: AS-CT Nodes (unique nodes)
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>

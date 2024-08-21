@@ -1,4 +1,4 @@
-#+ summary: AS-CT Edges (unique)
+#+ summary: AS-CT Edges (unique edges)
 
 PREFIX hint: <http://www.bigdata.com/queryHints#> 
 PREFIX ccf: <http://purl.org/ccf/>
