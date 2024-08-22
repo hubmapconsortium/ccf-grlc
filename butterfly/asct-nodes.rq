@@ -15,31 +15,37 @@ PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
 
 SELECT DISTINCT ?id ?name ?type ?organ ?ontology_id
 WHERE {
-  GRAPH HRA: {
-    # get ID and ASCT+B type, limit to AS + CT
-    ?id ccf:ccf_asctb_type ?type .
-    FILTER(?type != 'BM')
+  {
+    SELECT ?id (SAMPLE(?name) as ?name) ?type ?ontology_id
+    WHERE {
+      GRAPH HRA: {
+        # get ID and ASCT+B type, limit to AS + CT
+        ?id ccf:ccf_asctb_type ?type .
+        FILTER(?type != 'BM')
 
-    # Reformat URI to a shorter CURIE string, eg UBERON:12345
-    BIND(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(STR(?id), 
-      STR(UBERON:), 'UBERON:'), STR(CL:), 'CL:'), STR(PCL:), 'PCL:'),
-      STR(FMA:), 'FMA:'), STR(LMHA:), 'LMHA:'), STR(ASCTB-TEMP:), 'ASCTB-TEMP:') as ?ontology_id)
+        # Reformat URI to a shorter CURIE string, eg UBERON:12345
+        BIND(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(STR(?id), 
+          STR(UBERON:), 'UBERON:'), STR(CL:), 'CL:'), STR(PCL:), 'PCL:'),
+          STR(FMA:), 'FMA:'), STR(LMHA:), 'LMHA:'), STR(ASCTB-TEMP:), 'ASCTB-TEMP:') as ?ontology_id)
 
-    # Grab possible labels and create the node name
-    OPTIONAL {
-      ?id rdfs:label ?rdfs_label .
+        # Grab possible labels and create the node name
+        OPTIONAL {
+          ?id rdfs:label ?rdfs_label .
+        }
+        OPTIONAL {
+          ?id skos:prefLabel ?pref_label .
+        }
+        OPTIONAL {
+          ?id ccf:ccf_pref_label ?ccf_pref_label .
+        }
+        BIND(IF(BOUND(?pref_label), ?pref_label,
+          IF(BOUND(?ccf_pref_label), ?ccf_pref_label,
+            IF(BOUND(?rdfs_label), ?rdfs_label, 
+              IF(STRSTARTS(?ontology_id, 'ASCTB-TEMP:'), REPLACE(REPLACE(?ontology_id, 'ASCTB-TEMP:', ''), '-', ' '),
+                ?ontology_id)))) as ?name)
+      }
     }
-    OPTIONAL {
-      ?id skos:prefLabel ?pref_label .
-    }
-    OPTIONAL {
-      ?id ccf:ccf_pref_label ?ccf_pref_label .
-    }
-    BIND(IF(BOUND(?pref_label), ?pref_label,
-      IF(BOUND(?ccf_pref_label), ?ccf_pref_label,
-        IF(BOUND(?rdfs_label), ?rdfs_label, 
-          IF(STRSTARTS(?ontology_id, 'ASCTB-TEMP:'), REPLACE(REPLACE(?ontology_id, 'ASCTB-TEMP:', ''), '-', ' '),
-            ?ontology_id)))) as ?name)
+    GROUP BY ?id ?type ?ontology_id
   }
 
   {
