@@ -1,10 +1,12 @@
-#+ summary: AS-CT Edges
+#+ summary: AS-CT Edges (with BFS partonomy)
 
+PREFIX gas: <http://www.bigdata.com/rdf/gas#>
 PREFIX hint: <http://www.bigdata.com/queryHints#> 
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
+PREFIX body: <http://purl.obolibrary.org/obo/UBERON_0013702>
 
 SELECT ?organ ?source ?target ?source_type ?target_type
 WHERE {
@@ -30,6 +32,22 @@ WHERE {
   GRAPH ?graph {
     {
       ?source ccf:ccf_part_of ?target .
+
+      # Use Breadth-First Search to ensure the returned partonomy is a tree
+      {
+        SELECT DISTINCT ?source ?target 
+        WHERE {
+          SERVICE gas:service {
+            gas:program gas:gasClass "com.bigdata.rdf.graph.analytics.BFS" .
+            gas:program gas:in body: .
+            gas:program gas:linkType ccf:ccf_part_of .
+            gas:program gas:traversalDirection 'Reverse' .
+            gas:program gas:out ?source .
+            gas:program gas:out1 ?depth .
+            gas:program gas:out2 ?target .
+          }
+        }
+      }
     }
     UNION
     {
