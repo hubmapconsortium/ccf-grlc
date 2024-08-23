@@ -33,15 +33,14 @@ WHERE {
     {
       ?source ccf:ccf_part_of ?target .
 
-      ?source ccf:ccf_asctb_type ?source_type .
-      FILTER(?source_type = 'AS')
-      ?target ccf:ccf_asctb_type ?target_type .
-      FILTER(?target_type = 'AS')
-
       # Use Breadth-First Search to ensure the returned partonomy is a tree
       {
         SELECT DISTINCT ?source ?target 
         WHERE {
+          ?source ccf:ccf_asctb_type ?source_type .
+          ?target ccf:ccf_asctb_type ?target_type .
+          FILTER(?source_type = 'AS' && ?target_type = 'AS')
+
           SERVICE gas:service {
             gas:program gas:gasClass "com.bigdata.rdf.graph.analytics.BFS" .
             gas:program gas:in body: .
@@ -59,9 +58,8 @@ WHERE {
       ?source ccf:ccf_located_in ?target .
 
       ?source ccf:ccf_asctb_type ?source_type .
-      FILTER(?source_type = 'CT')
       ?target ccf:ccf_asctb_type ?target_type .
-      FILTER(?target_type = 'AS')
+      FILTER(?source_type = 'CT' && ?target_type = 'AS')
     }
     FILTER(?source != ?target)    
   }
