@@ -38,18 +38,22 @@ WHERE {
       GRAPH ?graph {
         {
           ?source ccf:ccf_part_of ?target .
+
+          ?source ccf:ccf_asctb_type ?source_type .
+          FILTER(?source_type = 'AS')
+          ?target ccf:ccf_asctb_type ?target_type .
+          FILTER(?target_type = 'AS')
         }
         UNION
         {
           ?source ccf:ccf_located_in ?target .
+
+          ?source ccf:ccf_asctb_type ?source_type .
+          FILTER(?source_type = 'CT')
+          ?target ccf:ccf_asctb_type ?target_type .
+          FILTER(?target_type = 'AS')
         }
-        FILTER(?source != ?target)
-
-        ?source ccf:ccf_asctb_type ?source_type .
-        FILTER(?source_type != 'BM')
-
-        ?target ccf:ccf_asctb_type ?target_type .
-        FILTER(?target_type != 'BM')
+        FILTER(?source != ?target)        
       }
       FILTER(STRSTARTS(STR(?graph), 'https://purl.humanatlas.io/asct-b/'))
     }
