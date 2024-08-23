@@ -61,7 +61,7 @@ WHERE {
       ?source ccf:ccf_asctb_type ?source_type .
       FILTER(?source_type = 'CT')
       ?target ccf:ccf_asctb_type ?target_type .
-      FILTER(?target_type != 'AS')
+      FILTER(?target_type = 'AS')
     }
     FILTER(?source != ?target)    
   }
