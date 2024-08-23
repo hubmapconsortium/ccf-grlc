@@ -35,7 +35,7 @@ WHERE {
 
       # Use Breadth-First Search to ensure the returned partonomy is a tree
       {
-        SELECT DISTINCT ?source ?target 
+        SELECT DISTINCT ?source ?target ?source_type ?target_type
         WHERE {
           ?source ccf:ccf_asctb_type ?source_type .
           ?target ccf:ccf_asctb_type ?target_type .
