@@ -9,3 +9,5 @@ for f in */*.rq; do
     ./scripts/cache-spec.sh $name
   fi
 done
+
+./scripts/merge-specs.sh

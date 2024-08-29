@@ -1,1 +1,536 @@
-{"basePath":"/api-git/hubmapconsortium/ccf-grlc/subdir/hra-pop//","definitions":{"Message":{"type":"string"}},"host":"grlc.io","info":{"contact":{"name":"hubmapconsortium","url":"https://github.com/hubmapconsortium"},"description":"ccf-grlc: Useful SPARQL queries for HRA work + API via grlc.io<div class=\"errors-wrapper\">cannot access local variable 'query_metadata' where it is not associated with a value</div>","license":{"name":"License","url":"https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/LICENSE"},"title":"ccf-grlc","version":"b356797dc9f13375125946ce35ab6546a9dba80c"},"next_commit":null,"paths":{"/as-count":{"get":{"description":"\n\n```\n#+ summary: Number of Anatomical Structures with Cell Summaries\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT (COUNT(DISTINCT ?as) as ?as_count)\nFROM HRApop:\nWHERE {\n  {\n  \t?as ccf:has_cell_summary [ ] .\n  } MINUS {\n    ?as a ccf:SpatialEntity .\n  } MINUS {\n    ?as a ccf:Dataset .\n  }\n}\n\n```","parameters":[{"default":"https://lod.humanatlas.io/sparql","description":"Alternative endpoint for SPARQL query","in":"query","name":"endpoint","type":"string"}],"produces":["text/csv","application/json","text/html"],"responses":{"200":{"description":"Query response","schema":{"items":{"properties":null,"type":"object"},"type":"array"}},"default":{"description":"Unexpected error","schema":{"$ref":"#/definitions/Message"}}},"summary":"Number of Anatomical Structures with Cell Summaries","tags":[]}},"/biomarkers-in-atlas":{"get":{"description":"\n\n```\n#+ summary: All biomarkers seen in Atlas Datasets\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?biomarker_label\nFROM HRApop:\nWHERE {\n  [] ccf:generates_dataset ?dataset .\n  ?dataset ccf:has_cell_summary [\n    ccf:has_cell_summary_row [\n      ccf:gene_expr [\n        ccf:gene_label ?biomarker_label ;\n      ]\n    ]\n  ] .\n}\nORDER BY ?biomarker_label\n\n```","parameters":[{"default":"https://lod.humanatlas.io/sparql","description":"Alternative endpoint for SPARQL query","in":"query","name":"endpoint","type":"string"}],"produces":["text/csv","application/json","text/html"],"responses":{"200":{"description":"Query response","schema":{"items":{"properties":null,"type":"object"},"type":"array"}},"default":{"description":"Unexpected error","schema":{"$ref":"#/definitions/Message"}}},"summary":"All biomarkers seen in Atlas Datasets","tags":[]}},"/cell-types-in-atlas":{"get":{"description":"\n\n```\n#+ summary: All cell types seen in Atlas Datasets\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?cell_type_label ?cell_id\nFROM CCF:\nFROM HRApop:\nWHERE {\n  [] ccf:generates_dataset ?dataset .\n  ?dataset ccf:has_cell_summary [\n    ccf:has_cell_summary_row [\n      ccf:cell_id ?cell_id ;\n      ccf:cell_label ?cell_type_label ;\n    ]\n  ] .\n}\nORDER BY ?cell_type_label\n\n```","parameters":[{"default":"https://lod.humanatlas.io/sparql","description":"Alternative endpoint for SPARQL query","in":"query","name":"endpoint","type":"string"}],"produces":["text/csv","application/json","text/html"],"responses":{"200":{"description":"Query response","schema":{"items":{"properties":null,"type":"object"},"type":"array"}},"default":{"description":"Unexpected error","schema":{"$ref":"#/definitions/Message"}}},"summary":"All cell types seen in Atlas Datasets","tags":[]}},"/cell_types_in_anatomical_structurescts_per_as":{"get":{"description":"Computes the cell summaries for each organ by anatomical strcutrure.\n\n```\n#+ summary: Cell Summaries by Anatomical Structure \n#+ description: Computes the cell summaries for each organ by anatomical strcutrure.\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?organ ?as ?as_label ?sex ?tool ?modality ?cell_id ?cell_label ?cell_count ?cell_percentage\nFROM CCF:\nFROM HRApop:\nWHERE {\n  ?as ccf:has_cell_summary [ \n      ccf:cell_annotation_method ?tool ;\n      ccf:cell_source_label ?as_label ;\n      ccf:sex ?sex ;\n      ccf:modality ?modality ;\n      ccf:has_cell_summary_row [\n        ccf:cell_id ?cell_id ;\n        ccf:cell_label ?cell_label ;\n        ccf:cell_count ?cell_count ;\n        ccf:percentage_of_total ?cell_percentage ;\n    ]\n  ] .\n  FILTER(STRSTARTS(STR(?as), STR(UBERON:)))\n  \n  ?refOrganPiece ccf:representation_of ?as ;\n  \tccf:has_reference_organ ?refOrgan .\n  ?refOrgan rdfs:label ?organ .\n}\nORDER BY ?sex ?as ?tool DESC(?cell_count)\n\n```","parameters":[{"default":"https://lod.humanatlas.io/sparql","description":"Alternative endpoint for SPARQL query","in":"query","name":"endpoint","type":"string"}],"produces":["text/csv","application/json","text/html"],"responses":{"200":{"description":"Query response","schema":{"items":{"properties":null,"type":"object"},"type":"array"}},"default":{"description":"Unexpected error","schema":{"$ref":"#/definitions/Message"}}},"summary":"Cell Summaries by Anatomical Structure","tags":[]}},"/ctann-organs":{"get":{"description":"A list of organs supported by Azimuth, CellTypist, or Popv in the hra-workflows-runner\n\n```\n#+ summary: Organs supported by CTAnn\n#+ description: A list of organs supported by Azimuth, CellTypist, or Popv in the hra-workflows-runner\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\n\nSELECT DISTINCT ?organ_id\nFROM <https://purl.humanatlas.io/graph/ctann-crosswalks>\nWHERE {\n  ?tool ccf:organ_id ?organ_id\n}\n\n```","parameters":[{"default":"https://lod.humanatlas.io/sparql","description":"Alternative endpoint for SPARQL query","in":"query","name":"endpoint","type":"string"}],"produces":["text/csv","application/json","text/html"],"responses":{"200":{"description":"Query response","schema":{"items":{"properties":null,"type":"object"},"type":"array"}},"default":{"description":"Unexpected error","schema":{"$ref":"#/definitions/Message"}}},"summary":"Organs supported by CTAnn","tags":[]}},"/datasets-with-bm":{"get":{"description":"Atlas Datasets that have a given Biomarker. There is one CT-BM expression per row.\n\n```\n#+ summary: Atlas Datasets with a given Biomarker\n#+ description: Atlas Datasets that have a given Biomarker. There is one CT-BM expression per row.\n\n#+ defaults:\n#+   - bmlabel: ENSG00000169710\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?source ?dataset ?organ ?sex ?tool ?cell_type ?cell_type_label ?cell_type_count ?biomarker ?mean_expression_value\nFROM CCF:\nFROM HRApop:\nWHERE {\n  ?donor ccf:consortium_name ?source .\n\n  {\n    ?sample ccf:comes_from ?donor .\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:comes_from ?donor .\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  {\n    ?dataset ccf:organ_id ?reportedOrganIriString .\n    BIND(IRI(?reportedOrganIriString) as ?reportedOrganIri)\n\n    OPTIONAL {\n      ?reportedOrganIri rdfs:label ?reportedOrganRdfsLabel .\n    }\n    OPTIONAL {\n      ?reportedOrganIri ccf:ccf_pref_label ?reportedOrganCcfLabel .\n    }\n    BIND(IF(BOUND(?reportedOrganRdfsLabel), ?reportedOrganRdfsLabel, ?reportedOrganCcfLabel) as ?organ)\n  }\n\n  ?dataset ccf:has_cell_summary [\n    ccf:sex ?sex ;\n    ccf:cell_annotation_method ?tool ;\n    ccf:has_cell_summary_row [\n      ccf:cell_id ?cell_id ;\n      ccf:cell_label ?cell_type_label ;\n      ccf:cell_count ?cell_type_count ;\n      ccf:gene_expr [\n        ccf:gene_label ?biomarker ;\n        ccf:mean_gene_expr_value ?gene_expr ;\n      ]\n    ]\n  ] .\n\n  FILTER(EXISTS {\n    ?dataset ccf:has_cell_summary [\n      ccf:sex ?sex ;\n      ccf:cell_annotation_method ?tool ;\n      ccf:has_cell_summary_row [\n        ccf:gene_expr [\n          ccf:gene_label ?biomarker_label ;\n        ]\n      ]\n    ] .\n    FILTER(?_bmlabel = ?biomarker_label)\n  })\n\n  FILTER(CONTAINS(?_bmlabel, ?biomarker) || TRUE)\n\n  BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)\n  BIND(xsd:decimal(?gene_expr) as ?mean_expression_value)\n}\n\n```","parameters":[{"default":"https://lod.humanatlas.io/sparql","description":"Alternative endpoint for SPARQL query","in":"query","name":"endpoint","type":"string"},{"default":"ENSG00000169710","description":"A value of type string that will substitute ?_bmlabel in the original query","in":"query","name":"bmlabel","required":true,"type":"string"}],"produces":["text/csv","application/json","text/html"],"responses":{"200":{"description":"Query response","schema":{"items":{"properties":null,"type":"object"},"type":"array"}},"default":{"description":"Unexpected error","schema":{"$ref":"#/definitions/Message"}}},"summary":"Atlas Datasets with a given Biomarker","tags":[]}},"/datasets-with-ct":{"get":{"description":"Atlas Datasets that have a given Cell Type. There is one CT-BM expression per row.\n\n```\n#+ summary: Atlas Datasets with a given Cell Type\n#+ description: Atlas Datasets that have a given Cell Type. There is one CT-BM expression per row.\n\n#+ defaults:\n#+   - celltype: http://purl.obolibrary.org/obo/CL_0000136\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?source ?dataset ?organ ?sex ?tool ?cell_type ?cell_type_label ?cell_type_count ?biomarker ?mean_expression_value\nFROM CCF:\nFROM HRApop:\nWHERE {\n  ?donor ccf:consortium_name ?source .\n\n  {\n    ?sample ccf:comes_from ?donor .\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:comes_from ?donor .\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  {\n    ?dataset ccf:organ_id ?reportedOrganIriString .\n    BIND(IRI(?reportedOrganIriString) as ?reportedOrganIri)\n\n    OPTIONAL {\n      ?reportedOrganIri rdfs:label ?reportedOrganRdfsLabel .\n    }\n    OPTIONAL {\n      ?reportedOrganIri ccf:ccf_pref_label ?reportedOrganCcfLabel .\n    }\n    BIND(IF(BOUND(?reportedOrganRdfsLabel), ?reportedOrganRdfsLabel, ?reportedOrganCcfLabel) as ?organ)\n  }\n\n  ?dataset ccf:has_cell_summary [\n    ccf:sex ?sex ;\n    ccf:cell_annotation_method ?tool ;\n    ccf:has_cell_summary_row [\n      ccf:cell_id ?cell_id ;\n      ccf:cell_id ?_celltype_iri ;\n      ccf:cell_label ?cell_type_label ;\n      ccf:cell_count ?cell_type_count ;\n      ccf:gene_expr [\n        ccf:gene_label ?biomarker ;\n        ccf:mean_gene_expr_value ?gene_expr ;\n      ]\n    ]\n  ] .\n\n  BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)\n  BIND(xsd:decimal(?gene_expr) as ?mean_expression_value)\n}\n\n```","parameters":[{"default":"https://lod.humanatlas.io/sparql","description":"Alternative endpoint for SPARQL query","in":"query","name":"endpoint","type":"string"},{"default":"http://purl.obolibrary.org/obo/CL_0000136","description":"A value of type string (iri) that will substitute ?_celltype_iri in the original query","format":"iri","in":"query","name":"celltype","required":true,"type":"string"}],"produces":["text/csv","application/json","text/html"],"responses":{"200":{"description":"Query response","schema":{"items":{"properties":null,"type":"object"},"type":"array"}},"default":{"description":"Unexpected error","schema":{"$ref":"#/definitions/Message"}}},"summary":"Atlas Datasets with a given Cell Type","tags":[]}}},"prev_commit":"7eeef32346c3171ca121386d9f2d5e2c46da5525","prov":"@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2024-08-21T18:38:59.983756\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-02c0ff7038278365f5a727cdcd20a24a9cbca949> a prov:Activity ;\n    rdfs:label \"Update\"@en ;\n    prov:endedAtTime \"2023-06-13T15:45:24+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2023-06-13T15:45:24+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-organ-and-cell-by-bm-rq_commit-c1298e5de523701b936f9ccb9e09be5065b37d8b> ] ;\n    prov:startedAtTime \"2023-06-13T15:45:24+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ccf-organ-and-cell-by-bm-rq_commit-c1298e5de523701b936f9ccb9e09be5065b37d8b> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-c1298e5de523701b936f9ccb9e09be5065b37d8b> .\n\n<http://localhost/#commit-06180782b01afeac67c2e96c17ece1eefb3e777f> a prov:Activity ;\n    rdfs:label \"Update grlc links\"@en ;\n    prov:endedAtTime \"2024-03-06T13:26:58+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2024-03-06T13:26:58+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-README-md_commit-981c80e8e24dccc6c1618399ce891314b65c67d6> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-06T13:26:58+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ubergraph-scratch-README-md_commit-981c80e8e24dccc6c1618399ce891314b65c67d6> ] ;\n    prov:startedAtTime \"2024-03-06T13:26:58+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-README-md_commit-981c80e8e24dccc6c1618399ce891314b65c67d6>,\n        <http://localhost/#file-ubergraph-scratch-README-md_commit-981c80e8e24dccc6c1618399ce891314b65c67d6> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-981c80e8e24dccc6c1618399ce891314b65c67d6> .\n\n<http://localhost/#commit-094ca3c802422053025a7c1f552038b57063da61> a prov:Activity ;\n    rdfs:label \"Update bm-located-in-as\"@en ;\n    prov:endedAtTime \"2023-10-02T18:49:37+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2023-10-02T18:49:37+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-hra-bm-located-in-as-rq_commit-cd190ccca3136dbb678a9fa95924889c30b45909> ] ;\n    prov:startedAtTime \"2023-10-02T18:49:37+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-hra-bm-located-in-as-rq_commit-cd190ccca3136dbb678a9fa95924889c30b45909> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-cd190ccca3136dbb678a9fa95924889c30b45909> .\n\n<http://localhost/#commit-0a7e921bb2e30bc23ae382b53971381f0ff3c766> a prov:Activity ;\n    rdfs:label \"Added summary and description\"@en ;\n    prov:endedAtTime \"2024-03-06T20:12:51+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Andreas-Bueckle> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2024-03-06T20:12:51+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-hra-pop-cell_types_in_anatomical_structurescts_per_as-rq_commit-5ef745e40e18feda8b1fca34bcaa5f91bcaafc98> ] ;\n    prov:startedAtTime \"2024-03-06T20:12:51+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-hra-pop-cell_types_in_anatomical_structurescts_per_as-rq_commit-5ef745e40e18feda8b1fca34bcaa5f91bcaafc98> ;\n    prov:wasAssociatedWith <http://localhost/#user-Andreas-Bueckle> ;\n    prov:wasInformedBy <http://localhost/#commit-5ef745e40e18feda8b1fca34bcaa5f91bcaafc98> .\n\n<http://localhost/#commit-0af92a394ac4cf58d3ccfdc85cfa8af500be2788> a prov:Activity ;\n    rdfs:label \"Update ref-organ-terms.rq\"@en ;\n    prov:endedAtTime \"2022-11-03T12:26:56+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author\"@en ],\n        [ a prov:Association ;\n            prov:agent <http://localhost/#user-GitHub> ;\n            prov:hadRole \"committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2022-11-03T12:26:56+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-ref-organ-terms-rq_commit-983889823f4ebcb5068a675c68e96647a7fd7b0b> ] ;\n    prov:startedAtTime \"2022-11-03T12:26:56+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ccf-ref-organ-terms-rq_commit-983889823f4ebcb5068a675c68e96647a7fd7b0b> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II>,\n        <http://localhost/#user-GitHub> ;\n    prov:wasInformedBy <http://localhost/#commit-983889823f4ebcb5068a675c68e96647a7fd7b0b> .\n\n<http://localhost/#commit-0c695783200e72836b308cfe9e795c98ae3317ef> a prov:Activity ;\n    rdfs:label \"try\"@en ;\n    prov:endedAtTime \"2022-02-16T19:47:11+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2022-02-16T19:47:11+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ubergraph-param_test-rq_commit-e00ccb99dbc802617b92e57caa7f90971368a184> ] ;\n    prov:startedAtTime \"2022-02-16T19:47:11+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ubergraph-param_test-rq_commit-e00ccb99dbc802617b92e57caa7f90971368a184> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-e00ccb99dbc802617b92e57caa7f90971368a184> .\n\n<http://localhost/#commit-0cb0eb40f48167959fadfd980df4a441a4044cc2> a prov:Activity ;\n    rdfs:label \"Maybe needs to be in root?\"@en ;\n    prov:endedAtTime \"2022-02-16T17:58:59+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:startedAtTime \"2022-02-16T17:58:59+00:00\"^^xsd:dateTime ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> .\n\n<http://localhost/#commit-120a7d933b833369b09ead3501d90cf65d7c2908> a prov:Activity ;\n    rdfs:label \"Update README.md\"@en ;\n    prov:endedAtTime \"2022-02-17T15:25:40+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author\"@en ],\n        [ a prov:Association ;\n            prov:agent <http://localhost/#user-GitHub> ;\n            prov:hadRole \"committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2022-02-17T15:25:40+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-README-md_commit-e8d8ee631858e0ae08fccd17ba952907f528325f> ] ;\n    prov:startedAtTime \"2022-02-17T15:25:40+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-README-md_commit-e8d8ee631858e0ae08fccd17ba952907f528325f> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II>,\n        <http://localhost/#user-GitHub> ;\n    prov:wasInformedBy <http://localhost/#commit-e8d8ee631858e0ae08fccd17ba952907f528325f> .\n\n<http://localhost/#commit-134414f893a8cc074402e1245541679654302ff9> a prov:Activity ;\n    rdfs:label \"Added ubergraph-scratch\"@en ;\n    prov:endedAtTime \"2023-08-14T13:24:30+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:startedAtTime \"2023-08-14T13:24:30+00:00\"^^xsd:dateTime ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> .\n\n<http://localhost/#commit-175d17df86badf977b4e55b530f493ac496d6cba> a prov:Activity ;\n    rdfs:label \"try\"@en ;\n    prov:endedAtTime \"2022-02-16T19:31:16+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2022-02-16T19:31:16+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-cea2ce1dfd0f3871d9c1f9380882f544c28a3e14> ] ;\n    prov:startedAtTime \"2022-02-16T19:31:16+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-cea2ce1dfd0f3871d9c1f9380882f544c28a3e14> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-cea2ce1dfd0f3871d9c1f9380882f544c28a3e14> .\n\n<http://localhost/#commit-177953953a3cadc2fd141cbeb40722115a5edc2d> a prov:Activity ;\n    rdfs:label \"try\"@en ;\n    prov:endedAtTime \"2022-02-16T20:07:16+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2022-02-16T20:07:16+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-66da4520a6cdb112d98effbf06be9c2da81ec3d5> ] ;\n    prov:startedAtTime \"2022-02-16T20:07:16+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-66da4520a6cdb112d98effbf06be9c2da81ec3d5> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-66da4520a6cdb112d98effbf06be9c2da81ec3d5> .\n\n<http://localhost/#commit-19b28a911d5c3ae3f836685f68fe7bd051d25a2d> a prov:Activity ;\n    rdfs:label \"remove files\"@en ;\n    prov:endedAtTime \"2022-02-16T17:59:50+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:startedAtTime \"2022-02-16T17:59:50+00:00\"^^xsd:dateTime ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> .\n\n<http://localhost/#commit-1a7acaf9913c1a8a3e7e07f1c2b8447f9d670f0a> a prov:Activity ;\n    rdfs:label \"Add cell types in atlas query\"@en ;\n    prov:endedAtTime \"2024-02-16T17:09:09+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:startedAtTime \"2024-02-16T17:09:09+00:00\"^^xsd:dateTime ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> .\n\n<http://localhost/#commit-1aab8858e428065b299c569fb12e68d830749b2a> a prov:Activity ;\n    rdfs:label \"Try\"@en ;\n    prov:endedAtTime \"2022-02-16T18:11:42+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2022-02-16T18:11:42+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-9ea60a349c1f986f714a7aa8e541eacea5e4294b> ] ;\n    prov:startedAtTime \"2022-02-16T18:11:42+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-9ea60a349c1f986f714a7aa8e541eacea5e4294b> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-9ea60a349c1f986f714a7aa8e541eacea5e4294b> .\n\n<http://localhost/#commit-1c29eb2953940d95954c833c324b6dc8f0fadb44> a prov:Activity ;\n    rdfs:label \"Update sex-mismatches.rq\"@en ;\n    prov:endedAtTime \"2023-09-21T20:51:13+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author\"@en ],\n        [ a prov:Association ;\n            prov:agent <http://localhost/#user-GitHub> ;\n            prov:hadRole \"committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2023-09-21T20:51:13+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-sex-mismatches-rq_commit-9f6bb107e6d98c05f651466ec159b8c502061874> ] ;\n    prov:startedAtTime \"2023-09-21T20:51:13+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ccf-sex-mismatches-rq_commit-9f6bb107e6d98c05f651466ec159b8c502061874> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II>,\n        <http://localhost/#user-GitHub> ;\n    prov:wasInformedBy <http://localhost/#commit-9f6bb107e6d98c05f651466ec159b8c502061874> .\n\n<http://localhost/#commit-1c7a473c59f0b50ef05238a0ed64d82bea246864> a prov:Activity ;\n    rdfs:label \"regenerate\"@en ;\n    prov:endedAtTime \"2024-03-05T21:50:03+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2024-03-05T21:50:03+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-05T21:50:03+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-hra-pop-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-05T21:50:03+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-hra-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-05T21:50:03+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-hra-scratch-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-05T21:50:03+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-scripts-build-spec-js_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-05T21:50:03+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ubergraph-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-05T21:50:03+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ubergraph-scratch-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272> ] ;\n    prov:startedAtTime \"2024-03-05T21:50:03+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ccf-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272>,\n        <http://localhost/#file-hra-pop-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272>,\n        <http://localhost/#file-hra-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272>,\n        <http://localhost/#file-hra-scratch-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272>,\n        <http://localhost/#file-scripts-build-spec-js_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272>,\n        <http://localhost/#file-ubergraph-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272>,\n        <http://localhost/#file-ubergraph-scratch-queries-json_commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-5df1d15d2d6b6abc3725a2168ec01c8564c24272> .\n\n<http://localhost/#commit-1f830ec50ec383dd7e1f9f086c438cca63fe69da> a prov:Activity ;\n    rdfs:label \"Create as-3d-cnt.rq\"@en ;\n    prov:endedAtTime \"2023-06-15T20:19:18+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author\"@en ],\n        [ a prov:Association ;\n            prov:agent <http://localhost/#user-GitHub> ;\n            prov:hadRole \"committer\"@en ] ;\n    prov:startedAtTime \"2023-06-15T20:19:18+00:00\"^^xsd:dateTime ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II>,\n        <http://localhost/#user-GitHub> .\n\n<http://localhost/#commit-1f857c41fb98b5660937b7e7a33742ef031cf709> a prov:Activity ;\n    rdfs:label \"Fix ct label\"@en ;\n    prov:endedAtTime \"2024-02-16T17:01:27+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2024-02-16T17:01:27+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-hra-pop-datasets-with-ct-rq_commit-0df1ef903df324c613e94cbef7610ba423b9c573> ] ;\n    prov:startedAtTime \"2024-02-16T17:01:27+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-hra-pop-datasets-with-ct-rq_commit-0df1ef903df324c613e94cbef7610ba423b9c573> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-0df1ef903df324c613e94cbef7610ba423b9c573> .\n\n<http://localhost/#commit-216db7ce61f18b08af3cb552ce9b35fe5bcf35d4> a prov:Activity ;\n    rdfs:label \"Update ref-organ-glb-files.rq\"@en ;\n    prov:endedAtTime \"2023-06-16T13:25:02+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author\"@en ],\n        [ a prov:Association ;\n            prov:agent <http://localhost/#user-GitHub> ;\n            prov:hadRole \"committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2023-06-16T13:25:02+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-ref-organ-glb-files-rq_commit-f30916703509a4eb1236c798817ee6cca7f1a586> ] ;\n    prov:startedAtTime \"2023-06-16T13:25:02+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ccf-ref-organ-glb-files-rq_commit-f30916703509a4eb1236c798817ee6cca7f1a586> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II>,\n        <http://localhost/#user-GitHub> ;\n    prov:wasInformedBy <http://localhost/#commit-f30916703509a4eb1236c798817ee6cca7f1a586> .\n\n<http://localhost/#commit-22fe27952f95b55a77b20cf6ee7cbc425af5c95e> a prov:Activity ;\n    rdfs:label \"Update queries to work with the HRA-KG sparql server\"@en ;\n    prov:endedAtTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-as-3d-cnt-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-as-cnt-by-ref-organ-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-as-ct-b-counts-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-asctb-count-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-block-annotations-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-cell_by_location-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-cells_located_in_as-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-high-level-stats-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-landmark-cnt-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-landmarks-by-organ-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-organ-and-cell-by-bm-all-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-organ-and-cell-by-bm-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-organ-by-bm-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-ref-organ-as-info-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-ref-organ-glb-files-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-ref-organ-terms-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-ref-organ-to-sex-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-rui-location-to-ref-organ-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ],\n        [ a prov:Usage ;\n            prov:atTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-sex-mismatches-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ] ;\n    prov:startedAtTime \"2024-03-07T16:44:05+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ccf-as-3d-cnt-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-as-cnt-by-ref-organ-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-as-ct-b-counts-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-asctb-count-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-block-annotations-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-cell_by_location-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-cells_located_in_as-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-high-level-stats-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-landmark-cnt-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-landmarks-by-organ-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-organ-and-cell-by-bm-all-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-organ-and-cell-by-bm-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-organ-by-bm-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-ref-organ-as-info-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-ref-organ-glb-files-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-ref-organ-terms-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-ref-organ-to-sex-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-rui-location-to-ref-organ-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26>,\n        <http://localhost/#file-ccf-sex-mismatches-rq_commit-f84578d20eb42fe71b4dbad15526539e45333b26> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-f84578d20eb42fe71b4dbad15526539e45333b26> .\n\n<http://localhost/#commit-232611a104b1f81020451733e1f247ef0dc1eb0e> a prov:Activity ;\n    rdfs:label \"Updated asct-nodes.rq\"@en ;\n    prov:endedAtTime \"2024-08-16T19:22:55+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2024-08-16T19:22:55+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-butterfly-asct-nodes-rq_commit-e821100ed185533151f79c16285ab69e6f43fab7> ] ;\n    prov:startedAtTime \"2024-08-16T19:22:55+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-butterfly-asct-nodes-rq_commit-e821100ed185533151f79c16285ab69e6f43fab7> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-e821100ed185533151f79c16285ab69e6f43fab7> .\n\n<http://localhost/#commit-2429fec0f16ae15b94484c6e9b3aaf0611a59622> a prov:Activity ;\n    rdfs:label \"try\"@en ;\n    prov:endedAtTime \"2022-02-16T20:01:07+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2022-02-16T20:01:07+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-d46bc098b3370f3ce4f17ad225cebf027bdf0f49> ] ;\n    prov:startedAtTime \"2022-02-16T20:01:07+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-d46bc098b3370f3ce4f17ad225cebf027bdf0f49> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-d46bc098b3370f3ce4f17ad225cebf027bdf0f49> .\n\n<http://localhost/#commit-25192237858b040fc610a249789e4274b8efd8e5> a prov:Activity ;\n    rdfs:label \"initial queries\"@en ;\n    prov:endedAtTime \"2022-02-16T17:50:16+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:startedAtTime \"2022-02-16T17:50:16+00:00\"^^xsd:dateTime ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> .\n\n<http://localhost/#commit-27e0eaed2e56faccb5501b13b79156db5155bc40> a prov:Activity ;\n    rdfs:label \"Create ref-organ-dois.rq\"@en ;\n    prov:endedAtTime \"2024-06-24T16:15:19+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author\"@en ],\n        [ a prov:Association ;\n            prov:agent <http://localhost/#user-GitHub> ;\n            prov:hadRole \"committer\"@en ] ;\n    prov:startedAtTime \"2024-06-24T16:15:19+00:00\"^^xsd:dateTime ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II>,\n        <http://localhost/#user-GitHub> .\n\n<http://localhost/#commit-283ffcae5195d4fa8f8ac5ddb096147cb0543110> a prov:Activity ;\n    rdfs:label \"Add AS\"@en ;\n    prov:endedAtTime \"2023-12-05T13:53:12+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2023-12-05T13:53:12+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ccf-as-ct-b-counts-rq_commit-72841e9343af53ee94e8e4dafc1238dc07af87b7> ],\n        [ a prov:Usage ;\n            prov:atTime \"2023-12-05T13:53:12+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-hra-as-ct-b-counts-rq_commit-72841e9343af53ee94e8e4dafc1238dc07af87b7> ] ;\n    prov:startedAtTime \"2023-12-05T13:53:12+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ccf-as-ct-b-counts-rq_commit-72841e9343af53ee94e8e4dafc1238dc07af87b7>,\n        <http://localhost/#file-hra-as-ct-b-counts-rq_commit-72841e9343af53ee94e8e4dafc1238dc07af87b7> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-72841e9343af53ee94e8e4dafc1238dc07af87b7> .\n\n<http://localhost/#commit-2a78e921ac3c5faa93cae2642144bae1870a7f72> a prov:Activity ;\n    rdfs:label \"Add as-per-organ.rq\"@en ;\n    prov:endedAtTime \"2024-06-04T20:48:40+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:startedAtTime \"2024-06-04T20:48:40+00:00\"^^xsd:dateTime ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> .\n\n<http://localhost/#commit-2efeaadc19922d271f544c959d378b2dc7791ed9> a prov:Activity ;\n    rdfs:label \"TRY\"@en ;\n    prov:endedAtTime \"2022-02-16T19:10:55+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2022-02-16T19:10:55+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-0ecab9780a39a40bee3512c7ac347eccde386529> ] ;\n    prov:startedAtTime \"2022-02-16T19:10:55+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-0ecab9780a39a40bee3512c7ac347eccde386529> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-0ecab9780a39a40bee3512c7ac347eccde386529> .\n\n<http://localhost/#commit-306cce1e9fb4fdbbef52eaf7f5f3ede1fb768891> a prov:Activity ;\n    rdfs:label \"Fix input\"@en ;\n    prov:endedAtTime \"2024-02-26T17:41:37+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2024-02-26T17:41:37+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-hra-pop-datasets-with-bm-rq_commit-4c1eb913b1c7a46ce9b86110e82daf0706485a59> ] ;\n    prov:startedAtTime \"2024-02-26T17:41:37+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-hra-pop-datasets-with-bm-rq_commit-4c1eb913b1c7a46ce9b86110e82daf0706485a59> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-4c1eb913b1c7a46ce9b86110e82daf0706485a59> .\n\n<http://localhost/#commit-318f42a5d5a583d7a97c86d7ac5a0eb8d73171a2> a prov:Activity ;\n    rdfs:label \"Fix cell summary counting\"@en ;\n    prov:endedAtTime \"2023-08-04T20:20:39+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2023-08-04T20:20:39+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-scratch-hra-ftu-cell-summaries-raw-rq_commit-d25ab6785b8e61e10f0cb57e4abef25a5f3f3db7> ] ;\n    prov:startedAtTime \"2023-08-04T20:20:39+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-scratch-hra-ftu-cell-summaries-raw-rq_commit-d25ab6785b8e61e10f0cb57e4abef25a5f3f3db7> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-d25ab6785b8e61e10f0cb57e4abef25a5f3f3db7> .\n\n<http://localhost/#commit-33e98b22894388aeac385d639cb9a8ee8a3aa7fb> a prov:Activity ;\n    rdfs:label \"try try again\"@en ;\n    prov:endedAtTime \"2022-02-16T19:01:15+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2022-02-16T19:01:15+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-40e3a8229bc225cd6b681d4c3bbfc8a291ca7f37> ] ;\n    prov:startedAtTime \"2022-02-16T19:01:15+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-40e3a8229bc225cd6b681d4c3bbfc8a291ca7f37> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-40e3a8229bc225cd6b681d4c3bbfc8a291ca7f37> .\n\n<http://localhost/#commit-376edfe5653d8117016f4dd44fa10fbe209aa5ac> a prov:Activity ;\n    rdfs:label \"Create cells_located_in_as.rq\"@en ;\n    prov:endedAtTime \"2023-03-16T14:56:17+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author\"@en ],\n        [ a prov:Association ;\n            prov:agent <http://localhost/#user-GitHub> ;\n            prov:hadRole \"committer\"@en ] ;\n    prov:startedAtTime \"2023-03-16T14:56:17+00:00\"^^xsd:dateTime ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II>,\n        <http://localhost/#user-GitHub> .\n\n<http://localhost/#commit-3b57961efb3f046fb7b8d2153bb5372c0949f632> a prov:Activity ;\n    rdfs:label \"\" ;\n    prov:endedAtTime \"2024-02-26T17:52:17+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2024-02-26T17:52:17+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-hra-pop-datasets-with-bm-rq_commit-f54667cf6a0a4b161905127f3a321247fd6f2f21> ] ;\n    prov:startedAtTime \"2024-02-26T17:52:17+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-hra-pop-datasets-with-bm-rq_commit-f54667cf6a0a4b161905127f3a321247fd6f2f21> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-f54667cf6a0a4b161905127f3a321247fd6f2f21> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2024-08-21T18:38:59.983756\"^^xsd:dateTime ;\n    prov:startedAtTime \"2024-08-21T18:38:38.956551\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/as-count.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/biomarkers-in-atlas.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell-types-in-atlas.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell_types_in_anatomical_structurescts_per_as.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/ctann-organs.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-bm.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-ct.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/queries.json> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<http://localhost/#commit-0df1ef903df324c613e94cbef7610ba423b9c573> a prov:Activity ;\n    rdfs:label \"Update\"@en ;\n    prov:endedAtTime \"2024-02-16T16:58:45+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2024-02-16T16:58:45+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-hra-pop-datasets-with-ct-rq_commit-3c58ba99109702221de75dc81d7d6694be028ee4> ] ;\n    prov:startedAtTime \"2024-02-16T16:58:45+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-hra-pop-datasets-with-ct-rq_commit-3c58ba99109702221de75dc81d7d6694be028ee4> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-3c58ba99109702221de75dc81d7d6694be028ee4> .\n\n<http://localhost/#commit-0ecab9780a39a40bee3512c7ac347eccde386529> a prov:Activity ;\n    rdfs:label \"TRY\"@en ;\n    prov:endedAtTime \"2022-02-16T19:09:23+00:00\"^^xsd:dateTime ;\n    prov:qualifiedAssociation [ a prov:Association ;\n            prov:agent <http://localhost/#user-Bruce-W.-Herr-II> ;\n            prov:hadRole \"author, committer\"@en ] ;\n    prov:qualifiedUsage [ a prov:Usage ;\n            prov:atTime \"2022-02-16T19:09:23+00:00\"^^xsd:dateTime ;\n            prov:entity <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-78483efbe7309abaf20cf5af134fd32b487893ae> ] ;\n    prov:startedAtTime \"2022-02-16T19:09:23+00:00\"^^xsd:dateTime ;\n    prov:used <http://localhost/#file-ubergraph-cl_parents_by_label-rq_commit-78483efbe7309abaf20cf5af134fd32b487893ae> ;\n    prov:wasAssociatedWith <http://localhost/#user-Bruce-W.-Herr-II> ;\n    prov:wasInformedBy <http://localhost/#commit-78483efbe7309abaf20cf5af134fd32b487893ae> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/as-count.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/biomarkers-in-atlas.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell-types-in-atlas.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell_types_in_anatomical_structurescts_per_as.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/ctann-organs.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-bm.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-ct.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/queries.json> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n","schemes":[],"swagger":"2.0"}
+{
+    "openapi": "3.0.0",
+    "info": {
+        "contact": {
+            "name": "hubmapconsortium",
+            "url": "https://github.com/hubmapconsortium"
+        },
+        "description": "ccf-grlc: Useful SPARQL queries for HRA work + API via grlc.io",
+        "license": {
+            "name": "License",
+            "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/LICENSE"
+        },
+        "title": "ccf-grlc",
+        "version": "0246c5e7f63021cc1a8ee04c60f11908ee006dff"
+    },
+    "paths": {
+        "/as-count": {
+            "get": {
+                "description": "\n\n```\n#+ summary: Number of Anatomical Structures with Cell Summaries\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT (COUNT(DISTINCT ?as) as ?as_count)\nFROM HRApop:\nWHERE {\n  {\n  \t?as ccf:has_cell_summary [ ] .\n  } MINUS {\n    ?as a ccf:SpatialEntity .\n  } MINUS {\n    ?as a ccf:Dataset .\n  }\n}\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Number of Anatomical Structures with Cell Summaries",
+                "tags": []
+            }
+        },
+        "/biomarkers-in-atlas": {
+            "get": {
+                "description": "\n\n```\n#+ summary: All biomarkers seen in Atlas Datasets\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?biomarker_label\nFROM HRApop:\nWHERE {\n  [] ccf:generates_dataset ?dataset .\n  ?dataset ccf:has_cell_summary [\n    ccf:has_cell_summary_row [\n      ccf:gene_expr [\n        ccf:gene_label ?biomarker_label ;\n      ]\n    ]\n  ] .\n}\nORDER BY ?biomarker_label\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "All biomarkers seen in Atlas Datasets",
+                "tags": []
+            }
+        },
+        "/cell-types-in-atlas": {
+            "get": {
+                "description": "\n\n```\n#+ summary: All cell types seen in Atlas Datasets\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?cell_type_label ?cell_id\nFROM CCF:\nFROM HRApop:\nWHERE {\n  [] ccf:generates_dataset ?dataset .\n  ?dataset ccf:has_cell_summary [\n    ccf:has_cell_summary_row [\n      ccf:cell_id ?cell_id ;\n      ccf:cell_label ?cell_type_label ;\n    ]\n  ] .\n}\nORDER BY ?cell_type_label\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "All cell types seen in Atlas Datasets",
+                "tags": []
+            }
+        },
+        "/cell_types_in_anatomical_structurescts_per_as": {
+            "get": {
+                "description": "Computes the cell summaries for each organ by anatomical strcutrure.\n\n```\n#+ summary: Cell Summaries by Anatomical Structure \n#+ description: Computes the cell summaries for each organ by anatomical strcutrure.\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?organ ?as ?as_label ?sex ?tool ?modality ?cell_id ?cell_label ?cell_count ?cell_percentage\nFROM CCF:\nFROM HRApop:\nWHERE {\n  ?as ccf:has_cell_summary [ \n      ccf:cell_annotation_method ?tool ;\n      ccf:cell_source_label ?as_label ;\n      ccf:sex ?sex ;\n      ccf:modality ?modality ;\n      ccf:has_cell_summary_row [\n        ccf:cell_id ?cell_id ;\n        ccf:cell_label ?cell_label ;\n        ccf:cell_count ?cell_count ;\n        ccf:percentage_of_total ?cell_percentage ;\n    ]\n  ] .\n  FILTER(STRSTARTS(STR(?as), STR(UBERON:)))\n  \n  ?refOrganPiece ccf:representation_of ?as ;\n  \tccf:has_reference_organ ?refOrgan .\n  ?refOrgan rdfs:label ?organ .\n}\nORDER BY ?sex ?as ?tool DESC(?cell_count)\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Cell Summaries by Anatomical Structure",
+                "tags": []
+            }
+        },
+        "/ctann-organs": {
+            "get": {
+                "description": "A list of organs supported by Azimuth, CellTypist, or Popv in the hra-workflows-runner\n\n```\n#+ summary: Organs supported by CTAnn\n#+ description: A list of organs supported by Azimuth, CellTypist, or Popv in the hra-workflows-runner\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\n\nSELECT DISTINCT ?organ_id\nFROM <https://purl.humanatlas.io/graph/ctann-crosswalks>\nWHERE {\n  ?tool ccf:organ_id ?organ_id\n}\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Organs supported by CTAnn",
+                "tags": []
+            }
+        },
+        "/datasets-with-bm": {
+            "get": {
+                "description": "Atlas Datasets that have a given Biomarker. There is one CT-BM expression per row.\n\n```\n#+ summary: Atlas Datasets with a given Biomarker\n#+ description: Atlas Datasets that have a given Biomarker. There is one CT-BM expression per row.\n\n#+ defaults:\n#+   - bmlabel: ENSG00000169710\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?source ?dataset ?organ ?sex ?tool ?cell_type ?cell_type_label ?cell_type_count ?biomarker ?mean_expression_value\nFROM CCF:\nFROM HRApop:\nWHERE {\n  ?donor ccf:consortium_name ?source .\n\n  {\n    ?sample ccf:comes_from ?donor .\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:comes_from ?donor .\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  {\n    ?dataset ccf:organ_id ?reportedOrganIriString .\n    BIND(IRI(?reportedOrganIriString) as ?reportedOrganIri)\n\n    OPTIONAL {\n      ?reportedOrganIri rdfs:label ?reportedOrganRdfsLabel .\n    }\n    OPTIONAL {\n      ?reportedOrganIri ccf:ccf_pref_label ?reportedOrganCcfLabel .\n    }\n    BIND(IF(BOUND(?reportedOrganRdfsLabel), ?reportedOrganRdfsLabel, ?reportedOrganCcfLabel) as ?organ)\n  }\n\n  ?dataset ccf:has_cell_summary [\n    ccf:sex ?sex ;\n    ccf:cell_annotation_method ?tool ;\n    ccf:has_cell_summary_row [\n      ccf:cell_id ?cell_id ;\n      ccf:cell_label ?cell_type_label ;\n      ccf:cell_count ?cell_type_count ;\n      ccf:gene_expr [\n        ccf:gene_label ?biomarker ;\n        ccf:mean_gene_expr_value ?gene_expr ;\n      ]\n    ]\n  ] .\n\n  FILTER(EXISTS {\n    ?dataset ccf:has_cell_summary [\n      ccf:sex ?sex ;\n      ccf:cell_annotation_method ?tool ;\n      ccf:has_cell_summary_row [\n        ccf:gene_expr [\n          ccf:gene_label ?biomarker_label ;\n        ]\n      ]\n    ] .\n    FILTER(?_bmlabel = ?biomarker_label)\n  })\n\n  FILTER(CONTAINS(?_bmlabel, ?biomarker) || TRUE)\n\n  BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)\n  BIND(xsd:decimal(?gene_expr) as ?mean_expression_value)\n}\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    },
+                    {
+                        "description": "A value of type string that will substitute ?_bmlabel in the original query",
+                        "in": "query",
+                        "name": "bmlabel",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "default": "ENSG00000169710"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Atlas Datasets with a given Biomarker",
+                "tags": []
+            }
+        },
+        "/datasets-with-ct": {
+            "get": {
+                "description": "Atlas Datasets that have a given Cell Type. There is one CT-BM expression per row.\n\n```\n#+ summary: Atlas Datasets with a given Cell Type\n#+ description: Atlas Datasets that have a given Cell Type. There is one CT-BM expression per row.\n\n#+ defaults:\n#+   - celltype: http://purl.obolibrary.org/obo/CL_0000136\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?source ?dataset ?organ ?sex ?tool ?cell_type ?cell_type_label ?cell_type_count ?biomarker ?mean_expression_value\nFROM CCF:\nFROM HRApop:\nWHERE {\n  ?donor ccf:consortium_name ?source .\n\n  {\n    ?sample ccf:comes_from ?donor .\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:comes_from ?donor .\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  {\n    ?dataset ccf:organ_id ?reportedOrganIriString .\n    BIND(IRI(?reportedOrganIriString) as ?reportedOrganIri)\n\n    OPTIONAL {\n      ?reportedOrganIri rdfs:label ?reportedOrganRdfsLabel .\n    }\n    OPTIONAL {\n      ?reportedOrganIri ccf:ccf_pref_label ?reportedOrganCcfLabel .\n    }\n    BIND(IF(BOUND(?reportedOrganRdfsLabel), ?reportedOrganRdfsLabel, ?reportedOrganCcfLabel) as ?organ)\n  }\n\n  ?dataset ccf:has_cell_summary [\n    ccf:sex ?sex ;\n    ccf:cell_annotation_method ?tool ;\n    ccf:has_cell_summary_row [\n      ccf:cell_id ?cell_id ;\n      ccf:cell_id ?_celltype_iri ;\n      ccf:cell_label ?cell_type_label ;\n      ccf:cell_count ?cell_type_count ;\n      ccf:gene_expr [\n        ccf:gene_label ?biomarker ;\n        ccf:mean_gene_expr_value ?gene_expr ;\n      ]\n    ]\n  ] .\n\n  BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)\n  BIND(xsd:decimal(?gene_expr) as ?mean_expression_value)\n}\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    },
+                    {
+                        "description": "A value of type string (iri) that will substitute ?_celltype_iri in the original query",
+                        "in": "query",
+                        "name": "celltype",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "iri",
+                            "default": "http://purl.obolibrary.org/obo/CL_0000136"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Atlas Datasets with a given Cell Type",
+                "tags": []
+            }
+        }
+    },
+    "prev_commit": "141333faf2b2bd1656c44a00fdef1c6b1ad17bcc",
+    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2024-08-29T15:24:13.979244\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-01e07cdaf43fb37cc62a8bf78c70e24f03415794> a prov:Activity ;\n    prov:endedAtTime \"2024-08-23T14:53:24+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2024-08-29T15:24:13.979244\"^^xsd:dateTime ;\n    prov:startedAtTime \"2024-08-29T15:23:53.551236\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/as-count.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/biomarkers-in-atlas.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell-types-in-atlas.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell_types_in_anatomical_structurescts_per_as.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/ctann-organs.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-bm.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-ct.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/as-count.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/biomarkers-in-atlas.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell-types-in-atlas.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell_types_in_anatomical_structurescts_per_as.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/ctann-organs.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-bm.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-ct.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
+    "servers": [
+        {
+            "url": "https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/hra-pop/"
+        }
+    ],
+    "components": {
+        "schemas": {
+            "Message": {
+                "type": "string"
+            }
+        }
+    }
+}

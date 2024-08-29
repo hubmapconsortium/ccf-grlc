@@ -1,0 +1,59 @@
+{
+  "inputs": [
+    {
+      "inputFile": "cached-specs/hra.json",
+      "pathModification": {
+        "prepend": "/hra"
+      }
+    },
+    {
+      "inputFile": "cached-specs/hra-pop.json",
+      "pathModification": {
+        "prepend": "/hra-pop"
+      }
+    },
+    {
+      "inputFile": "cached-specs/ccf.json",
+      "pathModification": {
+        "prepend": "/ccf"
+      }
+    },
+    {
+      "inputFile": "cached-specs/butterfly.json",
+      "pathModification": {
+        "prepend": "/butterfly"
+      }
+    },
+    {
+      "inputFile": "cached-specs/fusion.json",
+      "pathModification": {
+        "prepend": "/fusion"
+      }
+    },
+    {
+      "inputFile": "cached-specs/hra-scratch.json",
+      "pathModification": {
+        "prepend": "/hra-scratch"
+      }
+    },
+    {
+      "inputFile": "cached-specs/mesh-collision.json",
+      "pathModification": {
+        "prepend": "/mesh-collision"
+      }
+    },
+    {
+      "inputFile": "cached-specs/ubergraph.json",
+      "pathModification": {
+        "prepend": "/ubergraph"
+      }
+    },
+    {
+      "inputFile": "cached-specs/ubergraph-scratch.json",
+      "pathModification": {
+        "prepend": "/ubergraph-scratch"
+      }
+    }
+  ],
+  "output": "cached-specs/merged.json"
+}

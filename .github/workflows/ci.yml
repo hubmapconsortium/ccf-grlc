@@ -14,6 +14,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Use Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v45
@@ -31,6 +37,7 @@ jobs:
             echo $name
             ./scripts/cache-spec.sh $name
           done
+          ./scripts/merge-specs.sh
 
       # Commit all changed files back to the repository
       - uses: stefanzweifel/git-auto-commit-action@v5
