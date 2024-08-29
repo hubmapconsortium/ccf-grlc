@@ -1,0 +1,11 @@
+#+ summary: Unique AS, CT, and B across all HRA versions
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT ?asctb_type (COUNT(DISTINCT(?iri)) as ?count)
+WHERE {
+  ?iri ccf:ccf_asctb_type ?asctb_type
+}
+GROUP BY ?asctb_type
+ORDER BY ?asctb_type
