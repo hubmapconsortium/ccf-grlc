@@ -55,5 +55,5 @@
       }
     }
   ],
-  "output": "cached-specs/merged.json"
+  "output": "cached-specs/index.json"
 }
