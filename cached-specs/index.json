@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "0246c5e7f63021cc1a8ee04c60f11908ee006dff"
+    "version": "1c9da50572d3f183e3ec28e9a7d6d5c1885ae758"
   },
   "servers": [
     {
@@ -292,6 +292,75 @@
           }
         },
         "summary": "Unique AS, CT, and B in HRA",
+        "tags": []
+      }
+    },
+    "/hra/as-ct-b-counts-all-versions": {
+      "get": {
+        "description": "\n\n```\n#+ summary: Unique AS, CT, and B across all HRA versions\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT ?asctb_type (COUNT(DISTINCT(?iri)) as ?count)\nWHERE {\n  ?iri ccf:ccf_asctb_type ?asctb_type\n}\nGROUP BY ?asctb_type\nORDER BY ?asctb_type\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Unique AS, CT, and B across all HRA versions",
         "tags": []
       }
     },
