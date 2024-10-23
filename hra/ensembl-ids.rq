@@ -1,0 +1,16 @@
+#+ summary: ensembl ids in HRA
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbxref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>
+PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT DISTINCT ?gene_symbol ?hgnc_id ?ensembl_id
+FROM HRA:
+WHERE {
+  ?gene dbxref: ?ensembl_id ;
+        oboInOwl:id ?hgnc_id ;
+        rdfs:label ?gene_symbol .
+  FILTER(STRSTARTS(?ensembl_id, 'ENSG'))
+}
+ORDER BY ?gene_symbol
