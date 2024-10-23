@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "1c9da50572d3f183e3ec28e9a7d6d5c1885ae758"
+    "version": "de8599ee588465a26d9379477ac7910f9edaa6c0"
   },
   "servers": [
     {
@@ -786,6 +786,75 @@
           }
         },
         "summary": "A lookup table from Ensembl ID to gene name and HGNC ID",
+        "tags": []
+      }
+    },
+    "/hra/ftu-parts": {
+      "get": {
+        "description": "\n\n```\n#+ summary: get FTU images and parts\n\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?ftu_digital_object ?image_url ?organ_iri ?ftu_iri ?ftu_part_iri\nFROM HRA:\nWHERE {\n  ?ftu_illustration a ccf:FtuIllustration ;\n  \ta ?ftu_iri ;\n  \tccf:ccf_located_in ?organ_id ;\n    ccf:illustration_node [ a ?ftu_part_iri ] ;\n    ccf:image_file [\n      ccf:file_format ?format ;\n      ccf:file_url ?image_url\n    ] .\n\n  BIND(IRI(REPLACE(?organ_id, 'UBERON:', STR(UBERON:))) as ?organ_iri)\n  BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n  \n  FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n  FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n  FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))\n}\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "get FTU images and parts",
         "tags": []
       }
     },
