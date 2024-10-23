@@ -11,7 +11,7 @@
             "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
         },
         "title": "ccf-grlc",
-        "version": "de8599ee588465a26d9379477ac7910f9edaa6c0"
+        "version": "cf5b1a37d7654bb54441daecce2a095c77eb2b60"
     },
     "paths": {
         "/all-digital-objects": {
@@ -715,6 +715,75 @@
                 "tags": []
             }
         },
+        "/ensembl-ids": {
+            "get": {
+                "description": "\n\n```\n#+ summary: ensembl ids in HRA\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX dbxref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>\nPREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?gene_symbol ?hgnc_id ?ensembl_id\nFROM HRA:\nWHERE {\n  ?gene dbxref: ?ensembl_id ;\n        oboInOwl:id ?hgnc_id ;\n        rdfs:label ?gene_symbol .\n  FILTER(STRSTARTS(?ensembl_id, 'ENSG'))\n}\nORDER BY ?gene_symbol\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "ensembl ids in HRA",
+                "tags": []
+            }
+        },
         "/ensembl-lookup": {
             "get": {
                 "description": "\n\n```\n#+ summary: A lookup table from Ensembl ID to gene name and HGNC ID\n\nPREFIX hgnc: <http://purl.bioontology.org/ontology/HGNC/>\nPREFIX hgncId: <http://identifiers.org/hgnc/>\nPREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>\nPREFIX HGNC: <https://purl.humanatlas.io/vocab/hgnc>\n\nSELECT DISTINCT ?ensemble ?gene_name ?hgnc\nFROM HGNC:\nWHERE\n{\n  ?hgnc_id oboInOwl:hasDbXref ?ensemble ;\n          hgnc:symbol ?gene_name .\n  BIND(REPLACE(STR(?hgnc_id), STR(hgncId:), 'HGNC:') as ?hgnc)\n  FILTER(STRSTARTS(?ensemble, 'ENS'))\n}\nORDER BY ?ensemble\n\n```",
@@ -1199,8 +1268,8 @@
             }
         }
     },
-    "prev_commit": "f4a75dc32aae33cc612fb8ed06d106ab1d66a88a",
-    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2024-10-23T12:11:44.346438\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-01e07cdaf43fb37cc62a8bf78c70e24f03415794> a prov:Activity ;\n    prov:endedAtTime \"2024-08-23T14:53:24+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2024-10-23T12:11:44.346438\"^^xsd:dateTime ;\n    prov:startedAtTime \"2024-10-23T12:11:06.425606\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/all-digital-objects.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-cnt.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-counts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts-all-versions.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-per-organ.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/asctb-in-table.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/bm-located-in-as.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-citations.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-count.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-lookup.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ftu-parts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/high-level-stats.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-dois.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-glb-files.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-term-list.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-terms.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/all-digital-objects.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-cnt.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-counts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts-all-versions.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-per-organ.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/asctb-in-table.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/bm-located-in-as.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-citations.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-count.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-lookup.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ftu-parts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/high-level-stats.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-dois.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-glb-files.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-term-list.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-terms.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
+    "prev_commit": "f53e3f73a584f11f6a6c2affc2adbf8385290460",
+    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2024-10-23T12:34:00.929248\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-01e07cdaf43fb37cc62a8bf78c70e24f03415794> a prov:Activity ;\n    prov:endedAtTime \"2024-08-23T14:53:24+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2024-10-23T12:34:00.929248\"^^xsd:dateTime ;\n    prov:startedAtTime \"2024-10-23T12:33:19.749551\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/all-digital-objects.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-cnt.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-counts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts-all-versions.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-per-organ.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/asctb-in-table.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/bm-located-in-as.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-citations.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-count.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-ids.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-lookup.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ftu-parts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/high-level-stats.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-dois.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-glb-files.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-term-list.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-terms.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/all-digital-objects.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-cnt.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-counts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts-all-versions.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-per-organ.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/asctb-in-table.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/bm-located-in-as.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-citations.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-count.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-ids.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-lookup.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ftu-parts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/high-level-stats.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-dois.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-glb-files.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-term-list.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-terms.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
     "servers": [
         {
             "url": "https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/hra/"

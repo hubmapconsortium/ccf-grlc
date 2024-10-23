@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "de8599ee588465a26d9379477ac7910f9edaa6c0"
+    "version": "cf5b1a37d7654bb54441daecce2a095c77eb2b60"
   },
   "servers": [
     {
@@ -717,6 +717,75 @@
           }
         },
         "summary": "Digital objects counts in the latest HRA release",
+        "tags": []
+      }
+    },
+    "/hra/ensembl-ids": {
+      "get": {
+        "description": "\n\n```\n#+ summary: ensembl ids in HRA\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX dbxref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>\nPREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?gene_symbol ?hgnc_id ?ensembl_id\nFROM HRA:\nWHERE {\n  ?gene dbxref: ?ensembl_id ;\n        oboInOwl:id ?hgnc_id ;\n        rdfs:label ?gene_symbol .\n  FILTER(STRSTARTS(?ensembl_id, 'ENSG'))\n}\nORDER BY ?gene_symbol\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "ensembl ids in HRA",
         "tags": []
       }
     },
