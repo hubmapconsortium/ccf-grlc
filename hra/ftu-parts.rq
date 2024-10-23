@@ -1,0 +1,31 @@
+#+ summary: get FTU images and parts
+
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT DISTINCT ?ftu_digital_object ?image_url ?organ_iri ?ftu_iri ?ftu_part_iri
+FROM HRA:
+WHERE {
+  ?ftu_illustration a ccf:FtuIllustration ;
+  	a ?ftu_iri ;
+  	ccf:ccf_located_in ?organ_id ;
+    ccf:illustration_node [ a ?ftu_part_iri ] ;
+    ccf:image_file [
+      ccf:file_format ?format ;
+      ccf:file_url ?image_url
+    ] .
+
+  BIND(IRI(REPLACE(?organ_id, 'UBERON:', STR(UBERON:))) as ?organ_iri)
+  BIND(IRI(REPLACE(STR(?ftu_illustration), "#primary", "")) as ?ftu_digital_object)
+  
+  FILTER(?format = "image/png") # or "image/svg+xml"
+  FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))
+  FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))
+}
