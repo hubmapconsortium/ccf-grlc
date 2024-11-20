@@ -9,8 +9,9 @@ PREFIX ccf: <http://purl.org/ccf/>
 PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
 PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+PREFIX LOD: <https://lod.humanatlas.io>
 
-SELECT DISTINCT ?ftu_digital_object ?image_url ?organ_iri ?ftu_iri ?ftu_part_iri
+SELECT DISTINCT ?ftu_digital_object ?ftu_digital_object_doi ?image_url ?organ_iri ?ftu_iri ?ftu_part_iri
 FROM HRA:
 WHERE {
   ?ftu_illustration a ccf:FtuIllustration ;
@@ -22,10 +23,19 @@ WHERE {
       ccf:file_url ?image_url
     ] .
 
+  HRA: prov:hadMember ?versioned_ftu .
+
+  GRAPH LOD: {
+    ?versioned_ftu prov:wasDerivedFrom [
+      ccf:doi ?ftu_digital_object_doi
+    ] .
+  }
+
   BIND(IRI(REPLACE(?organ_id, 'UBERON:', STR(UBERON:))) as ?organ_iri)
   BIND(IRI(REPLACE(STR(?ftu_illustration), "#primary", "")) as ?ftu_digital_object)
   
   FILTER(?format = "image/png") # or "image/svg+xml"
   FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))
   FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))
+  FILTER(STRSTARTS(STR(?versioned_ftu), STR(?ftu_digital_object)))
 }
