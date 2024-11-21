@@ -11,9 +11,78 @@
             "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/LICENSE"
         },
         "title": "ccf-grlc",
-        "version": "0246c5e7f63021cc1a8ee04c60f11908ee006dff"
+        "version": "ac900e41940874a8e755c02f52be6eea03282abc"
     },
     "paths": {
+        "/all-collisions": {
+            "get": {
+                "description": "\n\n```\n#+ summary: All extraction site collisions in HRApop\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?extraction_site_iri ?representation_of ?percentage_of_tissue_block\nFROM HRApop:\nWHERE {\n  ?extraction_site_iri a ccf:SpatialEntity ;\n    ccf:has_collision_summary [\n      ccf:has_collision_item [\n        ccf:as_id ?representation_of ;\n        ccf:percentage_of_total ?percentage_of_tissue_block ;\n      ]\n    ]\n}\nORDER BY ?extraction_site_iri DESC(?percentage_of_tissue_block)\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "All extraction site collisions in HRApop",
+                "tags": []
+            }
+        },
         "/as-count": {
             "get": {
                 "description": "\n\n```\n#+ summary: Number of Anatomical Structures with Cell Summaries\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT (COUNT(DISTINCT ?as) as ?as_count)\nFROM HRApop:\nWHERE {\n  {\n  \t?as ccf:has_cell_summary [ ] .\n  } MINUS {\n    ?as a ccf:SpatialEntity .\n  } MINUS {\n    ?as a ccf:Dataset .\n  }\n}\n\n```",
@@ -519,8 +588,8 @@
             }
         }
     },
-    "prev_commit": "141333faf2b2bd1656c44a00fdef1c6b1ad17bcc",
-    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2024-08-29T15:24:13.979244\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-01e07cdaf43fb37cc62a8bf78c70e24f03415794> a prov:Activity ;\n    prov:endedAtTime \"2024-08-23T14:53:24+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2024-08-29T15:24:13.979244\"^^xsd:dateTime ;\n    prov:startedAtTime \"2024-08-29T15:23:53.551236\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/as-count.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/biomarkers-in-atlas.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell-types-in-atlas.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell_types_in_anatomical_structurescts_per_as.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/ctann-organs.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-bm.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-ct.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/as-count.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/biomarkers-in-atlas.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell-types-in-atlas.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell_types_in_anatomical_structurescts_per_as.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/ctann-organs.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-bm.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-ct.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
+    "prev_commit": "5d8a87431d476e62ec69c67cf158031e0c373ab3",
+    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2024-11-21T15:56:11.418743\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-01e07cdaf43fb37cc62a8bf78c70e24f03415794> a prov:Activity ;\n    prov:endedAtTime \"2024-08-23T14:53:24+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2024-11-21T15:56:11.418743\"^^xsd:dateTime ;\n    prov:startedAtTime \"2024-11-21T15:55:47.464743\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/all-collisions.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/as-count.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/biomarkers-in-atlas.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell-types-in-atlas.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell_types_in_anatomical_structurescts_per_as.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/ctann-organs.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-bm.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-ct.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/all-collisions.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/as-count.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/biomarkers-in-atlas.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell-types-in-atlas.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/cell_types_in_anatomical_structurescts_per_as.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/ctann-organs.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-bm.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra-pop/datasets-with-ct.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
     "servers": [
         {
             "url": "https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/hra-pop/"
