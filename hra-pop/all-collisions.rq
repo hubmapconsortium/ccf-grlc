@@ -1,17 +1,18 @@
 #+ summary: All extraction site collisions in HRApop
 
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
 
-SELECT DISTINCT ?extraction_site_iri ?representation_of ?percentage_of_tissue_block
+SELECT DISTINCT ?extraction_site_iri ?representation_of (xsd:decimal(?percentage) as ?percentage_of_tissue_block)
 FROM HRApop:
 WHERE {
   ?extraction_site_iri a ccf:SpatialEntity ;
     ccf:has_collision_summary [
       ccf:has_collision_item [
         ccf:as_id ?representation_of ;
-        ccf:percentage_of_total ?percentage_of_tissue_block ;
+        ccf:percentage_of_total ?percentage ;
       ]
     ]
 }
-ORDER BY ?extraction_site_iri DESC(?percentage_of_tissue_block)
+ORDER BY ?extraction_site_iri DESC(?percentage)
