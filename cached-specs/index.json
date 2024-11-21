@@ -1274,7 +1274,7 @@
     },
     "/hra-pop/all-collisions": {
       "get": {
-        "description": "\n\n```\n#+ summary: All extraction site collisions in HRApop\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?extraction_site_iri ?representation_of ?percentage_of_tissue_block\nFROM HRApop:\nWHERE {\n  ?extraction_site_iri a ccf:SpatialEntity ;\n    ccf:has_collision_summary [\n      ccf:has_collision_item [\n        ccf:as_id ?representation_of ;\n        ccf:percentage_of_total ?percentage_of_tissue_block ;\n      ]\n    ]\n}\nORDER BY ?extraction_site_iri DESC(?percentage_of_tissue_block)\n\n```",
+        "description": "\n\n```\n#+ summary: All extraction site collisions in HRApop\n\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?extraction_site_iri ?representation_of (xsd:decimal(?percentage) as ?percentage_of_tissue_block)\nFROM HRApop:\nWHERE {\n  ?extraction_site_iri a ccf:SpatialEntity ;\n    ccf:has_collision_summary [\n      ccf:has_collision_item [\n        ccf:as_id ?representation_of ;\n        ccf:percentage_of_total ?percentage ;\n      ]\n    ]\n}\nORDER BY ?extraction_site_iri DESC(?percentage)\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
