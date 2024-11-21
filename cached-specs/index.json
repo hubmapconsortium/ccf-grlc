@@ -1272,6 +1272,75 @@
         "tags": []
       }
     },
+    "/hra-pop/all-collisions": {
+      "get": {
+        "description": "\n\n```\n#+ summary: All extraction site collisions in HRApop\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?extraction_site_iri ?representation_of ?percentage_of_tissue_block\nFROM HRApop:\nWHERE {\n  ?extraction_site_iri a ccf:SpatialEntity ;\n    ccf:has_collision_summary [\n      ccf:has_collision_item [\n        ccf:as_id ?representation_of ;\n        ccf:percentage_of_total ?percentage_of_tissue_block ;\n      ]\n    ]\n}\nORDER BY ?extraction_site_iri DESC(?percentage_of_tissue_block)\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "All extraction site collisions in HRApop",
+        "tags": []
+      }
+    },
     "/hra-pop/as-count": {
       "get": {
         "description": "\n\n```\n#+ summary: Number of Anatomical Structures with Cell Summaries\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT (COUNT(DISTINCT ?as) as ?as_count)\nFROM HRApop:\nWHERE {\n  {\n  \t?as ccf:has_cell_summary [ ] .\n  } MINUS {\n    ?as a ccf:SpatialEntity .\n  } MINUS {\n    ?as a ccf:Dataset .\n  }\n}\n\n```",
