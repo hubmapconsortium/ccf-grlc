@@ -7,10 +7,11 @@ PREFIX ccf: <http://purl.org/ccf/>
 PREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 
-#SELECT DISTINCT ?ct ?bm
-CONSTRUCT { ?bm ccf:ccf_bm_located_in ?ct }
+SELECT DISTINCT ?as ?bm
 FROM HRA:
 WHERE {
+  ?ct ccf:ccf_located_in ?as .
+
   ?ct rdfs:subClassOf [
   	owl:onProperty has_characterizing_biomarker_set: ;
   	owl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .
