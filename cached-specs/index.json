@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "14ccc7cfd28689d598b76841110fd3bc5df3ce26"
+    "version": "e802e6205a20066bbc41305227fe46b58e82edc6"
   },
   "servers": [
     {
@@ -515,7 +515,7 @@
     },
     "/hra/bm-located-in-as": {
       "get": {
-        "description": "\n\n```\n#+ summary: Biomarkers located in AS\n\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\n#SELECT DISTINCT ?ct ?bm\nCONSTRUCT { ?bm ccf:ccf_bm_located_in ?ct }\nFROM HRA:\nWHERE {\n  ?ct rdfs:subClassOf [\n  \towl:onProperty has_characterizing_biomarker_set: ;\n  \towl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .\n  ?bn3 rdf:rest*/rdf:first [\n  \towl:onProperty ccf:has_marker_component ;\n    owl:someValuesFrom ?bm\n  ] .\n}\n\n```",
+        "description": "\n\n```\n#+ summary: Biomarkers located in AS\n\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?as ?bm\nFROM HRA:\nWHERE {\n  ?ct ccf:ccf_located_in ?as .\n\n  ?ct rdfs:subClassOf [\n  \towl:onProperty has_characterizing_biomarker_set: ;\n  \towl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .\n  ?bn3 rdf:rest*/rdf:first [\n  \towl:onProperty ccf:has_marker_component ;\n    owl:someValuesFrom ?bm\n  ] .\n}\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
