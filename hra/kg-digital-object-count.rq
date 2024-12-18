@@ -1,0 +1,12 @@
+#+ summary: All digital objects published to the HRA KG
+
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX schema: <http://schema.org/>
+
+SELECT (COUNT(DISTINCT(?purl)) as ?do_count)
+FROM <https://lod.humanatlas.io>
+WHERE {
+  ?purl a dcat:Dataset ;
+    schema:name ?name ;
+    schema:additionalType ?type .
+}
