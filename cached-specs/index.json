@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "e802e6205a20066bbc41305227fe46b58e82edc6"
+    "version": "b108de2eaae485e0fba313002e586e20ce1434bb"
   },
   "servers": [
     {
@@ -993,6 +993,75 @@
           }
         },
         "summary": "",
+        "tags": []
+      }
+    },
+    "/hra/kg-digital-object-count": {
+      "get": {
+        "description": "\n\n```\n#+ summary: All digital objects published to the HRA KG\n\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX schema: <http://schema.org/>\n\nSELECT (COUNT(DISTINCT(?purl)) as ?do_count)\nFROM <https://lod.humanatlas.io>\nWHERE {\n  ?purl a dcat:Dataset ;\n    schema:name ?name ;\n    schema:additionalType ?type .\n}\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "All digital objects published to the HRA KG",
         "tags": []
       }
     },
