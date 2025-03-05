@@ -32,7 +32,7 @@ WHERE {
 
   [] rdf:type ccf:SpatialPlacement ;
     ccf:placement_for ?object ;
-    ccf:placement_relative_to ?anatomical_structure_of ;
+    # ccf:placement_relative_to ?anatomical_structure_of ;
     ccf:x_translation ?tmp_x_translation ;
     ccf:y_translation ?tmp_y_translation ;
     ccf:z_translation ?tmp_z_translation .
