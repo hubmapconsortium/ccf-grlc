@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "b108de2eaae485e0fba313002e586e20ce1434bb"
+    "version": "9634031d26220b7737f9460be73e957b233e299b"
   },
   "servers": [
     {
@@ -579,6 +579,75 @@
           }
         },
         "summary": "Biomarkers located in AS",
+        "tags": []
+      }
+    },
+    "/hra/digital-object-authors": {
+      "get": {
+        "description": "\n\n```\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n\nSELECT DISTINCT ?orcid ?author_name ?role ?date ?do_type (COUNT(DISTINCT ?purl) as ?do_count_on_date)\nFROM <https://lod.humanatlas.io>\nWHERE {\n  \tVALUES (?role_pred ?role) {\n  \t\t(ccf:project_lead 'Project Lead')\n      (dcterms:creator 'Author')\n      (schema:reviewedBy 'Reviewer')\n\t  }\n \n    ?purl a dcat:Dataset ;\n      schema:additionalType ?do_type ;\n      prov:wasDerivedFrom ?rawData .\n    \n    ?rawData schema:dateCreated ?creation_date ;\n      ?role_pred ?orcid .\n\n    { \n      SELECT ?orcid (SAMPLE(?author_name) as ?author_name)\n      WHERE {\n        ?orcid a schema:Person ;\n          schema:name ?author_name\n      }\n      GROUP BY ?orcid\n    }\n\n    BIND(STRDT(\n        IF(CONTAINS(?creation_date, '/'),\n          CONCAT(SUBSTR(?creation_date, 6, 4), '-0', REPLACE(SUBSTR(?creation_date, 1, 4), '/', '-')),\n          STR(?creation_date)\n        ), xsd:date) as ?date)\n}\nGROUP BY ?orcid ?author_name ?role ?do_type ?date\nORDER BY ?orcid\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
         "tags": []
       }
     },
