@@ -1,0 +1,44 @@
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT DISTINCT ?orcid ?author_name ?role ?date ?do_type (COUNT(DISTINCT ?purl) as ?do_count_on_date)
+FROM <https://lod.humanatlas.io>
+WHERE {
+  	VALUES (?role_pred ?role) {
+  		(ccf:project_lead 'Project Lead')
+      (dcterms:creator 'Author')
+      (schema:reviewedBy 'Reviewer')
+	  }
+ 
+    ?purl a dcat:Dataset ;
+      schema:additionalType ?do_type ;
+      prov:wasDerivedFrom ?rawData .
+    
+    ?rawData schema:dateCreated ?creation_date ;
+      ?role_pred ?orcid .
+
+    { 
+      SELECT ?orcid (SAMPLE(?author_name) as ?author_name)
+      WHERE {
+        ?orcid a schema:Person ;
+          schema:name ?author_name
+      }
+      GROUP BY ?orcid
+    }
+
+    BIND(STRDT(
+        IF(CONTAINS(?creation_date, '/'),
+          CONCAT(SUBSTR(?creation_date, 6, 4), '-0', REPLACE(SUBSTR(?creation_date, 1, 4), '/', '-')),
+          STR(?creation_date)
+        ), xsd:date) as ?date)
+}
+GROUP BY ?orcid ?author_name ?role ?do_type ?date
+ORDER BY ?orcid
