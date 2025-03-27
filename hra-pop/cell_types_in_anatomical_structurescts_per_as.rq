@@ -2,6 +2,7 @@
 #+ description: Computes the cell summaries for each organ by anatomical strcutrure.
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
@@ -29,6 +30,7 @@ WHERE {
   
   ?refOrganPiece ccf:representation_of ?as ;
       ccf:has_reference_organ ?refOrgan .
-  ?refOrgan rdfs:label ?organ .
+  ?refOrgan ccf:organ_owner_sex ?sex .
+  ?refOrgan skos:prefLabel ?organ .
 }
 ORDER BY ?sex ?as ?tool DESC(?cell_count)
