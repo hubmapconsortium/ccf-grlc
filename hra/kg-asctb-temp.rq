@@ -1,0 +1,19 @@
+#+ summary: ASCT+B TEMP IDs in HRA
+#+ description: Number of ASCTB-TEMP IDs in ASCT+B tables
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
+
+SELECT ?asctb_type (COUNT(DISTINCT(?iri)) as ?count)
+FROM HRA:
+WHERE {
+  ?iri ccf:ccf_asctb_type ?asctb_type1 .
+  OPTIONAL {
+  	?iri ccf:ccf_biomarker_type ?bm_type . 
+  }
+  BIND(IF(BOUND(?bm_type), CONCAT("BM (", ?bm_type, ")"), STR(?asctb_type1)) AS ?asctb_type)
+  FILTER(STRSTARTS(STR(?iri), STR(ASCTB-TEMP:)))
+}
+GROUP BY ?asctb_type
+ORDER BY DESC(?count)
