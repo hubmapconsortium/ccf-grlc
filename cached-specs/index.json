@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "9634031d26220b7737f9460be73e957b233e299b"
+    "version": "c880a2a4f07af5dc3981c5d312cff7efed310902"
   },
   "servers": [
     {
@@ -1062,6 +1062,75 @@
           }
         },
         "summary": "",
+        "tags": []
+      }
+    },
+    "/hra/kg-asctb-temp": {
+      "get": {
+        "description": "Number of ASCTB-TEMP IDs in ASCT+B tables\n\n```\n#+ summary: ASCT+B TEMP IDs in HRA\n#+ description: Number of ASCTB-TEMP IDs in ASCT+B tables\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>\n\nSELECT ?asctb_type (COUNT(DISTINCT(?iri)) as ?count)\nFROM HRA:\nWHERE {\n  ?iri ccf:ccf_asctb_type ?asctb_type1 .\n  OPTIONAL {\n  \t?iri ccf:ccf_biomarker_type ?bm_type . \n  }\n  BIND(IF(BOUND(?bm_type), CONCAT(\"BM (\", ?bm_type, \")\"), STR(?asctb_type1)) AS ?asctb_type)\n  FILTER(STRSTARTS(STR(?iri), STR(ASCTB-TEMP:)))\n}\nGROUP BY ?asctb_type\nORDER BY DESC(?count)\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "ASCT+B TEMP IDs in HRA",
         "tags": []
       }
     },
