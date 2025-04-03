@@ -34,23 +34,15 @@ WHERE {
 
     GRAPH <https://purl.humanatlas.io/vocab/cl> {
       ?l1_cell_id rdfs:subClassOf CL:0000000 .
-      FILTER(STRSTARTS(STR(?l1_cell_id), STR(CL:)))
+      ?l2_cell_id rdfs:subClassOf ?l1_cell_id .
+      
+      ?l1_cell_id rdfs:label ?l1_cell_label .
+      ?l2_cell_id rdfs:label ?l2_cell_label .
+
+      FILTER(STRSTARTS(STR(?l1_cell_id), STR(CL:)) && STRSTARTS(STR(?l2_cell_id), STR(CL:)))
     }
 
-    ?cell_id (rdfs:subClassOf|rdf:type)* ?l1_cell_id .
-    ?l1_cell_id rdfs:label ?l1_cell_label .
-  }
-
-  OPTIONAL {
-    GRAPH <https://purl.humanatlas.io/vocab/cl> {
-      ?l2_cell_id rdfs:subClassOf [
-        rdfs:subClassOf CL:0000000 ;
-      ] .
-      FILTER(STRSTARTS(STR(?l2_cell_id), STR(CL:)))
-    }
-
-    ?cell_id (rdfs:subClassOf|rdf:type)* ?l2_cell_id .
-    ?l2_cell_id rdfs:label ?l2_cell_label .
+    ?cell_id (rdfs:subClassOf|rdf:type)* ?l2_cell_id . 
   }
 
   BIND(COALESCE(?l1_cell_id, CL:0000000) as ?level_1_cell_id)
