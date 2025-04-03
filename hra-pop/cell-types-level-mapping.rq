@@ -1,0 +1,61 @@
+#+ summary: atlas cell type level mapping
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
+PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
+
+SELECT DISTINCT ?cell_label ?cell_id ?level_1_cell_id ?level_1_cell_label ?level_2_cell_id ?level_2_cell_label
+FROM HRA:
+FROM <https://purl.humanatlas.io/vocab/cl>
+FROM <https://purl.humanatlas.io/vocab/pcl>
+WHERE {
+  GRAPH HRApop: {
+    [] ccf:has_cell_summary [
+      ccf:has_cell_summary_row [
+        ccf:cell_id ?cell_id ;
+      ]
+    ] .
+    FILTER(!STRSTARTS(STR(?cell_id), 'https://purl.org/ccf/ASCTB-TEMP'))
+  }
+  ?cell_id rdfs:label ?cell_label .
+  
+  OPTIONAL {
+    # VALUES (?l1_cell_id) {
+    #   (CL:0008019) # mesenchymal cell
+    #   (CL:0000738) # immune cell (leukocyte)
+    #   (CL:0000115) # endothelial cell
+    #   (CL:0002319) # neural cell
+    #   (CL:0000066) # epithelial cell
+    # }
+
+    GRAPH <https://purl.humanatlas.io/vocab/cl> {
+      ?l1_cell_id rdfs:subClassOf CL:0000000 .
+      FILTER(STRSTARTS(STR(?l1_cell_id), STR(CL:)))
+    }
+
+    ?cell_id (rdfs:subClassOf|rdf:type)* ?l1_cell_id .
+    ?l1_cell_id rdfs:label ?l1_cell_label .
+  }
+
+  OPTIONAL {
+    GRAPH <https://purl.humanatlas.io/vocab/cl> {
+      ?l2_cell_id rdfs:subClassOf [
+        rdfs:subClassOf CL:0000000 ;
+      ] .
+      FILTER(STRSTARTS(STR(?l2_cell_id), STR(CL:)))
+    }
+
+    ?cell_id (rdfs:subClassOf|rdf:type)* ?l2_cell_id .
+    ?l2_cell_id rdfs:label ?l2_cell_label .
+  }
+
+  BIND(COALESCE(?l1_cell_id, CL:0000000) as ?level_1_cell_id)
+  BIND(COALESCE(?l1_cell_label, 'unknown cell') as ?level_1_cell_label)
+  BIND(COALESCE(?l2_cell_id, CL:0000000) as ?level_2_cell_id)
+  BIND(COALESCE(?l2_cell_label, 'unknown cell') as ?level_2_cell_label)
+}
+ORDER BY ?cell_id
