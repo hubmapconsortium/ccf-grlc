@@ -1755,6 +1755,75 @@
         "tags": []
       }
     },
+    "/hra-pop/cell-types-level-mapping": {
+      "get": {
+        "description": "\n\n```\n#+ summary: atlas cell type level mapping\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?cell_label ?cell_id ?level_1_cell_id ?level_1_cell_label ?level_2_cell_id ?level_2_cell_label\nFROM HRA:\nFROM <https://purl.humanatlas.io/vocab/cl>\nFROM <https://purl.humanatlas.io/vocab/pcl>\nWHERE {\n  GRAPH HRApop: {\n    [] ccf:has_cell_summary [\n      ccf:has_cell_summary_row [\n        ccf:cell_id ?cell_id ;\n      ]\n    ] .\n    FILTER(!STRSTARTS(STR(?cell_id), 'https://purl.org/ccf/ASCTB-TEMP'))\n  }\n  ?cell_id rdfs:label ?cell_label .\n  \n  OPTIONAL {\n    # VALUES (?l1_cell_id) {\n    #   (CL:0008019) # mesenchymal cell\n    #   (CL:0000738) # immune cell (leukocyte)\n    #   (CL:0000115) # endothelial cell\n    #   (CL:0002319) # neural cell\n    #   (CL:0000066) # epithelial cell\n    # }\n\n    GRAPH <https://purl.humanatlas.io/vocab/cl> {\n      ?l1_cell_id rdfs:subClassOf CL:0000000 .\n      FILTER(STRSTARTS(STR(?l1_cell_id), STR(CL:)))\n    }\n\n    ?cell_id (rdfs:subClassOf|rdf:type)* ?l1_cell_id .\n    ?l1_cell_id rdfs:label ?l1_cell_label .\n  }\n\n  OPTIONAL {\n    GRAPH <https://purl.humanatlas.io/vocab/cl> {\n      ?l2_cell_id rdfs:subClassOf [\n        rdfs:subClassOf CL:0000000 ;\n      ] .\n      FILTER(STRSTARTS(STR(?l2_cell_id), STR(CL:)))\n    }\n\n    ?cell_id (rdfs:subClassOf|rdf:type)* ?l2_cell_id .\n    ?l2_cell_id rdfs:label ?l2_cell_label .\n  }\n\n  BIND(COALESCE(?l1_cell_id, CL:0000000) as ?level_1_cell_id)\n  BIND(COALESCE(?l1_cell_label, 'unknown cell') as ?level_1_cell_label)\n  BIND(COALESCE(?l2_cell_id, CL:0000000) as ?level_2_cell_id)\n  BIND(COALESCE(?l2_cell_label, 'unknown cell') as ?level_2_cell_label)\n}\nORDER BY ?cell_id\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "atlas cell type level mapping",
+        "tags": []
+      }
+    },
     "/hra-pop/cell_types_in_anatomical_structurescts_per_as": {
       "get": {
         "description": "Computes the cell summaries for each organ by anatomical strcutrure.\n\n```\n#+ summary: Cell Summaries by Anatomical Structure \n#+ description: Computes the cell summaries for each organ by anatomical strcutrure.\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX FMA: <http://purl.org/sig/ont/fma/fma>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?organ ?as ?as_label ?sex ?tool ?modality ?cell_id ?cell_label ?cell_count ?cell_percentage ?dataset_count\nFROM HRA:\nFROM HRApop:\nWHERE {\n  ?as ccf:has_cell_summary [ \n      ccf:cell_annotation_method ?tool ;\n      ccf:cell_source_label ?as_label ;\n      ccf:sex ?sex ;\n      ccf:modality ?modality ;\n      ccf:aggregated_summary_count ?dataset_count ;\n      ccf:has_cell_summary_row [\n        ccf:cell_id ?cell_id ;\n        ccf:cell_label ?cell_label ;\n        ccf:cell_count ?cell_count ;\n        ccf:percentage_of_total ?cell_percentage ;\n    ]\n  ] .\n  FILTER(STRSTARTS(STR(?as), STR(UBERON:)) || STRSTARTS(STR(?as), STR(FMA:)))\n  \n  ?refOrganPiece ccf:representation_of ?as ;\n      ccf:has_reference_organ ?refOrgan .\n  ?refOrgan ccf:organ_owner_sex ?sex .\n  ?refOrgan skos:prefLabel ?organ .\n}\nORDER BY ?sex ?as ?tool DESC(?cell_count)\n\n```",
