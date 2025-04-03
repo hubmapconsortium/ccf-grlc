@@ -10,7 +10,7 @@ PREFIX FMA: <http://purl.org/sig/ont/fma/fma>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
 PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
 
-SELECT DISTINCT ?organ ?as ?as_label ?sex ?tool ?modality ?cell_id ?cell_label ?cell_count ?cell_percentage
+SELECT DISTINCT ?organ ?as ?as_label ?sex ?tool ?modality ?cell_id ?cell_label ?cell_count ?cell_percentage ?dataset_count
 FROM HRA:
 FROM HRApop:
 WHERE {
@@ -19,6 +19,7 @@ WHERE {
       ccf:cell_source_label ?as_label ;
       ccf:sex ?sex ;
       ccf:modality ?modality ;
+      ccf:aggregated_summary_count ?dataset_count ;
       ccf:has_cell_summary_row [
         ccf:cell_id ?cell_id ;
         ccf:cell_label ?cell_label ;
