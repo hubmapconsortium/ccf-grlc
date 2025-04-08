@@ -8,6 +8,7 @@ FROM HRApop:
 WHERE {
   {
   	?as ccf:has_cell_summary [ ] .
+    FILTER(?as != ccf:)
   } MINUS {
     ?as a ccf:SpatialEntity .
   } MINUS {
