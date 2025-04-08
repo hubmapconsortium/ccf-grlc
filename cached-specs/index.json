@@ -1550,7 +1550,7 @@
     },
     "/hra-pop/as-count": {
       "get": {
-        "description": "\n\n```\n#+ summary: Number of Anatomical Structures with Cell Summaries\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT (COUNT(DISTINCT ?as) as ?as_count)\nFROM HRApop:\nWHERE {\n  {\n  \t?as ccf:has_cell_summary [ ] .\n  } MINUS {\n    ?as a ccf:SpatialEntity .\n  } MINUS {\n    ?as a ccf:Dataset .\n  }\n}\n\n```",
+        "description": "\n\n```\n#+ summary: Number of Anatomical Structures with Cell Summaries\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT (COUNT(DISTINCT ?as) as ?as_count)\nFROM HRApop:\nWHERE {\n  {\n  \t?as ccf:has_cell_summary [ ] .\n    FILTER(?as != ccf:)\n  } MINUS {\n    ?as a ccf:SpatialEntity .\n  } MINUS {\n    ?as a ccf:Dataset .\n  }\n}\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
