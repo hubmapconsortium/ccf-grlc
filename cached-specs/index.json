@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "c880a2a4f07af5dc3981c5d312cff7efed310902"
+    "version": "cc9a47d179756b09f8ec1635e1412d18297f73e6"
   },
   "servers": [
     {
@@ -21,7 +21,7 @@
   "paths": {
     "/hra/all-digital-objects": {
       "get": {
-        "description": "\n\n```\n#+ summary: Every digital object pushed to lod.humanatlas.io\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX schema: <http://schema.org/>\nPREFIX LOD: <https://lod.humanatlas.io>\n\nSELECT *\nFROM LOD:\nWHERE {\n  ?purl a dcat:Dataset ;\n    schema:name ?name ;\n    schema:additionalType ?type ;\n    schema:version ?version ;\n    schema:dateCreated ?published ;\n  .\n}\nORDER BY ?type ?name ?version\n\n```",
+        "description": "\n\n```\n#+ summary: Every digital object pushed to lod.humanatlas.io\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX schema: <http://schema.org/>\nPREFIX LOD: <https://lod.humanatlas.io>\n\nSELECT *\nFROM LOD:\nWHERE {\n  [] a dcat:Dataset ;\n    schema:name ?name ;\n    schema:additionalType ?type ;\n    schema:version ?version ;\n    schema:dateCreated ?published ;\n    rdfs:seeAlso ?purl ;\n  .\n}\nORDER BY ?type ?name ?version\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
@@ -584,7 +584,7 @@
     },
     "/hra/digital-object-authors": {
       "get": {
-        "description": "\n\n```\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n\nSELECT DISTINCT ?orcid ?author_name ?role ?date ?do_type (COUNT(DISTINCT ?purl) as ?do_count_on_date)\nFROM <https://lod.humanatlas.io>\nWHERE {\n  \tVALUES (?role_pred ?role) {\n  \t\t(ccf:project_lead 'Project Lead')\n      (dcterms:creator 'Author')\n      (schema:reviewedBy 'Reviewer')\n\t  }\n \n    ?purl a dcat:Dataset ;\n      schema:additionalType ?do_type ;\n      prov:wasDerivedFrom ?rawData .\n    \n    ?rawData schema:dateCreated ?creation_date ;\n      ?role_pred ?orcid .\n\n    { \n      SELECT ?orcid (SAMPLE(?author_name) as ?author_name)\n      WHERE {\n        ?orcid a schema:Person ;\n          schema:name ?author_name\n      }\n      GROUP BY ?orcid\n    }\n\n    BIND(STRDT(\n        IF(CONTAINS(?creation_date, '/'),\n          CONCAT(SUBSTR(?creation_date, 6, 4), '-0', REPLACE(SUBSTR(?creation_date, 1, 4), '/', '-')),\n          STR(?creation_date)\n        ), xsd:date) as ?date)\n}\nGROUP BY ?orcid ?author_name ?role ?do_type ?date\nORDER BY ?orcid\n\n```",
+        "description": "\n\n```\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n\nSELECT DISTINCT ?orcid ?author_name ?role ?date ?do_type (COUNT(DISTINCT ?purl) as ?do_count_on_date)\nFROM <https://lod.humanatlas.io>\nWHERE {\n  \tVALUES (?role_pred ?role) {\n  \t\t(ccf:project_lead 'Project Lead')\n      (dcterms:creator 'Author')\n      (schema:reviewedBy 'Reviewer')\n\t  }\n \n    [] a dcat:Dataset ;\n      schema:additionalType ?do_type ;\n      rdfs:seeAlso ?purl ;\n      prov:wasDerivedFrom ?rawData .\n    \n    ?rawData schema:dateCreated ?creation_date ;\n      ?role_pred ?orcid .\n\n    { \n      SELECT ?orcid (SAMPLE(?author_name) as ?author_name)\n      WHERE {\n        ?orcid a schema:Person ;\n          schema:name ?author_name\n      }\n      GROUP BY ?orcid\n    }\n\n    BIND(STRDT(\n        IF(CONTAINS(?creation_date, '/'),\n          CONCAT(SUBSTR(?creation_date, 6, 4), '-0', REPLACE(SUBSTR(?creation_date, 1, 4), '/', '-')),\n          STR(?creation_date)\n        ), xsd:date) as ?date)\n}\nGROUP BY ?orcid ?author_name ?role ?do_type ?date\nORDER BY ?orcid\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
@@ -653,7 +653,7 @@
     },
     "/hra/digital-object-citations": {
       "get": {
-        "description": "\n\n```\n#+ summary: Every digital object and their citations\n\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\n\nSELECT DISTINCT ?purl ?type ?name ?version ?published ?citation ?citation_overall\nFROM <https://lod.humanatlas.io>\nWHERE {\n  ?purl a dcat:Dataset ;\n  \t\tschema:name ?name ;\n  \t\tschema:additionalType ?type ;\n        schema:version ?version ;\n        schema:dateCreated ?published ;\n        prov:wasDerivedFrom ?rawData .\n\n  ?rawData ccf:doi ?doi .\n  OPTIONAL {\n    ?rawData schema:citation ?citation .\n  }\n  OPTIONAL {\n    ?rawData ccf:citation_overall ?citation_overall .\n  }\n}\nORDER BY ?type ?name ?version\n\n```",
+        "description": "\n\n```\n#+ summary: Every digital object and their citations\n\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\n\nSELECT DISTINCT ?purl ?type ?name ?version ?published ?citation ?citation_overall\nFROM <https://lod.humanatlas.io>\nWHERE {\n  [] a dcat:Dataset ;\n  \t\tschema:name ?name ;\n  \t\tschema:additionalType ?type ;\n      schema:version ?version ;\n      schema:dateCreated ?published ;\n      rdfs:seeAlso ?purl ;\n      prov:wasDerivedFrom ?rawData .\n\n  ?rawData ccf:doi ?doi .\n  OPTIONAL {\n    ?rawData schema:citation ?citation .\n  }\n  OPTIONAL {\n    ?rawData ccf:citation_overall ?citation_overall .\n  }\n}\nORDER BY ?type ?name ?version\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
@@ -929,7 +929,7 @@
     },
     "/hra/ftu-parts": {
       "get": {
-        "description": "\n\n```\n#+ summary: get FTU images and parts\n\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX LOD: <https://lod.humanatlas.io>\n\nSELECT DISTINCT ?ftu_digital_object ?ftu_digital_object_doi ?image_url ?organ_iri ?ftu_iri ?ftu_part_iri\nFROM HRA:\nWHERE {\n  ?ftu_illustration a ccf:FtuIllustration ;\n  \ta ?ftu_iri ;\n  \tccf:ccf_located_in ?organ_id ;\n    ccf:illustration_node [ a ?ftu_part_iri ] ;\n    ccf:image_file [\n      ccf:file_format ?format ;\n      ccf:file_url ?image_url\n    ] .\n\n  HRA: prov:hadMember ?versioned_ftu .\n\n  GRAPH LOD: {\n    ?versioned_ftu prov:wasDerivedFrom [\n      ccf:doi ?ftu_digital_object_doi\n    ] .\n  }\n\n  BIND(IRI(REPLACE(?organ_id, 'UBERON:', STR(UBERON:))) as ?organ_iri)\n  BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n  \n  FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n  FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n  FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))\n  FILTER(STRSTARTS(STR(?versioned_ftu), STR(?ftu_digital_object)))\n}\n\n```",
+        "description": "\n\n```\n#+ summary: get FTU images and parts\n\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX LOD: <https://lod.humanatlas.io>\n\nSELECT DISTINCT ?ftu_digital_object ?ftu_digital_object_doi ?image_url ?organ_iri ?ftu_iri ?ftu_part_iri\nFROM HRA:\nWHERE {\n  ?ftu_illustration a ccf:FtuIllustration ;\n  \ta ?ftu_iri ;\n  \tccf:ccf_located_in ?organ_id ;\n    ccf:illustration_node [ a ?ftu_part_iri ] ;\n    ccf:image_file [\n      ccf:file_format ?format ;\n      ccf:file_url ?image_url\n    ] .\n\n  HRA: prov:hadMember ?versioned_ftu .\n\n  GRAPH LOD: {\n    ?versioned_ftu prov:wasDerivedFrom [\n      ccf:doi ?ftu_digital_object_doi\n    ] .\n  }\n\n  BIND(IRI(REPLACE(?organ_id, 'UBERON:', STR(UBERON:))) as ?organ_iri)\n  BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n  \n  FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n  FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n  FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))\n  FILTER(STRSTARTS(STR(?versioned_ftu), STR(?ftu_digital_object)))\n}\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
@@ -1136,7 +1136,7 @@
     },
     "/hra/kg-digital-object-count": {
       "get": {
-        "description": "\n\n```\n#+ summary: All digital objects published to the HRA KG\n\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX schema: <http://schema.org/>\n\nSELECT (COUNT(DISTINCT(?purl)) as ?do_count)\nFROM <https://lod.humanatlas.io>\nWHERE {\n  ?purl a dcat:Dataset ;\n    schema:name ?name ;\n    schema:additionalType ?type .\n}\n\n```",
+        "description": "\n\n```\n#+ summary: All digital objects published to the HRA KG\n\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX schema: <http://schema.org/>\n\nSELECT (COUNT(DISTINCT(?purl)) as ?do_count)\nFROM <https://lod.humanatlas.io>\nWHERE {\n  [] a dcat:Dataset ;\n    schema:name ?name ;\n    rdfs:seeAlso ?purl ;\n    schema:additionalType ?type .\n}\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
@@ -1205,7 +1205,7 @@
     },
     "/hra/ref-organ-dois": {
       "get": {
-        "description": "\n\n```\n#+ summary: ref-organ-dois in HRA v2.1\n\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\n\nSELECT ?Organ ?Sex ?DOI ?DigitalObject\nFROM <https://lod.humanatlas.io>\nWHERE {\n  {\n    SELECT DISTINCT ?DigitalObject\n    WHERE {\n      ?hraPurl a dcat:Dataset ;\n          schema:name ?hraName ;\n          schema:additionalType ?hraType ;\n          schema:version ?hraVersion ;\n          prov:hadMember ?digitalObjectStr .\n\n\t  FILTER(?hraType = 'collection' && ?hraName = 'hra' && ?hraVersion = 'v2.1')\n      FILTER(CONTAINS(STR(?digitalObjectStr), '/ref-organ/'))\n      BIND(IRI(STR(?digitalObjectStr)) as ?DigitalObject)\n    }\n  }\n  \n  {\n    ?DigitalObject a dcat:Dataset ;\n  \t\tschema:name ?name ;\n  \t\tschema:additionalType ?type ;\n        schema:version ?version ;\n        schema:dateCreated ?published ;\n        prov:wasDerivedFrom ?rawData .\n\n    ?rawData ccf:doi ?DOI .\n    BIND(IF(CONTAINS(?name, 'female'), 'F', 'M') as ?Sex)\n    BIND(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(?name, '-female', ''), '-male', ''), '-', ' '), 'left', '(left)'), 'right', '(right)') as ?Organ)\n    FILTER(!CONTAINS(?name, '-crosswalk') && !CONTAINS(?name, 'united-'))\n  }\n}\nORDER BY ?Organ ?Sex\n\n```",
+        "description": "\n\n```\n#+ summary: ref-organ-dois in HRA v2.2\n\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\n\nSELECT ?Organ ?Sex ?DOI ?DigitalObject\nFROM <https://lod.humanatlas.io>\nWHERE {\n  {\n    SELECT DISTINCT ?DigitalObject\n    WHERE {\n      [] a dcat:Dataset ;\n          schema:name ?hraName ;\n          schema:additionalType ?hraType ;\n          schema:version ?hraVersion ;\n          rdfs:seeAlso ?hraPurl ;\n          prov:hadMember ?digitalObjectStr .\n\n      FILTER(?hraType = 'collection' && ?hraName = 'hra' && ?hraVersion = 'v2.2')\n      FILTER(CONTAINS(STR(?digitalObjectStr), '/ref-organ/'))\n      BIND(IRI(STR(?digitalObjectStr)) as ?DigitalObject)\n    }\n  }\n  \n  {\n    [] a dcat:Dataset ;\n  \t\tschema:name ?name ;\n  \t\tschema:additionalType ?type ;\n      schema:version ?version ;\n      schema:dateCreated ?published ;\n      rdfs:seeAlso ?DigitalObject ;\n      prov:wasDerivedFrom ?rawData .\n\n    ?rawData ccf:doi ?DOI .\n    BIND(IF(CONTAINS(?name, 'female'), 'F', 'M') as ?Sex)\n    BIND(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(?name, '-female', ''), '-male', ''), '-', ' '), 'left', '(left)'), 'right', '(right)') as ?Organ)\n    FILTER(!CONTAINS(?name, '-crosswalk') && !CONTAINS(?name, 'united-'))\n  }\n}\nORDER BY ?Organ ?Sex\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
@@ -1268,7 +1268,7 @@
             }
           }
         },
-        "summary": "ref-organ-dois in HRA v2.1",
+        "summary": "ref-organ-dois in HRA v2.2",
         "tags": []
       }
     },
