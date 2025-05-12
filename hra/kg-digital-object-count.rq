@@ -1,12 +1,14 @@
 #+ summary: All digital objects published to the HRA KG
 
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX schema: <http://schema.org/>
 
 SELECT (COUNT(DISTINCT(?purl)) as ?do_count)
 FROM <https://lod.humanatlas.io>
 WHERE {
-  ?purl a dcat:Dataset ;
+  [] a dcat:Dataset ;
     schema:name ?name ;
+    rdfs:seeAlso ?purl ;
     schema:additionalType ?type .
 }

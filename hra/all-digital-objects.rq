@@ -2,17 +2,19 @@
 
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX schema: <http://schema.org/>
 PREFIX LOD: <https://lod.humanatlas.io>
 
 SELECT *
 FROM LOD:
 WHERE {
-  ?purl a dcat:Dataset ;
+  [] a dcat:Dataset ;
     schema:name ?name ;
     schema:additionalType ?type ;
     schema:version ?version ;
     schema:dateCreated ?published ;
+    rdfs:seeAlso ?purl ;
   .
 }
 ORDER BY ?type ?name ?version

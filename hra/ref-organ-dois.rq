@@ -1,4 +1,4 @@
-#+ summary: ref-organ-dois in HRA v2.1
+#+ summary: ref-organ-dois in HRA v2.2
 
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
@@ -13,25 +13,27 @@ WHERE {
   {
     SELECT DISTINCT ?DigitalObject
     WHERE {
-      ?hraPurl a dcat:Dataset ;
+      [] a dcat:Dataset ;
           schema:name ?hraName ;
           schema:additionalType ?hraType ;
           schema:version ?hraVersion ;
+          rdfs:seeAlso ?hraPurl ;
           prov:hadMember ?digitalObjectStr .
 
-	  FILTER(?hraType = 'collection' && ?hraName = 'hra' && ?hraVersion = 'v2.1')
+      FILTER(?hraType = 'collection' && ?hraName = 'hra' && ?hraVersion = 'v2.2')
       FILTER(CONTAINS(STR(?digitalObjectStr), '/ref-organ/'))
       BIND(IRI(STR(?digitalObjectStr)) as ?DigitalObject)
     }
   }
   
   {
-    ?DigitalObject a dcat:Dataset ;
+    [] a dcat:Dataset ;
   		schema:name ?name ;
   		schema:additionalType ?type ;
-        schema:version ?version ;
-        schema:dateCreated ?published ;
-        prov:wasDerivedFrom ?rawData .
+      schema:version ?version ;
+      schema:dateCreated ?published ;
+      rdfs:seeAlso ?DigitalObject ;
+      prov:wasDerivedFrom ?rawData .
 
     ?rawData ccf:doi ?DOI .
     BIND(IF(CONTAINS(?name, 'female'), 'F', 'M') as ?Sex)

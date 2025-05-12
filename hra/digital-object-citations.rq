@@ -10,12 +10,13 @@ PREFIX ccf: <http://purl.org/ccf/>
 SELECT DISTINCT ?purl ?type ?name ?version ?published ?citation ?citation_overall
 FROM <https://lod.humanatlas.io>
 WHERE {
-  ?purl a dcat:Dataset ;
+  [] a dcat:Dataset ;
   		schema:name ?name ;
   		schema:additionalType ?type ;
-        schema:version ?version ;
-        schema:dateCreated ?published ;
-        prov:wasDerivedFrom ?rawData .
+      schema:version ?version ;
+      schema:dateCreated ?published ;
+      rdfs:seeAlso ?purl ;
+      prov:wasDerivedFrom ?rawData .
 
   ?rawData ccf:doi ?doi .
   OPTIONAL {

@@ -18,8 +18,9 @@ WHERE {
       (schema:reviewedBy 'Reviewer')
 	  }
  
-    ?purl a dcat:Dataset ;
+    [] a dcat:Dataset ;
       schema:additionalType ?do_type ;
+      rdfs:seeAlso ?purl ;
       prov:wasDerivedFrom ?rawData .
     
     ?rawData schema:dateCreated ?creation_date ;
