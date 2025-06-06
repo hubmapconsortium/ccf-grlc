@@ -1,14 +1,6 @@
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
-PREFIX dcterms: <http://purl.org/dc/terms/>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX schema: <https://schema.org/>
-PREFIX skin: <http://purl.obolibrary.org/obo/UBERON_0002097>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX DSGraphs: <https://purl.humanatlas.io/collection/ds-graphs>
-PREFIX DSGraphsExtra: <https://purl.humanatlas.io/graph/ds-graphs-enrichments>
 PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
 PREFIX FMA: <http://purl.org/sig/ont/fma/fma>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
@@ -18,19 +10,18 @@ SELECT DISTINCT ?reference_organ ?anatomical_structure_of
   ?x_translation ?y_translation ?z_translation
 FROM HRA:
 WHERE {
-  ?anatomical_structure_of rdf:type ccf:SpatialEntity ;
+  ?anatomical_structure_of a ccf:SpatialEntity ;
     ccf:has_reference_organ ?reference_organ ;
     ccf:representation_of ?representation_of ;
     skos:prefLabel ?label ; # When using HRA
-    # rdfs:label ?label ; # When using ccf.owl
     ccf:has_object_reference ?object .
-  ?object rdf:type ccf:SpatialObjectReference ;
+  ?object a ccf:SpatialObjectReference ;
     ccf:file_url ?glb_file ;
     ccf:file_subpath ?node_name .
   
   ?reference_organ ccf:organ_owner_sex ?sex .
 
-  [] rdf:type ccf:SpatialPlacement ;
+  [] a ccf:SpatialPlacement ;
     ccf:placement_for ?object ;
     # ccf:placement_relative_to ?anatomical_structure_of ;
     ccf:x_translation ?tmp_x_translation ;
