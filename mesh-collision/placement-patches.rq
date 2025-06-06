@@ -43,20 +43,5 @@ WHERE {
     BIND(xsd:decimal(?tmp_x_translation) as ?x_translation)
     BIND(xsd:decimal(?tmp_y_translation) as ?y_translation)
     BIND(xsd:decimal(?tmp_z_translation) as ?z_translation)
-
-    FILTER(!STRSTARTS(STR(?source), 'https://purl.humanatlas.io/ref-organ/') ||
-      EXISTS {
-        GRAPH HRA: {
-          ?source a ccf:SpatialEntity .
-        }
-      }
-    )
-    FILTER(!STRSTARTS(STR(?target), 'https://purl.humanatlas.io/ref-organ/') ||
-      EXISTS {
-        GRAPH HRA: {
-          ?target a ccf:SpatialEntity .
-        }
-      }
-    )
 }
 ORDER BY ?source ?target
