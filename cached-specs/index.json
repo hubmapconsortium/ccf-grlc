@@ -1824,6 +1824,144 @@
         "tags": []
       }
     },
+    "/hra-pop/cell-types-per-dataset": {
+      "get": {
+        "description": "Computes the cell summaries for each organ by dataset.\n\n```\n#+ summary: Cell Summaries by Dataset\n#+ description: Computes the cell summaries for each organ by dataset.\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX FMA: <http://purl.org/sig/ont/fma/fma>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?organ_id ?organ ?dataset ?sex ?tool ?modality ?cell_id ?cell_label ?cell_count ?cell_percentage \nFROM HRA:\nFROM HRApop:\nWHERE {\n  {\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  ?dataset ccf:has_cell_summary [ \n      ccf:cell_annotation_method ?tool ;\n      ccf:modality ?modality ;\n      ccf:has_cell_summary_row [\n        ccf:cell_id ?cell_id ;\n        ccf:cell_label ?raw_cell_label ;\n        ccf:cell_count ?cell_count ;\n        ccf:percentage_of_total ?cell_percentage ;\n    ]\n  ] .\n\n  [] a ccf:SpatialPlacement ;\n    ccf:placement_relative_to ?refOrgan ;\n    ccf:placement_for ?rui_location .\n\n  ?refOrgan owl:sameAs* [\n    ccf:representation_of ?organ_id ;\n    ccf:organ_owner_sex ?sex ;\n    skos:prefLabel ?organ\n  ] .\n\n  ?organ_id rdfs:label ?organ_label .\n\n  OPTIONAL { ?cell_id rdfs:label ?rdfs_cell_label . }\n  BIND(COALESCE(?rdfs_cell_label, ?raw_cell_label) as ?cell_label)\n}\nORDER BY ?sex ?tool ?dataset DESC(?cell_count)\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Cell Summaries by Dataset",
+        "tags": []
+      }
+    },
+    "/hra-pop/cell-types-per-extraction-site": {
+      "get": {
+        "description": "Computes the cell summaries for each organ by extraction site.\n\n```\n#+ summary: Cell Summaries by Extraction Site \n#+ description: Computes the cell summaries for each organ by extraction site.\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX FMA: <http://purl.org/sig/ont/fma/fma>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?organ_id ?organ ?extraction_site ?sex ?tool ?modality ?cell_id ?cell_label ?cell_count ?cell_percentage \nFROM HRA:\nFROM HRApop:\nWHERE {\n  [] ccf:has_registration_location ?extraction_site .\n\n  ?extraction_site ccf:has_cell_summary [ \n      ccf:cell_annotation_method ?tool ;\n      ccf:modality ?modality ;\n      ccf:has_cell_summary_row [\n        ccf:cell_id ?cell_id ;\n        ccf:cell_label ?raw_cell_label ;\n        ccf:cell_count ?cell_count ;\n        ccf:percentage_of_total ?cell_percentage ;\n    ]\n  ] .\n\n  [] a ccf:SpatialPlacement ;\n    ccf:placement_relative_to ?refOrgan ;\n    ccf:placement_for ?extraction_site .\n\n  ?refOrgan owl:sameAs* [\n    ccf:representation_of ?organ_id ;\n    ccf:organ_owner_sex ?sex ;\n    skos:prefLabel ?organ\n  ] .\n\n  ?organ_id rdfs:label ?organ_label .\n\n  OPTIONAL { ?cell_id rdfs:label ?rdfs_cell_label . }\n  BIND(COALESCE(?rdfs_cell_label, ?raw_cell_label) as ?cell_label)\n}\nORDER BY ?sex ?tool ?extraction_site DESC(?cell_count)\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Cell Summaries by Extraction Site",
+        "tags": []
+      }
+    },
     "/hra-pop/cell_types_in_anatomical_structurescts_per_as": {
       "get": {
         "description": "Computes the cell summaries for each organ by anatomical strcutrure.\n\n```\n#+ summary: Cell Summaries by Anatomical Structure \n#+ description: Computes the cell summaries for each organ by anatomical strcutrure.\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX FMA: <http://purl.org/sig/ont/fma/fma>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?organ ?as ?as_label ?sex ?tool ?modality ?cell_id ?cell_label ?cell_count ?cell_percentage ?dataset_count\nFROM HRA:\nFROM HRApop:\nWHERE {\n  ?as ccf:has_cell_summary [ \n      ccf:cell_annotation_method ?tool ;\n      ccf:cell_source_label ?as_label ;\n      ccf:sex ?sex ;\n      ccf:modality ?modality ;\n      ccf:aggregated_summary_count ?dataset_count ;\n      ccf:has_cell_summary_row [\n        ccf:cell_id ?cell_id ;\n        ccf:cell_label ?cell_label ;\n        ccf:cell_count ?cell_count ;\n        ccf:percentage_of_total ?cell_percentage ;\n    ]\n  ] .\n  FILTER(STRSTARTS(STR(?as), STR(UBERON:)) || STRSTARTS(STR(?as), STR(FMA:)))\n  \n  ?refOrganPiece ccf:representation_of ?as ;\n      ccf:has_reference_organ ?refOrgan .\n  ?refOrgan ccf:organ_owner_sex ?sex .\n  ?refOrgan skos:prefLabel ?organ .\n}\nORDER BY ?sex ?as ?tool DESC(?cell_count)\n\n```",
