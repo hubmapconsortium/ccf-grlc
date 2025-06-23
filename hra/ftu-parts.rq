@@ -24,10 +24,11 @@ WHERE {
 
   HRA: prov:hadMember ?versioned_ftu .
 
-  GRAPH LOD: {
-    ?versioned_ftu prov:wasDerivedFrom [
-      ccf:doi ?ftu_digital_object_doi
-    ] .
+   GRAPH LOD: {
+    [] prov:wasDerivedFrom [
+        ccf:doi ?ftu_digital_object_doi
+      ] ;
+      rdfs:seeAlso ?versioned_ftu .
   }
 
   BIND(IRI(REPLACE(?organ_id, 'UBERON:', STR(UBERON:))) as ?organ_iri)
