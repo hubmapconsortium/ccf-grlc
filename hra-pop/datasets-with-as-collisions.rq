@@ -1,0 +1,42 @@
+#+ summary: get HRApop datasets with AS collisions
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
+PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
+
+SELECT DISTINCT ?dataset ?organ_id ?as_id # ?ftu ?ftu_iri 
+FROM HRA:
+FROM HRApop:
+WHERE {
+#  {
+#    ?ftu_illustration a ccf:FtuIllustration ;
+#      ccf:representation_of ?ftu_iri .
+#    BIND(STRBEFORE(STR(?ftu_illustration), '#primary') as ?ftu)
+#  }
+
+  {
+    ?sample ccf:comes_from ?donor .
+    ?sample ccf:has_registration_location ?rui_location .
+    ?sample ccf:generates_dataset ?dataset .
+  } UNION {
+    ?block ccf:comes_from ?donor .
+    ?block ccf:subdivided_into_sections ?sample .
+    ?block ccf:has_registration_location ?rui_location .
+    ?sample ccf:generates_dataset ?dataset .
+  }
+
+  ?rui_location ccf:has_collision_summary [
+    ccf:has_collision_item [
+      ccf:has_reference_organ ?refOrgan ;
+      ccf:as_id ?as_id ;
+    ]
+  ] .
+
+  ?refOrgan owl:sameAs* [
+    ccf:representation_of ?organ_id ;
+  ] .
+
+#  ?ftu_iri part_of:* ?as_id . 
+}
