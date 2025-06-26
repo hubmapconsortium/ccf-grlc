@@ -2100,6 +2100,75 @@
         "tags": []
       }
     },
+    "/hra-pop/datasets-with-as-collisions": {
+      "get": {
+        "description": "\n\n```\n#+ summary: get HRApop datasets with AS collisions\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?dataset ?organ_id ?as_id # ?ftu ?ftu_iri \nFROM HRA:\nFROM HRApop:\nWHERE {\n#  {\n#    ?ftu_illustration a ccf:FtuIllustration ;\n#      ccf:representation_of ?ftu_iri .\n#    BIND(STRBEFORE(STR(?ftu_illustration), '#primary') as ?ftu)\n#  }\n\n  {\n    ?sample ccf:comes_from ?donor .\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:comes_from ?donor .\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  ?rui_location ccf:has_collision_summary [\n    ccf:has_collision_item [\n      ccf:has_reference_organ ?refOrgan ;\n      ccf:as_id ?as_id ;\n    ]\n  ] .\n\n  ?refOrgan owl:sameAs* [\n    ccf:representation_of ?organ_id ;\n  ] .\n\n#  ?ftu_iri part_of:* ?as_id . \n}\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "get HRApop datasets with AS collisions",
+        "tags": []
+      }
+    },
     "/hra-pop/datasets-with-bm": {
       "get": {
         "description": "Atlas Datasets that have a given Biomarker. There is one CT-BM expression per row.\n\n```\n#+ summary: Atlas Datasets with a given Biomarker\n#+ description: Atlas Datasets that have a given Biomarker. There is one CT-BM expression per row.\n\n#+ defaults:\n#+   - bmlabel: ENSG00000169710\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?source ?dataset ?organ ?sex ?tool ?cell_type ?cell_type_label ?cell_type_count ?biomarker ?mean_expression_value\nFROM CCF:\nFROM HRApop:\nWHERE {\n  ?donor ccf:consortium_name ?source .\n\n  {\n    ?sample ccf:comes_from ?donor .\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:comes_from ?donor .\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  {\n    ?dataset ccf:organ_id ?reportedOrganIriString .\n    BIND(IRI(?reportedOrganIriString) as ?reportedOrganIri)\n\n    OPTIONAL {\n      ?reportedOrganIri rdfs:label ?reportedOrganRdfsLabel .\n    }\n    OPTIONAL {\n      ?reportedOrganIri ccf:ccf_pref_label ?reportedOrganCcfLabel .\n    }\n    BIND(IF(BOUND(?reportedOrganRdfsLabel), ?reportedOrganRdfsLabel, ?reportedOrganCcfLabel) as ?organ)\n  }\n\n  ?dataset ccf:has_cell_summary [\n    ccf:sex ?sex ;\n    ccf:cell_annotation_method ?tool ;\n    ccf:has_cell_summary_row [\n      ccf:cell_id ?cell_id ;\n      ccf:cell_label ?cell_type_label ;\n      ccf:cell_count ?cell_type_count ;\n      ccf:gene_expr [\n        ccf:gene_label ?biomarker ;\n        ccf:mean_gene_expr_value ?gene_expr ;\n      ]\n    ]\n  ] .\n\n  FILTER(EXISTS {\n    ?dataset ccf:has_cell_summary [\n      ccf:sex ?sex ;\n      ccf:cell_annotation_method ?tool ;\n      ccf:has_cell_summary_row [\n        ccf:gene_expr [\n          ccf:gene_label ?biomarker_label ;\n        ]\n      ]\n    ] .\n    FILTER(?_bmlabel = ?biomarker_label)\n  })\n\n  FILTER(CONTAINS(?_bmlabel, ?biomarker) || TRUE)\n\n  BIND(REPLACE(STR(?cell_id), STR(CL:), 'CL:') as ?cell_type)\n  BIND(xsd:decimal(?gene_expr) as ?mean_expression_value)\n}\n\n```",
