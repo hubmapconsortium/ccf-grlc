@@ -13,12 +13,6 @@ FROM HRA:
 FROM HRApop:
 WHERE {
   {
-    ?ftu_illustration a ccf:FtuIllustration ;
-      ccf:representation_of ?ftu_iri .
-    BIND(STRBEFORE(STR(?ftu_illustration), '#primary') as ?ftu)
-  }
-
-  {
     ?sample ccf:comes_from ?donor .
     ?sample ccf:has_registration_location ?rui_location .
     ?sample ccf:generates_dataset ?dataset .
@@ -40,5 +34,11 @@ WHERE {
     ccf:representation_of ?organ_id ;
   ] .
 
-  ?ftu_iri ccf:ccf_part_of* ?as_id .
+  OPTIONAL {
+    ?ftu_illustration a ccf:FtuIllustration ;
+      ccf:representation_of ?ftu_iri .
+    BIND(STRBEFORE(STR(?ftu_illustration), '#primary') as ?ftu)
+
+    ?ftu_iri ccf:ccf_part_of* ?as_id .
+  }
 }
