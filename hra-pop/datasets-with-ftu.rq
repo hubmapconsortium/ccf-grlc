@@ -40,8 +40,5 @@ WHERE {
     ccf:representation_of ?organ_id ;
   ] .
 
-  # Use Ubergraph's reasoned relationships to find part of
-  SERVICE <https://ubergraph.apps.renci.org/sparql> {
-    ?ftu_iri part_of: ?as_id .
-  }
+  ?ftu_iri ccf:ccf_part_of* ?as_id .
 }
