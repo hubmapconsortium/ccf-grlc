@@ -2031,6 +2031,75 @@
         "tags": []
       }
     },
+    "/hra-pop/ct-bm-per-dataset": {
+      "get": {
+        "description": "Computes the cell summaries plus biomarkers and their mean gene expression for each organ by dataset.\n\n```\n#+ summary: Cell Summaries with Biomarker information by Dataset\n#+ description: Computes the cell summaries plus biomarkers and their mean gene expression for each organ by dataset.\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX FMA: <http://purl.org/sig/ont/fma/fma>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?organ_id ?organ ?dataset ?sex ?tool ?modality ?cell_id ?cell_label ?cell_count ?cell_percentage\n  ?biomarker_id ?biomarker_label ?mean_gene_expr_value\nFROM HRA:\nFROM HRApop:\nWHERE {\n  {\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  ?dataset ccf:has_cell_summary [ \n    ccf:cell_annotation_method ?tool ;\n    ccf:modality ?modality ;\n    ccf:has_cell_summary_row [\n      ccf:cell_id ?cell_id ;\n      ccf:cell_label ?raw_cell_label ;\n      ccf:cell_count ?cell_count ;\n      ccf:percentage_of_total ?cell_percentage ;\n      ccf:gene_expr [\n        ccf:gene_label ?biomarker_label ;\n        ccf:gene_id ?biomarker_id ;\n        ccf:mean_gene_expr_value ?mean_gene_expr_value ;\n      ]\n    ]\n  ] .\n\n  [] a ccf:SpatialPlacement ;\n    ccf:placement_relative_to ?refOrgan ;\n    ccf:placement_for ?rui_location .\n\n  ?refOrgan owl:sameAs* [\n    ccf:representation_of ?organ_id ;\n    ccf:organ_owner_sex ?sex ;\n    skos:prefLabel ?organ\n  ] .\n\n  ?organ_id rdfs:label ?organ_label .\n\n  OPTIONAL { ?cell_id rdfs:label ?rdfs_cell_label . }\n  BIND(COALESCE(?rdfs_cell_label, ?raw_cell_label) as ?cell_label)\n}\nORDER BY ?sex ?tool ?dataset DESC(?cell_count)\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Cell Summaries with Biomarker information by Dataset",
+        "tags": []
+      }
+    },
     "/hra-pop/ctann-organs": {
       "get": {
         "description": "A list of organs supported by Azimuth, CellTypist, or Popv in the hra-workflows-runner\n\n```\n#+ summary: Organs supported by CTAnn\n#+ description: A list of organs supported by Azimuth, CellTypist, or Popv in the hra-workflows-runner\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\n\nSELECT DISTINCT ?organ_id\nFROM <https://purl.humanatlas.io/graph/ctann-crosswalks>\nWHERE {\n  ?tool ccf:organ_id ?organ_id\n}\n\n```",
