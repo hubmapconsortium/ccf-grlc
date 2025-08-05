@@ -1,0 +1,15 @@
+#+ summary: All unique references in DOs
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX LOD: <https://lod.humanatlas.io>
+
+SELECT DISTINCT ?ref
+FROM LOD:
+WHERE {
+  [] a dcat:Dataset ; dct:references ?ref .
+}
+ORDER BY ?ref
