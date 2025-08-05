@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "e8cf905bb1421bfae89e19369b4ed764395a6583"
+    "version": "1a63cbec1705a560c1079fbd2f4e9a8b4b3b5b6a"
   },
   "servers": [
     {
@@ -651,6 +651,75 @@
         "tags": []
       }
     },
+    "/hra/digital-object-bibliographies": {
+      "get": {
+        "description": "\n\n```\n#+ summary: All unique bibliography entries in DOs\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dct: <http://purl.org/dc/terms/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX schema: <http://schema.org/>\nPREFIX LOD: <https://lod.humanatlas.io>\n\nSELECT DISTINCT ?ref\nFROM LOD:\nWHERE {\n  [] a dcat:Dataset ; dct:description ?description .\n  BIND(REPLACE(STRAFTER(?description, 'Bibliography:**'), \"^\\\\s+|\\\\s+$\", \"\") as ?ref)\n  FILTER(?ref != \"\")\n}\nORDER BY ?ref\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "All unique bibliography entries in DOs",
+        "tags": []
+      }
+    },
     "/hra/digital-object-citations": {
       "get": {
         "description": "\n\n```\n#+ summary: Every digital object and their citations\n\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\n\nSELECT DISTINCT ?purl ?type ?name ?version ?published ?citation ?citation_overall\nFROM <https://lod.humanatlas.io>\nWHERE {\n  [] a dcat:Dataset ;\n  \t\tschema:name ?name ;\n  \t\tschema:additionalType ?type ;\n      schema:version ?version ;\n      schema:dateCreated ?published ;\n      rdfs:seeAlso ?purl ;\n      prov:wasDerivedFrom ?rawData .\n\n  ?rawData ccf:doi ?doi .\n  OPTIONAL {\n    ?rawData schema:citation ?citation .\n  }\n  OPTIONAL {\n    ?rawData ccf:citation_overall ?citation_overall .\n  }\n}\nORDER BY ?type ?name ?version\n\n```",
@@ -786,6 +855,75 @@
           }
         },
         "summary": "Digital objects counts in the latest HRA release",
+        "tags": []
+      }
+    },
+    "/hra/digital-object-references": {
+      "get": {
+        "description": "\n\n```\n#+ summary: All unique references in DOs\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX dct: <http://purl.org/dc/terms/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX schema: <http://schema.org/>\nPREFIX LOD: <https://lod.humanatlas.io>\n\nSELECT DISTINCT ?ref\nFROM LOD:\nWHERE {\n  [] a dcat:Dataset ; dct:references ?ref .\n}\nORDER BY ?ref\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "All unique references in DOs",
         "tags": []
       }
     },
