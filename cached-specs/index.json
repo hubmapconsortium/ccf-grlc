@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "5857b59e2b9bf8df0ce6fb9e5b14cbf49dca6570"
+    "version": "90d51fdb15c11f82c5f9a7ae3d5725a3c2d76b10"
   },
   "servers": [
     {
@@ -361,6 +361,75 @@
           }
         },
         "summary": "Unique AS, CT, and B across all HRA versions",
+        "tags": []
+      }
+    },
+    "/hra/as-parts": {
+      "get": {
+        "description": "All anatomical structures part of a given anatomical structure, including itself\n\n```\n#+ summary: All AS part of a given AS\n#+ description: All anatomical structures part of a given anatomical structure, including itself\n\n#+ defaults:\n#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?part_iri ?part_label\nFROM HRA:\nWHERE {\n  ?part_iri ccf:ccf_part_of*|part_of:* ?location_iri .\n  ?part_iri rdfs:label ?part_label .\n}\nORDER BY ?part_iri\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "All AS part of a given AS",
         "tags": []
       }
     },
@@ -4640,7 +4709,7 @@
     },
     "/fusion/asct_by_biomarker": {
       "get": {
-        "description": "Enter an biomarker IRI, get back a list of anatomical structure and cell type IRIs and labels\n\n```\n#+ summary: anatomical structures and cell types associated with a given biomarker\n#+ description: Enter an biomarker IRI, get back a list of anatomical structure and cell type IRIs and labels\n\n#+ defaults:\n#+   - biomarker: http://identifiers.org/hgnc/1653\n\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>\n\nSELECT DISTINCT ?location_iri ?location_label ?cell_iri (STR(?qlabel) as ?cell_label)\nFROM <https://purl.humanatlas.io/graph/ccf>\nWHERE {\n  ?location_iri ^ccf:ccf_part_of* ?child . \n  ?cell_iri ccf:ccf_located_in ?child .\n  ?cell_iri rdfs:label ?qlabel .\n  ?location_iri rdfs:label ?location_label .\n  \n  # Find biomarkers that characterize the cell type\n  ?cell_iri rdfs:subClassOf [\n    owl:onProperty has_characterizing_biomarker_set: ;\n    owl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .\n    ?bn3 rdf:rest*/rdf:first [\n      owl:onProperty ccf:has_marker_component ;\n      owl:someValuesFrom ?_biomarker_iri\n    ] .\n}\n\n```",
+        "description": "Enter an biomarker IRI, get back a list of anatomical structure and cell type IRIs and labels\n\n```\n#+ summary: anatomical structures and cell types associated with a given biomarker\n#+ description: Enter an biomarker IRI, get back a list of anatomical structure and cell type IRIs and labels\n\n#+ defaults:\n#+   - biomarker: http://identifiers.org/hgnc/1653\n\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>\n\nSELECT DISTINCT ?location_iri ?location_label ?cell_iri (STR(?qlabel) as ?cell_label)\nFROM <https://purl.humanatlas.io/collection/hra>\nWHERE {\n  ?location_iri ^ccf:ccf_part_of* ?child . \n  ?cell_iri ccf:ccf_located_in ?child .\n  ?cell_iri rdfs:label ?qlabel .\n  ?location_iri rdfs:label ?location_label .\n  \n  # Find biomarkers that characterize the cell type\n  ?cell_iri rdfs:subClassOf [\n    owl:onProperty has_characterizing_biomarker_set: ;\n    owl:someValuesFrom [ owl:intersectionOf ?bn3 ]] .\n    ?bn3 rdf:rest*/rdf:first [\n      owl:onProperty ccf:has_marker_component ;\n      owl:someValuesFrom ?_biomarker_iri\n    ] .\n}\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
@@ -4720,7 +4789,7 @@
     },
     "/fusion/cell_by_location": {
       "get": {
-        "description": "Enter an anatomical structure IRI, get back a list of cell type IRIs and labels\n\n```\n#+ summary: cell types located in an anatomical structure\n#+ description: Enter an anatomical structure IRI, get back a list of cell type IRIs and labels\n\n#+ defaults:\n#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\n\nSELECT DISTINCT ?cell_iri (STR(?qlabel) as ?cell_label)\nFROM <https://purl.humanatlas.io/graph/ccf>\nWHERE {\n  ?_location_iri ^ccf:ccf_part_of* ?child . \n  ?cell_iri ccf:ccf_located_in ?child .\n  ?cell_iri rdfs:label ?qlabel .\n}\n\n```",
+        "description": "Enter an anatomical structure IRI, get back a list of cell type IRIs and labels\n\n```\n#+ summary: cell types located in an anatomical structure\n#+ description: Enter an anatomical structure IRI, get back a list of cell type IRIs and labels\n\n#+ defaults:\n#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\n\nSELECT DISTINCT ?cell_iri (STR(?qlabel) as ?cell_label)\nFROM <https://purl.humanatlas.io/collection/hra>\nWHERE {\n  ?_location_iri ^ccf:ccf_part_of* ?child . \n  ?cell_iri ccf:ccf_located_in ?child .\n  ?cell_iri rdfs:label ?qlabel .\n}\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
