@@ -1,0 +1,18 @@
+#+ summary: All AS part of a given AS
+#+ description: All anatomical structures part of a given anatomical structure, including itself
+
+#+ defaults:
+#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT DISTINCT ?part_iri ?part_label
+FROM HRA:
+WHERE {
+  ?part_iri ccf:ccf_part_of*|part_of:* ?location_iri .
+  ?part_iri rdfs:label ?part_label .
+}
+ORDER BY ?part_iri
