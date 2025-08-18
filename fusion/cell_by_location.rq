@@ -9,7 +9,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
 
 SELECT DISTINCT ?cell_iri (STR(?qlabel) as ?cell_label)
-FROM <https://purl.humanatlas.io/graph/ccf>
+FROM <https://purl.humanatlas.io/collection/hra>
 WHERE {
   ?_location_iri ^ccf:ccf_part_of* ?child . 
   ?cell_iri ccf:ccf_located_in ?child .

@@ -11,7 +11,7 @@ PREFIX ccf: <http://purl.org/ccf/>
 PREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>
 
 SELECT DISTINCT ?location_iri ?location_label ?cell_iri (STR(?qlabel) as ?cell_label)
-FROM <https://purl.humanatlas.io/graph/ccf>
+FROM <https://purl.humanatlas.io/collection/hra>
 WHERE {
   ?location_iri ^ccf:ccf_part_of* ?child . 
   ?cell_iri ccf:ccf_located_in ?child .
