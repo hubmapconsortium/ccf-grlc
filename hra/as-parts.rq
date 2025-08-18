@@ -12,7 +12,7 @@ PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 SELECT DISTINCT ?part_iri ?part_label
 FROM HRA:
 WHERE {
-  ?part_iri ccf:ccf_part_of*|part_of:* ?location_iri .
+  ?part_iri ccf:ccf_part_of*|part_of:* ?_location_iri .
   ?part_iri rdfs:label ?part_label .
 }
 ORDER BY ?part_iri
