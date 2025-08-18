@@ -4,7 +4,7 @@ PREFIX ccf: <http://purl.org/ccf/>
 PREFIX ctpop: <https://cns-iu.github.io/hra-cell-type-populations-supporting-information/data/enriched_rui_locations.jsonld#graph>
 
 SELECT DISTINCT ?organ ?organ_label ?dataset ?summary ?cell_annotation_method ?cell_id ?cell_label ?count ?percentage
-FROM <https://purl.org/ccf/releases/2.2.1/ccf.owl>
+FROM <https://purl.humanatlas.io/graph/ccf>
 FROM ctpop:
 WHERE {
   # List of query organ iris

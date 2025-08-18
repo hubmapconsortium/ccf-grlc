@@ -6,7 +6,7 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
 
 SELECT DISTINCT ?ref_organ ?glb_url ?scene_node ?node_id ?node_iri ?node_label
-FROM <https://purl.org/ccf/releases/2.2.1/ccf.owl>
+FROM <https://purl.humanatlas.io/graph/ccf>
 WHERE {
   ?ref_organ_node ccf:has_object_reference [
   	ccf:file_url ?glb_url ;

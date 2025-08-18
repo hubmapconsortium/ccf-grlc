@@ -9,7 +9,7 @@ PREFIX iftu: <https://hubmapconsortium.github.io/hra-ui/apps/ftu-ui/assets/TEMP/
 
 SELECT ?ftu ?cell_id ?cell_label ?count (?count / ?total_count as ?percentage)
 
-FROM <https://purl.org/ccf/releases/2.2.1/ccf.owl>
+FROM <https://purl.humanatlas.io/graph/ccf>
 FROM ctpop:
 FROM iftu:
 

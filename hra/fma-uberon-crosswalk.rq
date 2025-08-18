@@ -1,0 +1,18 @@
+PREFIX fma: <http://purl.org/sig/ont/fma/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX uberon: <http://purl.obolibrary.org/obo/UBERON_>
+PREFIX xref: <http://www.geneontology.org/formats/oboInOwl#hasDbXref>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT DISTINCT ?fma_iri ?fma_id ?uberon
+FROM HRA:
+WHERE {
+  GRAPH <https://purl.humanatlas.io/vocab/fma> {
+    ?fma_iri fma:FMAID ?fmaNumber .
+    BIND(CONCAT('FMA:', ?fmaNumber) as ?fma_id)
+  }
+  {
+    ?uberon xref: ?fma_id .
+    FILTER(STRSTARTS(STR(?fma_id), 'FMA:'))
+  }
+}
