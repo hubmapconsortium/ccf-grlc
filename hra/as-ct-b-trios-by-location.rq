@@ -1,0 +1,44 @@
+#+ summary: AS, CT, and Biomarker trios by AS located in a given anatomical structure
+#+ description: Enter an anatomical structure IRI, get back a list of AS, CT, and Biomarker trios for structures part of it
+
+#+ defaults:
+#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
+
+SELECT DISTINCT ?as_label ?ct_label ?biomarker_label ?as ?ct ?biomarker
+FROM HRA:
+WHERE {
+  # VALUES (?_location_iri) {
+  #   (<http://purl.obolibrary.org/obo/UBERON_0002113>)
+  # }
+
+  # Get AS of interest
+  ?as ccf:ccf_part_of*|part_of:* ?_location_iri .
+  ?as rdfs:label ?as_label .
+
+  # Lookup CT + B for the AS via ASCT+B tables
+  # [] a ccf:AsctbRecord ;
+  #   ccf:anatomical_structure [
+  #     ccf:source_concept ?as 
+  #   ];
+  #   ccf:cell_type [
+  #     ccf:source_concept ?ct 
+  #   ];
+  #   ccf:biomarker_marker [
+  #     ccf:source_concept ?biomarker 
+  #   ] .
+
+  # Alternative that only looks up CT+B specifically assigned to that AS, does not include children
+  [] a ccf:CellMarkerDescriptor ;
+    ccf:primary_anatomical_structure ?as ;
+    ccf:primary_cell_type ?ct ;
+    ccf:biomarker ?biomarker .
+
+  ?ct rdfs:label ?ct_label .
+  ?biomarker rdfs:label ?biomarker_label .
+}
