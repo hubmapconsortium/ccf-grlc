@@ -11,7 +11,7 @@
             "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
         },
         "title": "ccf-grlc",
-        "version": "13895734560a5fd4f69bcf6d8416799e636e6fb0"
+        "version": "ca3ddbd69aac1558114d6eac3886adc3097e214d"
     },
     "paths": {
         "/all-digital-objects": {
@@ -359,6 +359,86 @@
                 "tags": []
             }
         },
+        "/as-ct-b-trios-by-location": {
+            "get": {
+                "description": "Enter an anatomical structure IRI, get back a list of AS, CT, and Biomarker trios for structures part of it\n\n```\n#+ summary: AS, CT, and Biomarker trios by AS located in a given anatomical structure\n#+ description: Enter an anatomical structure IRI, get back a list of AS, CT, and Biomarker trios for structures part of it\n\n#+ defaults:\n#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\n\nSELECT DISTINCT ?as_label ?ct_label ?biomarker_label ?as ?ct ?biomarker\nFROM HRA:\nWHERE {\n  # VALUES (?_location_iri) {\n  #   (<http://purl.obolibrary.org/obo/UBERON_0002113>)\n  # }\n\n  # Get AS of interest\n  ?as ccf:ccf_part_of*|part_of:* ?_location_iri .\n  ?as rdfs:label ?as_label .\n\n  # Lookup CT + B for the AS via ASCT+B tables\n  # [] a ccf:AsctbRecord ;\n  #   ccf:anatomical_structure [\n  #     ccf:source_concept ?as \n  #   ];\n  #   ccf:cell_type [\n  #     ccf:source_concept ?ct \n  #   ];\n  #   ccf:biomarker_marker [\n  #     ccf:source_concept ?biomarker \n  #   ] .\n\n  # Alternative that only looks up CT+B specifically assigned to that AS, does not include children\n  [] a ccf:CellMarkerDescriptor ;\n    ccf:primary_anatomical_structure ?as ;\n    ccf:primary_cell_type ?ct ;\n    ccf:biomarker ?biomarker .\n\n  ?ct rdfs:label ?ct_label .\n  ?biomarker rdfs:label ?biomarker_label .\n}\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    },
+                    {
+                        "description": "A value of type string (iri) that will substitute ?_location_iri in the original query",
+                        "in": "query",
+                        "name": "location",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "iri",
+                            "default": "http://purl.obolibrary.org/obo/UBERON_0002113"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "AS, CT, and Biomarker trios by AS located in a given anatomical structure",
+                "tags": []
+            }
+        },
         "/as-ct-gene-trios-by-location": {
             "get": {
                 "description": "Enter an anatomical structure IRI, get back a list of AS, CT, and Gene trios for structures part of it\n\n```\n#+ summary: AS, CT, and Gene trios by AS located in a given anatomical structure\n#+ description: Enter an anatomical structure IRI, get back a list of AS, CT, and Gene trios for structures part of it\n\n#+ defaults:\n#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\n\nSELECT DISTINCT ?as_label ?ct_label ?gene_symbol ?as ?ct ?gene\nFROM HRA:\nWHERE {\n  # Get AS of interest\n  ?as ccf:ccf_part_of*|part_of:* ?_location_iri .\n  ?as rdfs:label ?as_label .\n\n  # Lookup CT + B for the AS via ASCT+B tables\n  [] a ccf:AsctbRecord ;\n    ccf:anatomical_structure [\n      ccf:source_concept ?as \n    ];\n    ccf:cell_type [\n      ccf:source_concept ?ct \n    ];\n    ccf:gene_marker [\n      ccf:source_concept ?gene \n    ] .\n\n  # Alternative that only looks up CT+B specifically assigned to that AS, does not include children\n  # [] a ccf:CellMarkerDescriptor ;\n  #   ccf:primary_anatomical_structure ?as ;\n  #   ccf:primary_cell_type ?ct ;\n  #   ccf:biomarker ?gene .\n\n  ?ct rdfs:label ?ct_label .\n  ?gene rdfs:label ?gene_symbol .\n}\n\n```",
@@ -436,6 +516,86 @@
                     }
                 },
                 "summary": "AS, CT, and Gene trios by AS located in a given anatomical structure",
+                "tags": []
+            }
+        },
+        "/as-ct-protein-trios-by-location": {
+            "get": {
+                "description": "Enter an anatomical structure IRI, get back a list of AS, CT, and Protein trios for structures part of it\n\n```\n#+ summary: AS, CT, and Protein trios by AS located in a given anatomical structure\n#+ description: Enter an anatomical structure IRI, get back a list of AS, CT, and Protein trios for structures part of it\n\n#+ defaults:\n#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\n\nSELECT DISTINCT ?as_label ?ct_label ?protein_label ?as ?ct ?protein\nFROM HRA:\nWHERE {\n  # VALUES (?_location_iri) {\n  #   (<http://purl.obolibrary.org/obo/UBERON_0002113>)\n  # }\n\n  # Get AS of interest\n  ?as ccf:ccf_part_of*|part_of:* ?_location_iri .\n  ?as rdfs:label ?as_label .\n\n  # Lookup CT + B for the AS via ASCT+B tables\n  [] a ccf:AsctbRecord ;\n    ccf:anatomical_structure [\n      ccf:source_concept ?as \n    ];\n    ccf:cell_type [\n      ccf:source_concept ?ct \n    ];\n    ccf:protein_marker [\n      ccf:source_concept ?protein \n    ] .\n\n  # Alternative that only looks up CT+B specifically assigned to that AS, does not include children\n  # [] a ccf:CellMarkerDescriptor ;\n  #   ccf:primary_anatomical_structure ?as ;\n  #   ccf:primary_cell_type ?ct ;\n  #   ccf:biomarker ?protein .\n\n  ?ct rdfs:label ?ct_label .\n  ?protein rdfs:label ?protein_label .\n}\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    },
+                    {
+                        "description": "A value of type string (iri) that will substitute ?_location_iri in the original query",
+                        "in": "query",
+                        "name": "location",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "iri",
+                            "default": "http://purl.obolibrary.org/obo/UBERON_0002113"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "AS, CT, and Protein trios by AS located in a given anatomical structure",
                 "tags": []
             }
         },
@@ -1842,8 +2002,8 @@
             }
         }
     },
-    "prev_commit": "995b5da3407e65a409830d3901982dfc6e94c023",
-    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2025-08-21T20:58:57.236994\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2025-08-21T20:58:57.236994\"^^xsd:dateTime ;\n    prov:startedAtTime \"2025-08-21T20:57:57.605274\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/all-digital-objects.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-cnt.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-counts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts-all-versions.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-gene-trios-by-location.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-parts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-per-organ.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/asctb-in-table.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/bm-located-in-as.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-authors.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-bibliographies.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-citations.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-count.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-references.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-ids.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-lookup.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/fma-uberon-crosswalk.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ftu-parts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/high-level-stats.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/kg-asctb-temp.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/kg-digital-object-count.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-dois.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-glb-files.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-term-list.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-terms.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/all-digital-objects.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-cnt.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-counts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts-all-versions.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-gene-trios-by-location.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-parts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-per-organ.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/asctb-in-table.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/bm-located-in-as.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-authors.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-bibliographies.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-citations.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-count.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-references.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-ids.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-lookup.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/fma-uberon-crosswalk.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ftu-parts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/high-level-stats.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/kg-asctb-temp.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/kg-digital-object-count.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-dois.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-glb-files.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-term-list.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-terms.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
+    "prev_commit": "7aa793b1d6248a1117ad1af03b6cda7979d859bd",
+    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2025-08-21T21:17:22.580313\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2025-08-21T21:17:22.580313\"^^xsd:dateTime ;\n    prov:startedAtTime \"2025-08-21T21:16:18.734227\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/all-digital-objects.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-cnt.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-counts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts-all-versions.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-trios-by-location.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-gene-trios-by-location.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-protein-trios-by-location.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-parts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-per-organ.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/asctb-in-table.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/bm-located-in-as.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-authors.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-bibliographies.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-citations.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-count.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-references.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-ids.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-lookup.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/fma-uberon-crosswalk.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ftu-parts.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/high-level-stats.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/kg-asctb-temp.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/kg-digital-object-count.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-dois.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-glb-files.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-term-list.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-terms.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/all-digital-objects.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-cnt.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-3d-counts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts-all-versions.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-counts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-b-trios-by-location.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-gene-trios-by-location.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-ct-protein-trios-by-location.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-parts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/as-per-organ.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/asctb-in-table.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/bm-located-in-as.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-authors.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-bibliographies.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-citations.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-count.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/digital-object-references.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-ids.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ensembl-lookup.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/fma-uberon-crosswalk.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ftu-parts.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/high-level-stats.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/kg-asctb-temp.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/kg-digital-object-count.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-dois.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/ref-organ-glb-files.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-term-list.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/unmapped-asctb-terms.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
     "servers": [
         {
             "url": "https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/hra/"
