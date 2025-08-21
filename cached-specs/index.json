@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "e7f39cca7b8edadd2c8aa6774c9987b51a203727"
+    "version": "13895734560a5fd4f69bcf6d8416799e636e6fb0"
   },
   "servers": [
     {
@@ -361,6 +361,86 @@
           }
         },
         "summary": "Unique AS, CT, and B across all HRA versions",
+        "tags": []
+      }
+    },
+    "/hra/as-ct-gene-trios-by-location": {
+      "get": {
+        "description": "Enter an anatomical structure IRI, get back a list of AS, CT, and Gene trios for structures part of it\n\n```\n#+ summary: AS, CT, and Gene trios by AS located in a given anatomical structure\n#+ description: Enter an anatomical structure IRI, get back a list of AS, CT, and Gene trios for structures part of it\n\n#+ defaults:\n#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\n\nSELECT DISTINCT ?as_label ?ct_label ?gene_symbol ?as ?ct ?gene\nFROM HRA:\nWHERE {\n  # Get AS of interest\n  ?as ccf:ccf_part_of*|part_of:* ?_location_iri .\n  ?as rdfs:label ?as_label .\n\n  # Lookup CT + B for the AS via ASCT+B tables\n  [] a ccf:AsctbRecord ;\n    ccf:anatomical_structure [\n      ccf:source_concept ?as \n    ];\n    ccf:cell_type [\n      ccf:source_concept ?ct \n    ];\n    ccf:gene_marker [\n      ccf:source_concept ?gene \n    ] .\n\n  # Alternative that only looks up CT+B specifically assigned to that AS, does not include children\n  # [] a ccf:CellMarkerDescriptor ;\n  #   ccf:primary_anatomical_structure ?as ;\n  #   ccf:primary_cell_type ?ct ;\n  #   ccf:biomarker ?gene .\n\n  ?ct rdfs:label ?ct_label .\n  ?gene rdfs:label ?gene_symbol .\n}\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          },
+          {
+            "description": "A value of type string (iri) that will substitute ?_location_iri in the original query",
+            "in": "query",
+            "name": "location",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "iri",
+              "default": "http://purl.obolibrary.org/obo/UBERON_0002113"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "AS, CT, and Gene trios by AS located in a given anatomical structure",
         "tags": []
       }
     },
