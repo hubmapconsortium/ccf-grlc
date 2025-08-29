@@ -74,6 +74,9 @@ WHERE {
 
   OPTIONAL { ?ct rdfs:label ?rdfs_cell_label . }
   BIND(COALESCE(?rdfs_cell_label, ?raw_cell_label) as ?ct_label)
-  BIND(IRI(REPLACE(REPLACE(STR(?biomarkerId), 'HGNC:', 'http://identifiers.org/hgnc/'), 
-      'ASCTB-TEMP:', 'https://purl.org/ccf/ASCTB-TEMP_')) as ?biomarker)
+  BIND(IRI(REPLACE(REPLACE(REPLACE(STR(?biomarkerId), 
+      'HGNC:', 'http://identifiers.org/hgnc/'), 
+      'ASCTB-TEMP:', 'https://purl.org/ccf/ASCTB-TEMP_'),
+      'ensembl:', 'https://identifiers.org/ensembl:')
+    ) as ?biomarker)
 }
