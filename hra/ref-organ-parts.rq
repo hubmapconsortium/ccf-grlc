@@ -1,0 +1,21 @@
+#+ summary: Reference Organ GLB information
+#+ description: Reference Organ GLB information
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT DISTINCT ?ref_organ_digital_object ?glb_url ?scene_node ?as_label ?as_iri  
+FROM HRA:
+WHERE {
+  ?refOrganPart ccf:has_reference_organ ?refOrgan ;
+      ccf:representation_of ?as_iri .
+  ?refOrganPart ccf:has_object_reference [
+    ccf:file_url ?glb_url ;
+    ccf:file_subpath ?scene_node  
+  ] .
+  ?as_iri rdfs:label ?as_label .
+  BIND(IRI(STRBEFORE(REPLACE(STR(?refOrgan), "#primary", ""), '/v1.')) as ?ref_organ_digital_object)
+  FILTER(!CONTAINS(STR(?refOrgan), '/ref-organ/united'))
+}
+ORDER BY ?ref_organ_digital_object ?as_label

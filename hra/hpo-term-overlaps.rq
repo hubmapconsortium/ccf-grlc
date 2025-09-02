@@ -1,0 +1,23 @@
+#+ summary: HRA-HPO shared Uberon and CL terms
+
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
+PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
+PREFIX HPO: <https://purl.humanatlas.io/vocab/hp>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT DISTINCT ?term ?term_label
+WHERE {
+  GRAPH HRA: {
+    ?term rdfs:label ?term_label .
+  }
+  GRAPH HPO: {
+    ?term rdfs:label ?term_label .
+  }
+  FILTER(STRSTARTS(STR(?term), STR(UBERON:)) || STRSTARTS(STR(?term), STR(CL:)))
+}
+ORDER BY ?term

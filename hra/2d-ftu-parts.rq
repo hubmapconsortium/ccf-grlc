@@ -1,0 +1,34 @@
+#+ summary: get 2D FTU images and parts
+
+PREFIX hint: <http://www.bigdata.com/queryHints#> 
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+PREFIX LOD: <https://lod.humanatlas.io>
+
+SELECT DISTINCT ?organ_id ?ftu_digital_object ?ftu_digital_object_doi ?image_url ?organ_label ?ftu_label ?ftu_part_label ?organ_iri ?ftu_iri ?ftu_part_iri
+FROM HRA:
+WHERE {
+  ?ftu_illustration a ccf:FtuIllustration ;
+  	a ?ftu_iri ;
+  	ccf:ccf_located_in ?organ_iri ;
+    ccf:illustration_node [ a ?ftu_part_iri ] ;
+    ccf:image_file [
+      ccf:file_format ?format ;
+      ccf:file_url ?image_url
+    ] .
+  BIND(IRI(REPLACE(STR(?ftu_illustration), "#primary", "")) as ?ftu_digital_object)
+  
+  ?ftu_part_iri rdfs:label ?ftu_part_label .
+  ?ftu_iri rdfs:label ?ftu_label .
+  ?organ_iri rdfs:label ?organ_label .
+
+  FILTER(?format = "image/png") # or "image/svg+xml"
+  FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))
+  FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))
+}
