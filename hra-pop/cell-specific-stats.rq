@@ -1,0 +1,101 @@
+#+ summary: Cell-specific stats for HRApop data
+
+PREFIX hint: <http://www.bigdata.com/queryHints#> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
+PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
+
+SELECT
+  ?ct_parent_label
+  ?organ_label
+  ?sex
+  ?side
+  ?tool
+
+  (COUNT(DISTINCT ?donor) as ?donor_count)
+  (COUNT(DISTINCT ?dataset) as ?dataset_count)
+  (COUNT(DISTINCT ?as) as ?as_count)
+  (COUNT(DISTINCT ?ct) as ?ct_count)
+  (SUM(?cell_count) as ?cell_count)
+FROM HRA:
+FROM HRApop:
+WHERE {
+  hint:Query hint:analytic "true" .
+
+  {
+    SELECT DISTINCT ?ct ?ct_parent ?ct_parent_label
+    WHERE {
+      GRAPH <https://purl.humanatlas.io/vocab/cl/redundant> {
+        VALUES (?ct_parent) {
+          (<http://purl.obolibrary.org/obo/CL_0000066>) # epithelial cell
+          (<http://purl.obolibrary.org/obo/CL_0000115>) # endothelial cell
+          (<http://purl.obolibrary.org/obo/CL_2000032>) # peripheral nervous system neuron AKA peripheral neuron
+          (<http://purl.obolibrary.org/obo/CL_0000136>) # adipocyte
+          (<http://purl.obolibrary.org/obo/CL_0000057>) # fibroblast
+          (<http://purl.obolibrary.org/obo/CL_0000192>) # smooth muscle cell
+          (<http://purl.obolibrary.org/obo/CL_0000738>) # leukocyte AKA immune cell 
+        }
+        ?ct rdfs:subClassOf ?ct_parent .
+        FILTER(STRSTARTS(STR(?ct), "http://purl.obolibrary.org/obo/CL_"))
+      }
+      GRAPH <https://purl.humanatlas.io/vocab/cl> {
+        ?ct_parent rdfs:label ?ct_parent_label .
+      }
+      hint:SubQuery hint:runOnce true .
+    }
+  }
+
+  {
+    SELECT DISTINCT ?organ_label ?organ_id ?sex ?side ?donor ?dataset ?as
+    WHERE {
+      {
+        ?sample ccf:comes_from ?donor .
+        ?sample ccf:has_registration_location ?rui_location .
+        ?sample ccf:generates_dataset ?dataset .
+      } UNION {
+        ?block ccf:comes_from ?donor .
+        ?block ccf:subdivided_into_sections ?sample .
+        ?block ccf:has_registration_location ?rui_location .
+        ?sample ccf:generates_dataset ?dataset .
+      }
+      ?rui_location ccf:has_collision_summary [
+        ccf:has_collision_item [
+          ccf:as_id ?as ;
+        ]
+      ] .
+
+      ?refOrgan owl:sameAs* [
+        ccf:representation_of ?organ_id ;
+        ccf:organ_owner_sex ?sex ;
+      ] .
+      OPTIONAL {
+        ?refOrgan owl:sameAs* [
+          ccf:organ_side ?side ;
+        ] .
+      }
+      ?organ_id skos:prefLabel ?organ_pref_label .
+      BIND(LCASE(REPLACE(REPLACE(?organ_pref_label, 'respiratory system', 'lung'), 'skin of body', 'skin')) as ?organ_label)
+      # ?organ_id rdfs:label ?organ_label .
+
+      [] a ccf:SpatialPlacement ;
+        ccf:placement_for ?rui_location ;
+        ccf:placement_relative_to ?refOrgan .
+      hint:SubQuery hint:runOnce true .
+    }
+  }
+
+  ?dataset ccf:has_cell_summary [
+    # ccf:cell_annotation_method "sc_proteomics"^^xsd:string ;
+    ccf:cell_annotation_method ?tool ;
+    ccf:has_cell_summary_row [
+      ccf:cell_id ?ct ;
+      ccf:cell_count ?cell_count ;
+    ]
+  ] .
+}
+GROUP BY ?ct_parent_label ?organ_label ?sex ?side ?tool
+ORDER BY ?ct_parent_label ?organ_label ?tool DESC(?cell_count)
