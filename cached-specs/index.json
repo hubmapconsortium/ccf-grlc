@@ -2580,6 +2580,75 @@
         "tags": []
       }
     },
+    "/hra-pop/cell-specific-stats": {
+      "get": {
+        "description": "\n\n```\n#+ summary: Cell-specific stats for HRApop data\n\nPREFIX hint: <http://www.bigdata.com/queryHints#> \nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT\n  ?ct_parent_label\n  ?organ_label\n  ?sex\n  ?side\n  ?tool\n\n  (COUNT(DISTINCT ?donor) as ?donor_count)\n  (COUNT(DISTINCT ?dataset) as ?dataset_count)\n  (COUNT(DISTINCT ?as) as ?as_count)\n  (COUNT(DISTINCT ?ct) as ?ct_count)\n  (SUM(?cell_count) as ?cell_count)\nFROM HRA:\nFROM HRApop:\nWHERE {\n  hint:Query hint:analytic \"true\" .\n\n  {\n    SELECT DISTINCT ?ct ?ct_parent ?ct_parent_label\n    WHERE {\n      GRAPH <https://purl.humanatlas.io/vocab/cl/redundant> {\n        VALUES (?ct_parent) {\n          (<http://purl.obolibrary.org/obo/CL_0000066>) # epithelial cell\n          (<http://purl.obolibrary.org/obo/CL_0000115>) # endothelial cell\n          (<http://purl.obolibrary.org/obo/CL_2000032>) # peripheral nervous system neuron AKA peripheral neuron\n          (<http://purl.obolibrary.org/obo/CL_0000136>) # adipocyte\n          (<http://purl.obolibrary.org/obo/CL_0000057>) # fibroblast\n          (<http://purl.obolibrary.org/obo/CL_0000192>) # smooth muscle cell\n          (<http://purl.obolibrary.org/obo/CL_0000738>) # leukocyte AKA immune cell \n        }\n        ?ct rdfs:subClassOf ?ct_parent .\n        FILTER(STRSTARTS(STR(?ct), \"http://purl.obolibrary.org/obo/CL_\"))\n      }\n      GRAPH <https://purl.humanatlas.io/vocab/cl> {\n        ?ct_parent rdfs:label ?ct_parent_label .\n      }\n      hint:SubQuery hint:runOnce true .\n    }\n  }\n\n  {\n    SELECT DISTINCT ?organ_label ?organ_id ?sex ?side ?donor ?dataset ?as\n    WHERE {\n      {\n        ?sample ccf:comes_from ?donor .\n        ?sample ccf:has_registration_location ?rui_location .\n        ?sample ccf:generates_dataset ?dataset .\n      } UNION {\n        ?block ccf:comes_from ?donor .\n        ?block ccf:subdivided_into_sections ?sample .\n        ?block ccf:has_registration_location ?rui_location .\n        ?sample ccf:generates_dataset ?dataset .\n      }\n      ?rui_location ccf:has_collision_summary [\n        ccf:has_collision_item [\n          ccf:as_id ?as ;\n        ]\n      ] .\n\n      ?refOrgan owl:sameAs* [\n        ccf:representation_of ?organ_id ;\n        ccf:organ_owner_sex ?sex ;\n      ] .\n      OPTIONAL {\n        ?refOrgan owl:sameAs* [\n          ccf:organ_side ?side ;\n        ] .\n      }\n      ?organ_id skos:prefLabel ?organ_pref_label .\n      BIND(LCASE(REPLACE(REPLACE(?organ_pref_label, 'respiratory system', 'lung'), 'skin of body', 'skin')) as ?organ_label)\n      # ?organ_id rdfs:label ?organ_label .\n\n      [] a ccf:SpatialPlacement ;\n        ccf:placement_for ?rui_location ;\n        ccf:placement_relative_to ?refOrgan .\n      hint:SubQuery hint:runOnce true .\n    }\n  }\n\n  ?dataset ccf:has_cell_summary [\n    # ccf:cell_annotation_method \"sc_proteomics\"^^xsd:string ;\n    ccf:cell_annotation_method ?tool ;\n    ccf:has_cell_summary_row [\n      ccf:cell_id ?ct ;\n      ccf:cell_count ?cell_count ;\n    ]\n  ] .\n}\nGROUP BY ?ct_parent_label ?organ_label ?sex ?side ?tool\nORDER BY ?ct_parent_label ?organ_label ?tool DESC(?cell_count)\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Cell-specific stats for HRApop data",
+        "tags": []
+      }
+    },
     "/hra-pop/cell-types-in-atlas": {
       "get": {
         "description": "\n\n```\n#+ summary: All cell types seen in Atlas Datasets\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?cell_type_label ?cell_id\nFROM CCF:\nFROM HRApop:\nWHERE {\n  [] ccf:generates_dataset ?dataset .\n  ?dataset ccf:has_cell_summary [\n    ccf:has_cell_summary_row [\n      ccf:cell_id ?cell_id ;\n      ccf:cell_label ?cell_type_label ;\n    ]\n  ] .\n}\nORDER BY ?cell_type_label\n\n```",
