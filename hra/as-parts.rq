@@ -7,9 +7,11 @@
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>
+PREFIX UBERON: <https://purl.humanatlas.io/vocab/uberon>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 
 SELECT DISTINCT ?part_iri ?part_label
+FROM UBERON:
 FROM HRA:
 WHERE {
   ?part_iri ccf:ccf_part_of*|part_of:* ?_location_iri .
