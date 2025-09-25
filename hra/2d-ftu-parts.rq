@@ -11,7 +11,7 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 PREFIX LOD: <https://lod.humanatlas.io>
 
-SELECT DISTINCT ?organ_id ?ftu_digital_object ?ftu_digital_object_doi ?image_url ?organ_label ?ftu_label ?ftu_part_label ?organ_iri ?ftu_iri ?ftu_part_iri
+SELECT DISTINCT ?organ_id ?ftu_digital_object ?image_url ?organ_label ?ftu_label ?ftu_part_label ?organ_iri ?ftu_iri ?ftu_part_iri
 FROM HRA:
 WHERE {
   ?ftu_illustration a ccf:FtuIllustration ;
@@ -28,6 +28,7 @@ WHERE {
   ?ftu_iri rdfs:label ?ftu_label .
   ?organ_iri rdfs:label ?organ_label .
 
+  BIND(IRI(REPLACE(STR(?organ_iri), STR(UBERON:), 'UBERON:')) as ?organ_id)
   FILTER(?format = "image/png") # or "image/svg+xml"
   FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))
   FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))
