@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "6f5fe480670642a6f52beb442a59caf507831885"
+    "version": "88a00b2d23d9ce18588040eafa9b09a72fa32929"
   },
   "servers": [
     {
@@ -675,7 +675,7 @@
     },
     "/hra/as-parts": {
       "get": {
-        "description": "All anatomical structures part of a given anatomical structure, including itself\n\n```\n#+ summary: All AS part of a given AS\n#+ description: All anatomical structures part of a given anatomical structure, including itself\n\n#+ defaults:\n#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?part_iri ?part_label\nFROM HRA:\nWHERE {\n  ?part_iri ccf:ccf_part_of*|part_of:* ?_location_iri .\n  ?part_iri rdfs:label ?part_label .\n}\nORDER BY ?part_iri\n\n```",
+        "description": "All anatomical structures part of a given anatomical structure, including itself\n\n```\n#+ summary: All AS part of a given AS\n#+ description: All anatomical structures part of a given anatomical structure, including itself\n\n#+ defaults:\n#+   - location: http://purl.obolibrary.org/obo/UBERON_0002113\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX UBERON: <https://purl.humanatlas.io/vocab/uberon>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?part_iri ?part_label\nFROM UBERON:\nFROM HRA:\nWHERE {\n  ?part_iri ccf:ccf_part_of*|part_of:* ?_location_iri .\n  ?part_iri rdfs:label ?part_label .\n}\nORDER BY ?part_iri\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
