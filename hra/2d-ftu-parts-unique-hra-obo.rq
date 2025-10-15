@@ -1,0 +1,59 @@
+#+ summary: get 2D FTU images and parts that are unique to the ftu (via ASCT+B and OBO relationships)
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>
+PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
+PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
+PREFIX overlaps: <http://purl.obolibrary.org/obo/RO_0002131>
+PREFIX cl_owl: <http://purl.obolibrary.org/obo/cl.owl>
+PREFIX pcl_owl: <http://purl.obolibrary.org/obo/pcl.owl>
+PREFIX uberon_owl: <http://purl.obolibrary.org/obo/uberon.owl>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT DISTINCT ?organ_id ?ftu_digital_object ?image_url ?organ_label ?ftu_label ?ftu_part_label ?organ_iri ?ftu_iri ?ftu_part_iri
+FROM <https://purl.humanatlas.io/vocab/uberon>
+FROM <https://purl.humanatlas.io/vocab/cl>
+FROM <https://purl.humanatlas.io/vocab/uberon/redundant>
+FROM <https://purl.humanatlas.io/vocab/cl/redundant>
+FROM HRA:
+FROM NAMED HRA:
+WHERE {
+  # Find all FTU Illustrations and their parts
+  GRAPH HRA: {
+    ?ftu_illustration a ccf:FtuIllustration ;
+      a ?ftu_iri ;
+      ccf:ccf_located_in ?organ_iri ;
+      ccf:illustration_node [ a ?ftu_part_iri ] ;
+      ccf:image_file [
+        ccf:file_format ?format ;
+        ccf:file_url ?image_url
+      ] .
+    BIND(IRI(REPLACE(STR(?ftu_illustration), "#primary", "")) as ?ftu_digital_object)
+    
+    ?ftu_part_iri rdfs:label ?ftu_part_label .
+    ?ftu_iri rdfs:label ?ftu_label .
+    ?organ_iri rdfs:label ?organ_label .
+
+    BIND(IRI(REPLACE(STR(?organ_iri), STR(UBERON:), 'UBERON:')) as ?organ_id)
+    FILTER(?format = "image/png") # or "image/svg+xml"
+    FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))
+    FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))
+  }
+
+  # The FTU is part of an organ either directly or through other AS
+  ?parent_as ccf:ccf_part_of|part_of: ?organ_iri .
+  ?ftu_iri ccf:ccf_part_of|part_of:* ?parent_as .
+
+  # An FTU Part (Cell or AS) is connected to an FTU either directly or through other AS
+  ?ftu_part_iri ccf:ccf_located_in|ccf:ccf_part_of|overlaps:|part_of:+ ?ftu_iri .
+
+  OPTIONAL {
+    ?other_as ccf:ccf_part_of|part_of: ?organ_iri .
+    ?ftu_part_iri ccf:ccf_located_in|ccf:ccf_part_of|overlaps:|part_of:+ ?other_as .
+    FILTER(?other_as != ?organ_iri && ?other_as != ?ftu_iri && ?other_as != ?parent_as)
+  }
+  FILTER(!BOUND(?other_as))
+}
+ORDER BY ?ftu_digital_object
