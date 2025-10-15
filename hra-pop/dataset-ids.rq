@@ -1,0 +1,7 @@
+#+ summary: HRApop Atlas Dataset IDs
+
+SELECT DISTINCT ?dataset
+FROM <https://purl.humanatlas.io/graph/hra-pop>
+WHERE {
+  [] <http://purl.org/ccf/generates_dataset> ?dataset .
+}
