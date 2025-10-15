@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "48baefd2358e17677b7940f0e6bcab264e51ef4d"
+    "version": "ea75ac7931dc2c543c8dc33ef9231db93e58a90e"
   },
   "servers": [
     {
@@ -154,6 +154,144 @@
           }
         },
         "summary": "get 2D FTU images and parts that are unique to the ftu",
+        "tags": []
+      }
+    },
+    "/hra/2d-ftu-parts-unique-hra": {
+      "get": {
+        "description": "\n\n```\n#+ summary: get 2D FTU images and parts that are unique to the ftu (via ASCT+B relationships)\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX overlaps: <http://purl.obolibrary.org/obo/RO_0002131>\nPREFIX cl_owl: <http://purl.obolibrary.org/obo/cl.owl>\nPREFIX pcl_owl: <http://purl.obolibrary.org/obo/pcl.owl>\nPREFIX uberon_owl: <http://purl.obolibrary.org/obo/uberon.owl>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?organ_id ?ftu_digital_object ?image_url ?organ_label ?ftu_label ?ftu_part_label ?organ_iri ?ftu_iri ?ftu_part_iri\nFROM HRA:\nWHERE {\n  {\n    ?ftu_illustration a ccf:FtuIllustration ;\n      a ?ftu_iri ;\n      ccf:ccf_located_in ?organ_iri ;\n      ccf:illustration_node [ a ?ftu_part_iri ] ;\n      ccf:image_file [\n        ccf:file_format ?format ;\n        ccf:file_url ?image_url\n      ] .\n    BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n    \n    ?ftu_part_iri rdfs:label ?ftu_part_label .\n    ?ftu_iri rdfs:label ?ftu_label .\n    ?organ_iri rdfs:label ?organ_label .\n\n    BIND(IRI(REPLACE(STR(?organ_iri), STR(UBERON:), 'UBERON:')) as ?organ_id)\n    FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n    FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n    FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))\n  }\n\n  ?parent_as ccf:ccf_part_of ?organ_iri .\n  ?ftu_iri ccf:ccf_part_of* ?parent_as .\n  ?ftu_part_iri ccf:ccf_located_in|ccf:ccf_part_of+ ?ftu_iri .\n\n  OPTIONAL {\n    ?other_as ccf:ccf_part_of ?organ_iri .\n    ?ftu_part_iri ccf:ccf_located_in|ccf:ccf_part_of+ ?other_as .\n    FILTER(?other_as != ?organ_iri && ?other_as != ?ftu_iri && ?other_as != ?parent_as)\n  }\n  FILTER(!BOUND(?other_as))\n}\nORDER BY ?ftu_digital_object\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "get 2D FTU images and parts that are unique to the ftu (via ASCT+B relationships)",
+        "tags": []
+      }
+    },
+    "/hra/2d-ftu-parts-unique-hra-obo": {
+      "get": {
+        "description": "\n\n```\n#+ summary: get 2D FTU images and parts that are unique to the ftu (via ASCT+B and OBO relationships)\n\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX overlaps: <http://purl.obolibrary.org/obo/RO_0002131>\nPREFIX cl_owl: <http://purl.obolibrary.org/obo/cl.owl>\nPREFIX pcl_owl: <http://purl.obolibrary.org/obo/pcl.owl>\nPREFIX uberon_owl: <http://purl.obolibrary.org/obo/uberon.owl>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?organ_id ?ftu_digital_object ?image_url ?organ_label ?ftu_label ?ftu_part_label ?organ_iri ?ftu_iri ?ftu_part_iri\nFROM <https://purl.humanatlas.io/vocab/uberon>\nFROM <https://purl.humanatlas.io/vocab/cl>\nFROM <https://purl.humanatlas.io/vocab/uberon/redundant>\nFROM <https://purl.humanatlas.io/vocab/cl/redundant>\nFROM HRA:\nFROM NAMED HRA:\nWHERE {\n  # Find all FTU Illustrations and their parts\n  GRAPH HRA: {\n    ?ftu_illustration a ccf:FtuIllustration ;\n      a ?ftu_iri ;\n      ccf:ccf_located_in ?organ_iri ;\n      ccf:illustration_node [ a ?ftu_part_iri ] ;\n      ccf:image_file [\n        ccf:file_format ?format ;\n        ccf:file_url ?image_url\n      ] .\n    BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n    \n    ?ftu_part_iri rdfs:label ?ftu_part_label .\n    ?ftu_iri rdfs:label ?ftu_label .\n    ?organ_iri rdfs:label ?organ_label .\n\n    BIND(IRI(REPLACE(STR(?organ_iri), STR(UBERON:), 'UBERON:')) as ?organ_id)\n    FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n    FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n    FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))\n  }\n\n  # The FTU is part of an organ either directly or through other AS\n  ?parent_as ccf:ccf_part_of|part_of: ?organ_iri .\n  ?ftu_iri ccf:ccf_part_of|part_of:* ?parent_as .\n\n  # An FTU Part (Cell or AS) is connected to an FTU either directly or through other AS\n  ?ftu_part_iri ccf:ccf_located_in|ccf:ccf_part_of|overlaps:|part_of:+ ?ftu_iri .\n\n  OPTIONAL {\n    ?other_as ccf:ccf_part_of|part_of: ?organ_iri .\n    ?ftu_part_iri ccf:ccf_located_in|ccf:ccf_part_of|overlaps:|part_of:+ ?other_as .\n    FILTER(?other_as != ?organ_iri && ?other_as != ?ftu_iri && ?other_as != ?parent_as)\n  }\n  FILTER(!BOUND(?other_as))\n}\nORDER BY ?ftu_digital_object\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "get 2D FTU images and parts that are unique to the ftu (via ASCT+B and OBO relationships)",
         "tags": []
       }
     },
