@@ -3339,6 +3339,75 @@
         "tags": []
       }
     },
+    "/hra-pop/dataset-ids": {
+      "get": {
+        "description": "\n\n```\n#+ summary: HRApop Atlas Dataset IDs\n\nSELECT DISTINCT ?dataset\nFROM <https://purl.humanatlas.io/graph/hra-pop>\nWHERE {\n  [] <http://purl.org/ccf/generates_dataset> ?dataset .\n}\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "HRApop Atlas Dataset IDs",
+        "tags": []
+      }
+    },
     "/hra-pop/datasets-with-as-collisions": {
       "get": {
         "description": "\n\n```\n#+ summary: get HRApop datasets with AS collisions\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?dataset ?organ_id ?as_id\nFROM HRA:\nFROM HRApop:\nWHERE {\n  {\n    ?sample ccf:comes_from ?donor .\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:comes_from ?donor .\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  ?rui_location ccf:has_collision_summary [\n    ccf:has_collision_item [\n      ccf:has_reference_organ ?refOrgan ;\n      ccf:as_id ?as_id ;\n    ]\n  ] .\n\n  ?refOrgan owl:sameAs* [\n    ccf:representation_of ?organ_id ;\n  ] .\n}\n```",
