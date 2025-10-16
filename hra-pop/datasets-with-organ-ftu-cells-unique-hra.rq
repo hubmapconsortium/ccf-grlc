@@ -18,24 +18,37 @@ WHERE {
     SELECT DISTINCT *
     WHERE {
       GRAPH HRA: {
-        ?ftu_illustration a ccf:FtuIllustration ;
-          ccf:representation_of ?ftu_iri ;
-          ccf:ccf_located_in ?organ_iri ;
-          ccf:illustration_node [ ccf:representation_of ?ftu_part_iri ] ;
-          ccf:image_file [
-            ccf:file_format ?format ;
-            ccf:file_url ?image_url
-          ] .
-        BIND(IRI(REPLACE(STR(?ftu_illustration), "#primary", "")) as ?ftu_digital_object)
-        
-        ?ftu_part_iri rdfs:label ?ftu_part_label .
-        ?ftu_iri rdfs:label ?ftu_label .
-        ?organ_iri rdfs:label ?organ_label .
+        {
+          ?ftu_illustration a ccf:FtuIllustration ;
+            a ?ftu_iri ;
+            ccf:ccf_located_in ?organ_iri ;
+            ccf:illustration_node [ a ?ftu_part_iri ] ;
+            ccf:image_file [
+              ccf:file_format ?format ;
+              ccf:file_url ?image_url
+            ] .
+          BIND(IRI(REPLACE(STR(?ftu_illustration), "#primary", "")) as ?ftu_digital_object)
+          
+          ?ftu_part_iri rdfs:label ?ftu_part_label .
+          ?ftu_iri rdfs:label ?ftu_label .
+          ?organ_iri rdfs:label ?organ_label .
 
-        BIND(IRI(REPLACE(STR(?organ_iri), STR(UBERON:), 'UBERON:')) as ?organ_id)
-        FILTER(?format = "image/png") # or "image/svg+xml"
-        FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))
-        FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))
+          BIND(IRI(REPLACE(STR(?organ_iri), STR(UBERON:), 'UBERON:')) as ?organ_id)
+          FILTER(?format = "image/png") # or "image/svg+xml"
+          FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))
+          FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))
+        }
+
+        ?parent_as ccf:ccf_part_of ?organ_iri .
+        ?ftu_iri ccf:ccf_part_of* ?parent_as .
+        ?ftu_part_iri ccf:ccf_located_in|ccf:ccf_part_of+ ?ftu_iri .
+
+        OPTIONAL {
+          ?other_as ccf:ccf_part_of ?organ_iri .
+          ?ftu_part_iri ccf:ccf_located_in|ccf:ccf_part_of+ ?other_as .
+          FILTER(?other_as != ?organ_iri && ?other_as != ?ftu_iri && ?other_as != ?parent_as)
+        }
+        FILTER(!BOUND(?other_as))
       }
     }
   }
@@ -58,7 +71,6 @@ WHERE {
         ?rui_location ccf:has_collision_summary [
           ccf:has_collision_item [
             ccf:has_reference_organ ?refOrgan ;
-            ccf:as_id ?colliding_as ;
           ]
         ] .
       }
@@ -71,8 +83,6 @@ WHERE {
         [] a ccf:FtuIllustration ;
           ccf:representation_of ?ftu_iri ;
           ccf:ccf_located_in ?organ_iri .
-
-        ?ftu_iri ccf:ccf_part_of* ?colliding_as .
       }
     }
   }
@@ -86,47 +96,6 @@ WHERE {
       ] ;
     ] .
     BIND(xsd:decimal(?cell_pct) as ?cell_percentage)
-  }
-
-  FILTER NOT EXISTS {
-    SELECT DISTINCT ?dataset
-    WHERE {
-      GRAPH HRApop: {
-        {
-          ?sample ccf:comes_from ?donor .
-          ?sample ccf:has_registration_location ?rui_location .
-          ?sample ccf:generates_dataset ?dataset .
-        } UNION {
-          ?block ccf:comes_from ?donor .
-          ?block ccf:subdivided_into_sections ?sample .
-          ?block ccf:has_registration_location ?rui_location .
-          ?sample ccf:generates_dataset ?dataset .
-        }
-
-        ?rui_location ccf:has_collision_summary [
-          ccf:has_collision_item [
-            ccf:has_reference_organ ?refOrgan ;
-            ccf:as_id ?colliding_as ;
-          ]
-        ] .
-      }
-      GRAPH HRA_API: {
-        ?refOrgan owl:sameAs* [
-          ccf:representation_of ?organ_iri ;
-        ] .
-      }
-      GRAPH HRA: {
-        [] a ccf:FtuIllustration ;
-          ccf:representation_of ?ftu_iri ;
-          ccf:ccf_located_in ?organ_iri .
-
-        OPTIONAL {
-          ?ftu_iri ccf:ccf_part_of* ?colliding_as .
-          BIND(TRUE AS ?as_with_ftu_label)
-        }
-        FILTER(!BOUND(?as_with_ftu_label))
-      }
-    }
   }
 }
 ORDER BY ?ftu_digital_object ?dataset DESC(?cell_type_count)

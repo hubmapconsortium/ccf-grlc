@@ -58,7 +58,6 @@ WHERE {
         ?rui_location ccf:has_collision_summary [
           ccf:has_collision_item [
             ccf:has_reference_organ ?refOrgan ;
-            ccf:as_id ?colliding_as ;
           ]
         ] .
       }
@@ -71,8 +70,6 @@ WHERE {
         [] a ccf:FtuIllustration ;
           ccf:representation_of ?ftu_iri ;
           ccf:ccf_located_in ?organ_iri .
-
-        ?ftu_iri ccf:ccf_part_of* ?colliding_as .
       }
     }
   }
@@ -86,47 +83,6 @@ WHERE {
       ] ;
     ] .
     BIND(xsd:decimal(?cell_pct) as ?cell_percentage)
-  }
-
-  FILTER NOT EXISTS {
-    SELECT DISTINCT ?dataset
-    WHERE {
-      GRAPH HRApop: {
-        {
-          ?sample ccf:comes_from ?donor .
-          ?sample ccf:has_registration_location ?rui_location .
-          ?sample ccf:generates_dataset ?dataset .
-        } UNION {
-          ?block ccf:comes_from ?donor .
-          ?block ccf:subdivided_into_sections ?sample .
-          ?block ccf:has_registration_location ?rui_location .
-          ?sample ccf:generates_dataset ?dataset .
-        }
-
-        ?rui_location ccf:has_collision_summary [
-          ccf:has_collision_item [
-            ccf:has_reference_organ ?refOrgan ;
-            ccf:as_id ?colliding_as ;
-          ]
-        ] .
-      }
-      GRAPH HRA_API: {
-        ?refOrgan owl:sameAs* [
-          ccf:representation_of ?organ_iri ;
-        ] .
-      }
-      GRAPH HRA: {
-        [] a ccf:FtuIllustration ;
-          ccf:representation_of ?ftu_iri ;
-          ccf:ccf_located_in ?organ_iri .
-
-        OPTIONAL {
-          ?ftu_iri ccf:ccf_part_of* ?colliding_as .
-          BIND(TRUE AS ?as_with_ftu_label)
-        }
-        FILTER(!BOUND(?as_with_ftu_label))
-      }
-    }
   }
 }
 ORDER BY ?ftu_digital_object ?dataset DESC(?cell_type_count)
