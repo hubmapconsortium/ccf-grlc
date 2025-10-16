@@ -3707,7 +3707,7 @@
     },
     "/hra-pop/datasets-with-ftu-cells": {
       "get": {
-        "description": "\n\n```\n#+ summary: get HRApop datasets and cells with AS collisions that could have an FTU in it\n\nPREFIX hint: <http://www.bigdata.com/queryHints#> \nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX HRA_API: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?dataset ?organ_id ?ftu_digital_object ?image_url ?organ_label ?ftu_label ?ftu_part_label ?organ_iri ?ftu_iri ?ftu_part_iri ?cell_type_count ?cell_percentage\nWHERE {\n  {\n    SELECT DISTINCT *\n    WHERE {\n      GRAPH HRA: {\n        ?ftu_illustration a ccf:FtuIllustration ;\n          ccf:representation_of ?ftu_iri ;\n          ccf:ccf_located_in ?organ_iri ;\n          ccf:illustration_node [ ccf:representation_of ?ftu_part_iri ] ;\n          ccf:image_file [\n            ccf:file_format ?format ;\n            ccf:file_url ?image_url\n          ] .\n        BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n        \n        ?ftu_part_iri rdfs:label ?ftu_part_label .\n        ?ftu_iri rdfs:label ?ftu_label .\n        ?organ_iri rdfs:label ?organ_label .\n\n        BIND(IRI(REPLACE(STR(?organ_iri), STR(UBERON:), 'UBERON:')) as ?organ_id)\n        FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n        FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n        FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))\n      }\n    }\n  }\n\n  {\n    # SELECT DISTINCT ?dataset ?ftu_iri ?organ_iri ?colliding_as\n    SELECT DISTINCT *\n    WHERE {\n      GRAPH HRApop: {\n        {\n          ?sample ccf:comes_from ?donor .\n          ?sample ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        } UNION {\n          ?block ccf:comes_from ?donor .\n          ?block ccf:subdivided_into_sections ?sample .\n          ?block ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        }\n\n        ?rui_location ccf:has_collision_summary [\n          ccf:has_collision_item [\n            ccf:has_reference_organ ?refOrgan ;\n            ccf:as_id ?colliding_as ;\n          ]\n        ] .\n      }\n      GRAPH HRA_API: {\n        ?refOrgan owl:sameAs* [\n          ccf:representation_of ?organ_iri ;\n        ] .\n      }\n      GRAPH HRA: {\n        [] a ccf:FtuIllustration ;\n          ccf:representation_of ?ftu_iri ;\n          ccf:ccf_located_in ?organ_iri .\n\n        ?ftu_iri ccf:ccf_part_of* ?colliding_as .\n      }\n    }\n  }\n\n  GRAPH HRApop: {\n    ?dataset ccf:has_cell_summary [\n      ccf:has_cell_summary_row [\n        ccf:cell_id ?ftu_part_iri ;\n        ccf:cell_count ?cell_type_count ;\n        ccf:percentage_of_total ?cell_pct ;\n      ] ;\n    ] .\n    BIND(xsd:decimal(?cell_pct) as ?cell_percentage)\n  }\n\n  FILTER NOT EXISTS {\n    SELECT DISTINCT ?dataset\n    WHERE {\n      GRAPH HRApop: {\n        {\n          ?sample ccf:comes_from ?donor .\n          ?sample ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        } UNION {\n          ?block ccf:comes_from ?donor .\n          ?block ccf:subdivided_into_sections ?sample .\n          ?block ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        }\n\n        ?rui_location ccf:has_collision_summary [\n          ccf:has_collision_item [\n            ccf:has_reference_organ ?refOrgan ;\n            ccf:as_id ?colliding_as ;\n          ]\n        ] .\n      }\n      GRAPH HRA_API: {\n        ?refOrgan owl:sameAs* [\n          ccf:representation_of ?organ_iri ;\n        ] .\n      }\n      GRAPH HRA: {\n        [] a ccf:FtuIllustration ;\n          ccf:representation_of ?ftu_iri ;\n          ccf:ccf_located_in ?organ_iri .\n\n        OPTIONAL {\n          ?ftu_iri ccf:ccf_part_of* ?colliding_as .\n          BIND(TRUE AS ?as_with_ftu_label)\n        }\n        FILTER(!BOUND(?as_with_ftu_label))\n      }\n    }\n  }\n}\nORDER BY ?ftu_digital_object ?dataset DESC(?cell_type_count)\n\n```",
+        "description": "\n\n```\n#+ summary: get HRApop datasets and cells with AS collisions that could have an FTU in it\n\nPREFIX hint: <http://www.bigdata.com/queryHints#> \nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX HRA_API: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?dataset ?organ_id ?ftu_digital_object ?image_url ?organ_label ?ftu_label ?ftu_part_label ?organ_iri ?ftu_iri ?ftu_part_iri ?cell_type_count ?cell_percentage\nWHERE {\n  {\n    SELECT DISTINCT *\n    WHERE {\n      GRAPH HRA: {\n        ?ftu_illustration a ccf:FtuIllustration ;\n          ccf:representation_of ?ftu_iri ;\n          ccf:ccf_located_in ?organ_iri ;\n          ccf:illustration_node [ ccf:representation_of ?ftu_part_iri ] ;\n          ccf:image_file [\n            ccf:file_format ?format ;\n            ccf:file_url ?image_url\n          ] .\n        BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n        \n        ?ftu_part_iri rdfs:label ?ftu_part_label .\n        ?ftu_iri rdfs:label ?ftu_label .\n        ?organ_iri rdfs:label ?organ_label .\n\n        BIND(IRI(REPLACE(STR(?organ_iri), STR(UBERON:), 'UBERON:')) as ?organ_id)\n        FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n        FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n        FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))\n      }\n    }\n  }\n\n  {\n    SELECT DISTINCT *\n    WHERE {\n      GRAPH HRApop: {\n        {\n          ?sample ccf:comes_from ?donor .\n          ?sample ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        } UNION {\n          ?block ccf:comes_from ?donor .\n          ?block ccf:subdivided_into_sections ?sample .\n          ?block ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        }\n\n        ?rui_location ccf:has_collision_summary [\n          ccf:has_collision_item [\n            ccf:has_reference_organ ?refOrgan ;\n            ccf:as_id ?colliding_as ;\n          ]\n        ] .\n      }\n      GRAPH HRA_API: {\n        ?refOrgan owl:sameAs* [\n          ccf:representation_of ?organ_iri ;\n        ] .\n      }\n      GRAPH HRA: {\n        [] a ccf:FtuIllustration ;\n          ccf:representation_of ?ftu_iri ;\n          ccf:ccf_located_in ?organ_iri .\n\n        ?ftu_iri ccf:ccf_part_of* ?colliding_as .\n      }\n    }\n  }\n\n  GRAPH HRApop: {\n    ?dataset ccf:has_cell_summary [\n      ccf:has_cell_summary_row [\n        ccf:cell_id ?ftu_part_iri ;\n        ccf:cell_count ?cell_type_count ;\n        ccf:percentage_of_total ?cell_pct ;\n      ] ;\n    ] .\n    BIND(xsd:decimal(?cell_pct) as ?cell_percentage)\n  }\n\n  FILTER NOT EXISTS {\n    SELECT DISTINCT ?dataset\n    WHERE {\n      GRAPH HRApop: {\n        {\n          ?sample ccf:comes_from ?donor .\n          ?sample ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        } UNION {\n          ?block ccf:comes_from ?donor .\n          ?block ccf:subdivided_into_sections ?sample .\n          ?block ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        }\n\n        ?rui_location ccf:has_collision_summary [\n          ccf:has_collision_item [\n            ccf:has_reference_organ ?refOrgan ;\n            ccf:as_id ?colliding_as ;\n          ]\n        ] .\n      }\n      GRAPH HRA_API: {\n        ?refOrgan owl:sameAs* [\n          ccf:representation_of ?organ_iri ;\n        ] .\n      }\n      GRAPH HRA: {\n        [] a ccf:FtuIllustration ;\n          ccf:representation_of ?ftu_iri ;\n          ccf:ccf_located_in ?organ_iri .\n\n        OPTIONAL {\n          ?ftu_iri ccf:ccf_part_of* ?colliding_as .\n          BIND(TRUE AS ?as_with_ftu_label)\n        }\n        FILTER(!BOUND(?as_with_ftu_label))\n      }\n    }\n  }\n}\nORDER BY ?ftu_digital_object ?dataset DESC(?cell_type_count)\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
@@ -3840,6 +3840,144 @@
           }
         },
         "summary": "get HRApop datasets with AS collisions that could have an FTU in it",
+        "tags": []
+      }
+    },
+    "/hra-pop/datasets-with-organ-ftu-cells": {
+      "get": {
+        "description": "\n\n```\n#+ summary: get HRApop datasets and cells with AS collisions that could have an FTU in it\n\nPREFIX hint: <http://www.bigdata.com/queryHints#> \nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX HRA_API: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?dataset ?organ_id ?ftu_digital_object ?image_url ?organ_label ?ftu_label ?ftu_part_label ?organ_iri ?ftu_iri ?ftu_part_iri ?cell_type_count ?cell_percentage\nWHERE {\n  {\n    SELECT DISTINCT *\n    WHERE {\n      GRAPH HRA: {\n        ?ftu_illustration a ccf:FtuIllustration ;\n          ccf:representation_of ?ftu_iri ;\n          ccf:ccf_located_in ?organ_iri ;\n          ccf:illustration_node [ ccf:representation_of ?ftu_part_iri ] ;\n          ccf:image_file [\n            ccf:file_format ?format ;\n            ccf:file_url ?image_url\n          ] .\n        BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n        \n        ?ftu_part_iri rdfs:label ?ftu_part_label .\n        ?ftu_iri rdfs:label ?ftu_label .\n        ?organ_iri rdfs:label ?organ_label .\n\n        BIND(IRI(REPLACE(STR(?organ_iri), STR(UBERON:), 'UBERON:')) as ?organ_id)\n        FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n        FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n        FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))\n      }\n    }\n  }\n\n  {\n    SELECT DISTINCT *\n    WHERE {\n      GRAPH HRApop: {\n        {\n          ?sample ccf:comes_from ?donor .\n          ?sample ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        } UNION {\n          ?block ccf:comes_from ?donor .\n          ?block ccf:subdivided_into_sections ?sample .\n          ?block ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        }\n\n        ?rui_location ccf:has_collision_summary [\n          ccf:has_collision_item [\n            ccf:has_reference_organ ?refOrgan ;\n          ]\n        ] .\n      }\n      GRAPH HRA_API: {\n        ?refOrgan owl:sameAs* [\n          ccf:representation_of ?organ_iri ;\n        ] .\n      }\n      GRAPH HRA: {\n        [] a ccf:FtuIllustration ;\n          ccf:representation_of ?ftu_iri ;\n          ccf:ccf_located_in ?organ_iri .\n      }\n    }\n  }\n\n  GRAPH HRApop: {\n    ?dataset ccf:has_cell_summary [\n      ccf:has_cell_summary_row [\n        ccf:cell_id ?ftu_part_iri ;\n        ccf:cell_count ?cell_type_count ;\n        ccf:percentage_of_total ?cell_pct ;\n      ] ;\n    ] .\n    BIND(xsd:decimal(?cell_pct) as ?cell_percentage)\n  }\n}\nORDER BY ?ftu_digital_object ?dataset DESC(?cell_type_count)\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "get HRApop datasets and cells with AS collisions that could have an FTU in it",
+        "tags": []
+      }
+    },
+    "/hra-pop/datasets-with-organ-ftu-cells-unique-hra": {
+      "get": {
+        "description": "\n\n```\n#+ summary: get HRApop datasets and cells with AS collisions that could have an FTU in it\n\nPREFIX hint: <http://www.bigdata.com/queryHints#> \nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX HRA_API: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?dataset ?organ_id ?ftu_digital_object ?image_url ?organ_label ?ftu_label ?ftu_part_label ?organ_iri ?ftu_iri ?ftu_part_iri ?cell_type_count ?cell_percentage\nWHERE {\n  {\n    SELECT DISTINCT *\n    WHERE {\n      GRAPH HRA: {\n        {\n          ?ftu_illustration a ccf:FtuIllustration ;\n            a ?ftu_iri ;\n            ccf:ccf_located_in ?organ_iri ;\n            ccf:illustration_node [ a ?ftu_part_iri ] ;\n            ccf:image_file [\n              ccf:file_format ?format ;\n              ccf:file_url ?image_url\n            ] .\n          BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n          \n          ?ftu_part_iri rdfs:label ?ftu_part_label .\n          ?ftu_iri rdfs:label ?ftu_label .\n          ?organ_iri rdfs:label ?organ_label .\n\n          BIND(IRI(REPLACE(STR(?organ_iri), STR(UBERON:), 'UBERON:')) as ?organ_id)\n          FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n          FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n          FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))\n        }\n\n        ?parent_as ccf:ccf_part_of ?organ_iri .\n        ?ftu_iri ccf:ccf_part_of* ?parent_as .\n        ?ftu_part_iri ccf:ccf_located_in|ccf:ccf_part_of+ ?ftu_iri .\n\n        OPTIONAL {\n          ?other_as ccf:ccf_part_of ?organ_iri .\n          ?ftu_part_iri ccf:ccf_located_in|ccf:ccf_part_of+ ?other_as .\n          FILTER(?other_as != ?organ_iri && ?other_as != ?ftu_iri && ?other_as != ?parent_as)\n        }\n        FILTER(!BOUND(?other_as))\n      }\n    }\n  }\n\n  {\n    SELECT DISTINCT *\n    WHERE {\n      GRAPH HRApop: {\n        {\n          ?sample ccf:comes_from ?donor .\n          ?sample ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        } UNION {\n          ?block ccf:comes_from ?donor .\n          ?block ccf:subdivided_into_sections ?sample .\n          ?block ccf:has_registration_location ?rui_location .\n          ?sample ccf:generates_dataset ?dataset .\n        }\n\n        ?rui_location ccf:has_collision_summary [\n          ccf:has_collision_item [\n            ccf:has_reference_organ ?refOrgan ;\n          ]\n        ] .\n      }\n      GRAPH HRA_API: {\n        ?refOrgan owl:sameAs* [\n          ccf:representation_of ?organ_iri ;\n        ] .\n      }\n      GRAPH HRA: {\n        [] a ccf:FtuIllustration ;\n          ccf:representation_of ?ftu_iri ;\n          ccf:ccf_located_in ?organ_iri .\n      }\n    }\n  }\n\n  GRAPH HRApop: {\n    ?dataset ccf:has_cell_summary [\n      ccf:has_cell_summary_row [\n        ccf:cell_id ?ftu_part_iri ;\n        ccf:cell_count ?cell_type_count ;\n        ccf:percentage_of_total ?cell_pct ;\n      ] ;\n    ] .\n    BIND(xsd:decimal(?cell_pct) as ?cell_percentage)\n  }\n}\nORDER BY ?ftu_digital_object ?dataset DESC(?cell_type_count)\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "get HRApop datasets and cells with AS collisions that could have an FTU in it",
         "tags": []
       }
     },
