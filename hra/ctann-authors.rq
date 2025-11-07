@@ -1,0 +1,48 @@
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?name ?version (GROUP_CONCAT(?author_name; separator=", ") as ?authors)
+FROM <https://lod.humanatlas.io>
+WHERE {
+  {
+    SELECT DISTINCT ?name ?version ?author_name
+    WHERE {
+      VALUES (?role_pred ?role) {
+        # (ccf:project_lead 'Project Lead')
+        (dcterms:creator 'Author')
+        # (schema:reviewedBy 'Reviewer')
+      }
+  
+      [] a dcat:Dataset ;
+        schema:additionalType ?do_type ;
+        schema:name ?name ;
+        schema:version ?version ;
+        rdfs:seeAlso ?purl ;
+        prov:wasDerivedFrom ?rawData .
+      
+      ?rawData schema:dateCreated ?creation_date ;
+        ?role_pred ?orcid .
+
+      { 
+        SELECT ?orcid (SAMPLE(?author_name) as ?author_name)
+        WHERE {
+          ?orcid a schema:Person ;
+            schema:name ?author_name
+        }
+        GROUP BY ?orcid
+      }
+
+      FILTER(?do_type = 'ctann')
+    }
+    ORDER BY ?name ?version ?author_name
+  }
+}
+GROUP BY ?name ?version
