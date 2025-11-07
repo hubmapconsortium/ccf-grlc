@@ -1,5 +1,6 @@
 #+ summary: Get datasets that overlap with the outer cortex > 50%
 
+PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>
@@ -23,7 +24,7 @@ WHERE {
   }
 
   {
-    SELECT ?rui_location (SUM(?percentage) as ?overlap)
+    SELECT ?rui_location (xsd:decimal(SUM(?percentage)) as ?overlap)
     WHERE {
       VALUES (?as_id) {
         (UBERON:0001225) # cortex of kidney
