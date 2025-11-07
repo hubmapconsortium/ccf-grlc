@@ -1,0 +1,44 @@
+#+ summary: Get datasets that overlap with the outer cortex > 50%
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>
+PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
+PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
+
+SELECT DISTINCT ?dataset ?overlap
+FROM HRA:
+FROM HRApop:
+WHERE {
+  {
+    ?sample ccf:comes_from ?donor .
+    ?sample ccf:has_registration_location ?rui_location .
+    ?sample ccf:generates_dataset ?dataset .
+  } UNION {
+    ?block ccf:comes_from ?donor .
+    ?block ccf:subdivided_into_sections ?sample .
+    ?block ccf:has_registration_location ?rui_location .
+    ?sample ccf:generates_dataset ?dataset .
+  }
+
+  {
+    SELECT ?rui_location (SUM(?percentage) as ?overlap)
+    WHERE {
+      VALUES (?as_id) {
+        (UBERON:0001225) # cortex of kidney
+        (UBERON:0002189) # outer cortex of kidney
+        (UBERON:0002015) # kidney capsule
+      }
+      ?rui_location ccf:has_collision_summary [
+        ccf:has_collision_item [
+          ccf:as_id ?as_id ;
+          ccf:percentage_of_total ?percentage ;
+        ]
+      ] .
+    }
+    GROUP BY ?rui_location
+    HAVING(?overlap > 0.50)
+  }
+}
+ORDER BY DESC(?overlap)
