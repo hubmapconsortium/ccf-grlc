@@ -7,12 +7,12 @@
         },
         "description": "ccf-grlc: Useful SPARQL queries for HRA work + API via grlc.io<div class=\"errors-wrapper\">Queries behind this API do not have a license. You may not be allowed to use them.</div>",
         "title": "ccf-grlc",
-        "version": "6123f72149b5bc755efffe613e6a408b0b08b266"
+        "version": "c985f05479a2f8292ff6ce4b33b8492e90e08697"
     },
     "paths": {
         "/outer-cortex-datasets": {
             "get": {
-                "description": "\n\n```\n#+ summary: Get datasets that overlap with the outer cortex > 50%\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?dataset ?overlap\nFROM HRA:\nFROM HRApop:\nWHERE {\n  {\n    ?sample ccf:comes_from ?donor .\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:comes_from ?donor .\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  {\n    SELECT ?rui_location (SUM(?percentage) as ?overlap)\n    WHERE {\n      VALUES (?as_id) {\n        (UBERON:0001225) # cortex of kidney\n        (UBERON:0002189) # outer cortex of kidney\n        (UBERON:0002015) # kidney capsule\n      }\n      ?rui_location ccf:has_collision_summary [\n        ccf:has_collision_item [\n          ccf:as_id ?as_id ;\n          ccf:percentage_of_total ?percentage ;\n        ]\n      ] .\n    }\n    GROUP BY ?rui_location\n    HAVING(?overlap > 0.50)\n  }\n}\nORDER BY DESC(?overlap)\n\n```",
+                "description": "\n\n```\n#+ summary: Get datasets that overlap with the outer cortex > 50%\n\nPREFIX xsd:<http://www.w3.org/2001/XMLSchema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX part_of: <http://purl.obolibrary.org/obo/BFO_0000050>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?dataset ?overlap\nFROM HRA:\nFROM HRApop:\nWHERE {\n  {\n    ?sample ccf:comes_from ?donor .\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:comes_from ?donor .\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  {\n    SELECT ?rui_location (xsd:decimal(SUM(?percentage)) as ?overlap)\n    WHERE {\n      VALUES (?as_id) {\n        (UBERON:0001225) # cortex of kidney\n        (UBERON:0002189) # outer cortex of kidney\n        (UBERON:0002015) # kidney capsule\n      }\n      ?rui_location ccf:has_collision_summary [\n        ccf:has_collision_item [\n          ccf:as_id ?as_id ;\n          ccf:percentage_of_total ?percentage ;\n        ]\n      ] .\n    }\n    GROUP BY ?rui_location\n    HAVING(?overlap > 0.50)\n  }\n}\nORDER BY DESC(?overlap)\n\n```",
                 "parameters": [
                     {
                         "description": "Alternative endpoint for SPARQL query",
@@ -20,7 +20,7 @@
                         "name": "endpoint",
                         "schema": {
                             "type": "string",
-                            "default": "http://dbpedia.org/sparql"
+                            "default": "https://lod.humanatlas.io/sparql"
                         }
                     }
                 ],
@@ -80,8 +80,8 @@
             }
         }
     },
-    "prev_commit": "69ab03e412a6da95e0fb051530fe1ae4766036f4",
-    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2025-11-07T16:20:49.160936\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2025-11-07T16:20:49.160936\"^^xsd:dateTime ;\n    prov:startedAtTime \"2025-11-07T16:20:39.014826\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/kpmp/outer-cortex-datasets.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/kpmp/outer-cortex-datasets.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
+    "prev_commit": "05118763d7426fbbcc6217c37d5bfb754015f782",
+    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2025-11-07T16:28:20.519613\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2025-11-07T16:28:20.519613\"^^xsd:dateTime ;\n    prov:startedAtTime \"2025-11-07T16:28:08.334646\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/kpmp/outer-cortex-datasets.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/kpmp/outer-cortex-datasets.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
     "servers": [
         {
             "url": "https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/kpmp/"
