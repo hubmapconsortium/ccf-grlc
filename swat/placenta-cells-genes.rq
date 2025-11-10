@@ -6,7 +6,7 @@ PREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
 
-SELECT DISTINCT ?cl_id ?hgnc_id ?cl_label ?gene_symbol 
+SELECT DISTINCT ?cl_id ?cl_label (GROUP_CONCAT(DISTINCT ?gene_symbol;SEPARATOR='; ') as ?gene_symbols) (GROUP_CONCAT(DISTINCT ?hgnc_id;SEPARATOR='; ') as ?hgnc_ids) 
 WHERE {
   GRAPH <https://purl.humanatlas.io/asct-b/placenta> {
     VALUES (?ct) {
@@ -32,3 +32,5 @@ WHERE {
     FILTER(?bmType = 'gene')
   }
 }
+GROUP BY ?cl_id ?cl_label
+ORDER BY ?cl_id ?gene_symbol
