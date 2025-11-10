@@ -1,0 +1,34 @@
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
+
+SELECT DISTINCT ?cl_id ?hgnc_id ?cl_label ?gene_symbol 
+WHERE {
+  GRAPH <https://purl.humanatlas.io/asct-b/placenta> {
+    VALUES (?ct) {
+      (CL:0002536) (CL:4047006) (CL:0000236) (CL:2000062) (CL:4033088) (CL:3000001) (CL:4033062) (CL:0000097) (CL:0000186) (CL:2000078) (CL:0002558) (CL:0000523) (CL:2000062) (CL:0000523) (CL:4033062) (CL:3000001) (CL:0000525) (CL:0002558) (CL:0000525) (CL:0002558) (CL:0000359) (CL:4047011)
+    }
+
+    # Find all sets of biomarkers that characterize a cell type
+    ?ct rdfs:subClassOf [
+      owl:onProperty has_characterizing_biomarker_set: ;
+      owl:someValuesFrom [ owl:intersectionOf ?bmSetId ]] .
+    ?bmSetId rdf:rest*/rdf:first [
+      owl:onProperty ccf:has_marker_component ;
+      owl:someValuesFrom ?bm
+    ] .
+
+    # Get biomarker type
+    ?bm ccf:ccf_biomarker_type ?bmType .
+    ?ct ccf:ccf_pref_label ?cl_label .
+    ?bm ccf:ccf_pref_label ?gene_symbol .
+    
+    BIND(REPLACE(STR(?ct), STR(CL:), 'CL:') as ?cl_id)
+    BIND(REPLACE(STR(?bm), 'http://identifiers.org/hgnc/', 'HGNC:') as ?hgnc_id)
+    FILTER(?bmType = 'gene')
+  }
+}
