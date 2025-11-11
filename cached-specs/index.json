@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "efcd6585ceab5782838dac59d97686f2e6ca9004"
+    "version": "71e44e95899a915e488c135a007cdcb845f328aa"
   },
   "servers": [
     {
@@ -1589,6 +1589,75 @@
           }
         },
         "summary": "Digital objects counts in the latest HRA release",
+        "tags": []
+      }
+    },
+    "/hra/digital-object-people": {
+      "get": {
+        "description": "\n\n```\nPREFIX dcat: <http://www.w3.org/ns/dcat#>\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n\nSELECT ?do_type ?name ?version \n  (GROUP_CONCAT(DISTINCT ?creator_name; separator=\", \") as ?creators)\n  (GROUP_CONCAT(DISTINCT ?project_lead_name; separator=\", \") as ?project_lead)\n  (GROUP_CONCAT(DISTINCT ?reviewer_name; separator=\", \") as ?reviewers)\n  (GROUP_CONCAT(DISTINCT ?external_reviewer_name; separator=\", \") as ?external_reviewers)\nFROM <https://lod.humanatlas.io>\nWHERE {\n    [] a dcat:Dataset ;\n      schema:additionalType ?do_type ;\n      schema:name ?name ;\n      schema:version ?version ;\n      rdfs:seeAlso ?purl ;\n      prov:wasDerivedFrom ?rawData .\n    \n    ?rawData schema:dateCreated ?creation_date .\n    ?rawData dcterms:creator ?creator_orcid .\n    ?rawData ccf:project_lead ?project_lead_orcid .\n  \n    OPTIONAL {\n      ?rawData schema:reviewedBy ?reviewer_orcid .\n      { \n        SELECT ?reviewer_orcid (SAMPLE(?reviewer_name) as ?reviewer_name)\n        WHERE {\n          ?reviewer_orcid a schema:Person ;\n            schema:name ?reviewer_name\n        }\n        GROUP BY ?reviewer_orcid\n      }\n    }\n\n    OPTIONAL {\n      ?rawData ccf:external_reviewer ?external_reviewer_orcid .\n      { \n        SELECT ?external_reviewer_orcid (SAMPLE(?external_reviewer_name) as ?external_reviewer_name)\n        WHERE {\n          ?external_reviewer_orcid a schema:Person ;\n            schema:name ?external_reviewer_name\n        }\n        GROUP BY ?external_reviewer_orcid\n      }\n    }\n\n    { \n      SELECT ?creator_orcid (SAMPLE(?creator_name) as ?creator_name)\n      WHERE {\n        ?creator_orcid a schema:Person ;\n          schema:name ?creator_name\n      }\n      GROUP BY ?creator_orcid\n    }\n\n    { \n      SELECT ?project_lead_orcid (SAMPLE(?project_lead_name) as ?project_lead_name)\n      WHERE {\n        ?project_lead_orcid a schema:Person ;\n          schema:name ?project_lead_name\n      }\n      GROUP BY ?project_lead_orcid\n    }\n}\nGROUP BY ?do_type ?name ?version\nORDER BY ?do_type ?name ?version\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
         "tags": []
       }
     },
