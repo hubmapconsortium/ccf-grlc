@@ -1,0 +1,73 @@
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?do_type ?name ?version 
+  (GROUP_CONCAT(DISTINCT ?creator_name; separator=", ") as ?creators)
+  (GROUP_CONCAT(DISTINCT ?project_lead_name; separator=", ") as ?project_lead)
+  (GROUP_CONCAT(DISTINCT ?reviewer_name; separator=", ") as ?reviewers)
+  (GROUP_CONCAT(DISTINCT ?external_reviewer_name; separator=", ") as ?external_reviewers)
+FROM <https://lod.humanatlas.io>
+WHERE {
+    [] a dcat:Dataset ;
+      schema:additionalType ?do_type ;
+      schema:name ?name ;
+      schema:version ?version ;
+      rdfs:seeAlso ?purl ;
+      prov:wasDerivedFrom ?rawData .
+    
+    ?rawData schema:dateCreated ?creation_date .
+    ?rawData dcterms:creator ?creator_orcid .
+    ?rawData ccf:project_lead ?project_lead_orcid .
+  
+    OPTIONAL {
+      ?rawData schema:reviewedBy ?reviewer_orcid .
+      { 
+        SELECT ?reviewer_orcid (SAMPLE(?reviewer_name) as ?reviewer_name)
+        WHERE {
+          ?reviewer_orcid a schema:Person ;
+            schema:name ?reviewer_name
+        }
+        GROUP BY ?reviewer_orcid
+      }
+    }
+
+    OPTIONAL {
+      ?rawData ccf:external_reviewer ?external_reviewer_orcid .
+      { 
+        SELECT ?external_reviewer_orcid (SAMPLE(?external_reviewer_name) as ?external_reviewer_name)
+        WHERE {
+          ?external_reviewer_orcid a schema:Person ;
+            schema:name ?external_reviewer_name
+        }
+        GROUP BY ?external_reviewer_orcid
+      }
+    }
+
+    { 
+      SELECT ?creator_orcid (SAMPLE(?creator_name) as ?creator_name)
+      WHERE {
+        ?creator_orcid a schema:Person ;
+          schema:name ?creator_name
+      }
+      GROUP BY ?creator_orcid
+    }
+
+    { 
+      SELECT ?project_lead_orcid (SAMPLE(?project_lead_name) as ?project_lead_name)
+      WHERE {
+        ?project_lead_orcid a schema:Person ;
+          schema:name ?project_lead_name
+      }
+      GROUP BY ?project_lead_orcid
+    }
+}
+GROUP BY ?do_type ?name ?version
+ORDER BY ?do_type ?name ?version
