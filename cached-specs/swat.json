@@ -7,9 +7,78 @@
         },
         "description": "ccf-grlc: Useful SPARQL queries for HRA work + API via grlc.io<div class=\"errors-wrapper\">Queries behind this API do not have a license. You may not be allowed to use them.</div>",
         "title": "ccf-grlc",
-        "version": "48c8ae55b3e65fdb344fa1032bda764f7807afe1"
+        "version": "e2e714da4eea41e64d4a485dcbc5759d850392e7"
     },
     "paths": {
+        "/cells-genes": {
+            "get": {
+                "description": "\n\n```\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\n\nSELECT DISTINCT ?organ ?cl_id ?cl_label (GROUP_CONCAT(DISTINCT ?gene_symbol;SEPARATOR='; ') as ?gene_symbols) (GROUP_CONCAT(DISTINCT ?hgnc_id;SEPARATOR='; ') as ?hgnc_ids) \nWHERE {\n  VALUES (?table ?organ ?ct ?cl_sme_label) {\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000115 \"EC-GC\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000115 \"EC\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000235 \"MAC\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000235 \"moMAC\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000235 \"moMAC-INF\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000236 \"B\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000623 \"NK\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000653 \"POD\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000653 \"altEPI\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000786 \"PL\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000860 \"MON\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0000895 \"T\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0002306 \"PT\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0002306 \"altEPI\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:0002319 \"NEU\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1000452 \"PEC\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1000692 \"FIB\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1000692 \"altFIB\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1000692 \"MYOF\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1000692 \"infFIB\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1000698 \"resMAC\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1000768 \"altEPI\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1000768 \"CNT\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1000849 \"altEPI\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1000849 \"DCT\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001106 \"MD\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001106 \"TAL\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001106 \"altEPI\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001107 \"altEPI\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001107 \"ATL\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001111 \"DTL\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001111 \"altEPI\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001318 \"REN\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001318 \"VSMC_PER\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001318 \"VSMC\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001318 \"MC\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001431 \"PC\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:1001431 \"altEPI\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:4030015 \"IC\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:4030015 \"altEPI\")\n    (<https://purl.humanatlas.io/asct-b/kidney> \"Kidney\" CL:4052030 \"pvFIB\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000097 \"MAST\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000235 \"MAC-ALV\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000236 \"B\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000359 \"VSMC\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000576 \"MON\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000623 \"NK\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000624 \"CD4-T\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000625 \"CD8-T\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000738 \"MAC-INT\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000775 \"N\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000786 \"PL\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0000814 \"NKT\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0002062 \"AT1\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0002063 \"AT2\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0002063 \"AT2.AT1\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0002145 \"Multicil\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0002319 \"NEU\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0002329 \"BASAL\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0002394 \"cDC1\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0002399 \"cDC2\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0009086 \"EC-LYM\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0009089 \"PER\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:0019019 \"ASMC\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:1000223 \"NEC\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:1000413 \"EC-A\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:4028002 \"EC-CAP1\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:4028003 \"EC-CAP2\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:4028004 \"alvFIB\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:4028006 \"advFIB\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:4033003 \"MEC\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:4033005 \"SER\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:4033016 \"FB-SCMF\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:4033077 \"cycMAC-ALV\")\n    (<https://purl.humanatlas.io/asct-b/lung> \"Lung\" CL:4033080 \"cycAT2\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0000097 \"Mast cells\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0000186 \"Myofibroblasts\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0000236 \"B cells\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0000359 \"Vascular smooth muscle cells\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0000523 \"Proliferative CTB\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0000523 \"Progenitor CTB\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0000525 \"STB\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0000525 \"Proliferative STB progenitors\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0002536 \"Amniotic epithelial cells\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0002558 \"Proliferative/progenitor fibroblasts\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0002558 \"Perivascular fibroblasts\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:0002558 \"Stem villus / chorionic plate fibroblasts\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:2000062 \"Proliferating endothelial\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:2000062 \"Capillary endothelial\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:2000078 \"Pericytes\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:3000001 \"Proliferative Hofbauer cells\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:3000001 \"Hofbauer cells\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:4033062 \"Proliferative EVT progenitors\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:4033062 \"Invasive EVT\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:4033088 \"Decidual macrophages\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:4047006 \"Arterial endothelial\")\n    (<https://purl.humanatlas.io/asct-b/placenta> \"Placenta\" CL:4047011 \"Venous endothelial\")\n  }\n  GRAPH ?table {\n    # Find all sets of biomarkers that characterize a cell type\n    ?ct rdfs:subClassOf [\n      owl:onProperty has_characterizing_biomarker_set: ;\n      owl:someValuesFrom [ owl:intersectionOf ?bmSetId ]] .\n    ?bmSetId rdf:rest*/rdf:first [\n      owl:onProperty ccf:has_marker_component ;\n      owl:someValuesFrom ?bm\n    ] .\n\n    # Get biomarker type\n    ?bm ccf:ccf_biomarker_type ?bmType .\n    ?ct ccf:ccf_pref_label ?cl_label .\n    ?bm ccf:ccf_pref_label ?gene_symbol .\n    \n    BIND(REPLACE(STR(?ct), STR(CL:), 'CL:') as ?cl_id)\n    BIND(REPLACE(STR(?bm), 'http://identifiers.org/hgnc/', 'HGNC:') as ?hgnc_id)\n    FILTER(?bmType = 'gene')\n  }\n}\nGROUP BY ?organ ?cl_id ?cl_label\nORDER BY ?organ ?cl_id ?gene_symbol\n\n```",
+                "parameters": [
+                    {
+                        "description": "Alternative endpoint for SPARQL query",
+                        "in": "query",
+                        "name": "endpoint",
+                        "schema": {
+                            "type": "string",
+                            "default": "https://lod.humanatlas.io/sparql"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Query response",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "items": {
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "content": {
+                            "text/csv": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            },
+                            "text/html": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "",
+                "tags": []
+            }
+        },
         "/placenta-cells-genes": {
             "get": {
                 "description": "\n\n```\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX has_characterizing_biomarker_set: <http://purl.obolibrary.org/obo/RO_0015004>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\n\nSELECT DISTINCT ?cl_id ?cl_label (GROUP_CONCAT(DISTINCT ?gene_symbol;SEPARATOR='; ') as ?gene_symbols) (GROUP_CONCAT(DISTINCT ?hgnc_id;SEPARATOR='; ') as ?hgnc_ids) \nWHERE {\n  GRAPH <https://purl.humanatlas.io/asct-b/placenta> {\n    VALUES (?ct) {\n      (CL:0002536) (CL:4047006) (CL:0000236) (CL:2000062) (CL:4033088) (CL:3000001) (CL:4033062) (CL:0000097) (CL:0000186) (CL:2000078) (CL:0002558) (CL:0000523) (CL:2000062) (CL:0000523) (CL:4033062) (CL:3000001) (CL:0000525) (CL:0002558) (CL:0000525) (CL:0002558) (CL:0000359) (CL:4047011)\n    }\n\n    # Find all sets of biomarkers that characterize a cell type\n    ?ct rdfs:subClassOf [\n      owl:onProperty has_characterizing_biomarker_set: ;\n      owl:someValuesFrom [ owl:intersectionOf ?bmSetId ]] .\n    ?bmSetId rdf:rest*/rdf:first [\n      owl:onProperty ccf:has_marker_component ;\n      owl:someValuesFrom ?bm\n    ] .\n\n    # Get biomarker type\n    ?bm ccf:ccf_biomarker_type ?bmType .\n    ?ct ccf:ccf_pref_label ?cl_label .\n    ?bm ccf:ccf_pref_label ?gene_symbol .\n    \n    BIND(REPLACE(STR(?ct), STR(CL:), 'CL:') as ?cl_id)\n    BIND(REPLACE(STR(?bm), 'http://identifiers.org/hgnc/', 'HGNC:') as ?hgnc_id)\n    FILTER(?bmType = 'gene')\n  }\n}\nGROUP BY ?cl_id ?cl_label\nORDER BY ?cl_id ?gene_symbol\n\n```",
@@ -80,8 +149,8 @@
             }
         }
     },
-    "prev_commit": "a2c0946ac7ea5fad8adf15b6036ab9a0eb81db39",
-    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2025-11-10T17:07:09.968713\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2025-11-10T17:07:09.968713\"^^xsd:dateTime ;\n    prov:startedAtTime \"2025-11-10T17:06:56.999309\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/placenta-cells-genes.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/placenta-cells-genes.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
+    "prev_commit": "edda4594f0561c2a306afb5af72602839521515e",
+    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2025-11-18T19:02:04.167020\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2025-11-18T19:02:04.167020\"^^xsd:dateTime ;\n    prov:startedAtTime \"2025-11-18T19:01:45.060934\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/cells-genes.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/placenta-cells-genes.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/cells-genes.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/placenta-cells-genes.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
     "servers": [
         {
             "url": "https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/swat/"
