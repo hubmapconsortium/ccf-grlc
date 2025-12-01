@@ -1,4 +1,4 @@
-#+ summary: get FTU images and parts
+#+ summary: get FTU uberon info
 
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX schema: <http://schema.org/>
@@ -10,13 +10,12 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 PREFIX LOD: <https://lod.humanatlas.io>
 
-SELECT DISTINCT ?ftu_digital_object ?ftu_digital_object_doi ?image_url ?organ_iri ?ftu_iri ?ftu_part_iri
+SELECT DISTINCT ?ftu_digital_object ?ftu_label ?ftu_iri ?organ_label ?organ_iri ?image_url
 FROM HRA:
 WHERE {
   ?ftu_illustration a ccf:FtuIllustration ;
   	a ?ftu_iri ;
   	ccf:ccf_located_in ?organ_id ;
-    ccf:illustration_node [ a ?ftu_part_iri ] ;
     ccf:image_file [
       ccf:file_format ?format ;
       ccf:file_url ?image_url
@@ -24,18 +23,13 @@ WHERE {
 
   HRA: prov:hadMember ?versioned_ftu .
 
-   GRAPH LOD: {
-    [] prov:wasDerivedFrom [
-        ccf:doi ?ftu_digital_object_doi
-      ] ;
-      rdfs:seeAlso ?versioned_ftu .
-  }
-
   BIND(IRI(REPLACE(STR(?organ_id), 'UBERON:', STR(UBERON:))) as ?organ_iri)
   BIND(IRI(REPLACE(STR(?ftu_illustration), "#primary", "")) as ?ftu_digital_object)
+
+  ?ftu_iri rdfs:label ?ftu_label .
+  ?organ_iri rdfs:label ?organ_label .
   
   FILTER(?format = "image/png") # or "image/svg+xml"
   FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))
-  FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))
   FILTER(STRSTARTS(STR(?versioned_ftu), STR(?ftu_digital_object)))
 }
