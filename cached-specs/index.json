@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "71e44e95899a915e488c135a007cdcb845f328aa"
+    "version": "2607d84f76e73e951eb72336827019e7bb212415"
   },
   "servers": [
     {
@@ -2008,7 +2008,7 @@
     },
     "/hra/ftu-parts": {
       "get": {
-        "description": "\n\n```\n#+ summary: get FTU images and parts\n\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX LOD: <https://lod.humanatlas.io>\n\nSELECT DISTINCT ?ftu_digital_object ?ftu_digital_object_doi ?image_url ?organ_iri ?ftu_iri ?ftu_part_iri\nFROM HRA:\nWHERE {\n  ?ftu_illustration a ccf:FtuIllustration ;\n  \ta ?ftu_iri ;\n  \tccf:ccf_located_in ?organ_id ;\n    ccf:illustration_node [ a ?ftu_part_iri ] ;\n    ccf:image_file [\n      ccf:file_format ?format ;\n      ccf:file_url ?image_url\n    ] .\n\n  HRA: prov:hadMember ?versioned_ftu .\n\n   GRAPH LOD: {\n    [] prov:wasDerivedFrom [\n        ccf:doi ?ftu_digital_object_doi\n      ] ;\n      rdfs:seeAlso ?versioned_ftu .\n  }\n\n  BIND(IRI(REPLACE(?organ_id, 'UBERON:', STR(UBERON:))) as ?organ_iri)\n  BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n  \n  FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n  FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n  FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))\n  FILTER(STRSTARTS(STR(?versioned_ftu), STR(?ftu_digital_object)))\n}\n\n```",
+        "description": "\n\n```\n#+ summary: get FTU images and parts\n\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX LOD: <https://lod.humanatlas.io>\n\nSELECT DISTINCT ?ftu_digital_object ?ftu_digital_object_doi ?image_url ?organ_iri ?ftu_iri ?ftu_part_iri\nFROM HRA:\nWHERE {\n  ?ftu_illustration a ccf:FtuIllustration ;\n  \ta ?ftu_iri ;\n  \tccf:ccf_located_in ?organ_id ;\n    ccf:illustration_node [ a ?ftu_part_iri ] ;\n    ccf:image_file [\n      ccf:file_format ?format ;\n      ccf:file_url ?image_url\n    ] .\n\n  HRA: prov:hadMember ?versioned_ftu .\n\n   GRAPH LOD: {\n    [] prov:wasDerivedFrom [\n        ccf:doi ?ftu_digital_object_doi\n      ] ;\n      rdfs:seeAlso ?versioned_ftu .\n  }\n\n  BIND(IRI(REPLACE(STR(?organ_id), 'UBERON:', STR(UBERON:))) as ?organ_iri)\n  BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n  \n  FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n  FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n  FILTER(STRSTARTS(STR(?ftu_part_iri), STR(obo:)))\n  FILTER(STRSTARTS(STR(?versioned_ftu), STR(?ftu_digital_object)))\n}\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
@@ -2072,6 +2072,75 @@
           }
         },
         "summary": "get FTU images and parts",
+        "tags": []
+      }
+    },
+    "/hra/ftu-uberon": {
+      "get": {
+        "description": "\n\n```\n#+ summary: get FTU uberon info\n\nPREFIX prov: <http://www.w3.org/ns/prov#>\nPREFIX schema: <http://schema.org/>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX obo: <http://purl.obolibrary.org/obo/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\nPREFIX LOD: <https://lod.humanatlas.io>\n\nSELECT DISTINCT ?ftu_digital_object ?ftu_label ?ftu_iri ?organ_label ?organ_iri ?image_url\nFROM HRA:\nWHERE {\n  ?ftu_illustration a ccf:FtuIllustration ;\n  \ta ?ftu_iri ;\n  \tccf:ccf_located_in ?organ_id ;\n    ccf:image_file [\n      ccf:file_format ?format ;\n      ccf:file_url ?image_url\n    ] .\n\n  HRA: prov:hadMember ?versioned_ftu .\n\n  BIND(IRI(REPLACE(STR(?organ_id), 'UBERON:', STR(UBERON:))) as ?organ_iri)\n  BIND(IRI(REPLACE(STR(?ftu_illustration), \"#primary\", \"\")) as ?ftu_digital_object)\n\n  ?ftu_iri rdfs:label ?ftu_label .\n  ?organ_iri rdfs:label ?organ_label .\n  \n  FILTER(?format = \"image/png\") # or \"image/svg+xml\"\n  FILTER(STRSTARTS(STR(?ftu_iri), STR(obo:)))\n  FILTER(STRSTARTS(STR(?versioned_ftu), STR(?ftu_digital_object)))\n}\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "get FTU uberon info",
         "tags": []
       }
     },
@@ -2561,6 +2630,75 @@
     "/hra/unmapped-asctb-term-list": {
       "get": {
         "description": "\n\n```\n#+ summary: A list of unmapped AS, CT, and B terms in HRA\n\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>\n\nSELECT DISTINCT ?table ?asctb_type ?iri\nWHERE {\n  GRAPH ?table {\n    ?iri ccf:ccf_asctb_type ?asctb_type .\n    FILTER(STRSTARTS(STR(?iri), STR(ASCTB-TEMP:)))\n  }\n  FILTER (STRSTARTS(STR(?table), 'https://purl.humanatlas.io/asct-b'))\n}\nORDER BY ?table ?asctb_type ?iri\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "A list of unmapped AS, CT, and B terms in HRA",
+        "tags": []
+      }
+    },
+    "/hra/unmapped-asctb-term-list-with-refs": {
+      "get": {
+        "description": "\n\n```\n#+ summary: A list of unmapped AS, CT, and B terms in HRA\n\nPREFIX dct: <http://purl.org/dc/terms/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?asctb_table ?record_number ?as ?as_label ?ct ?ct_label ?biomarker ?biomarker_label ?reference\nFROM HRA:\nWHERE {\n  ?descriptor a ccf:CellMarkerDescriptor ;\n    ccf:primary_anatomical_structure ?as ;\n    ccf:primary_cell_type ?ct ;\n    ccf:biomarker ?biomarker ;\n    ccf:source_record ?record ;\n    dct:references ?reference .\n\n  ?as rdfs:label ?as_label .\n  ?ct rdfs:label ?ct_label .\n  ?biomarker rdfs:label ?biomarker_label .\n\n  BIND(REPLACE(REPLACE(REPLACE(STR(?ct), 'http://purl.obolibrary.org/obo/CL_', 'CL:'),'http://purl.obolibrary.org/obo/PCL_', 'PCL:'), 'https://purl.org/ccf/ASCTB-TEMP_', 'ASCTB-TEMP:') as ?cell_id)\n  BIND(STRAFTER(STR(?record), '#R') as ?record_number)\n  BIND(REPLACE(REPLACE(STR(?biomarker), 'http://identifiers.org/hgnc/', 'HGNC:'), 'https://purl.org/ccf/ASCTB-TEMP_', 'ASCTB-TEMP:') as ?hgnc_id)\n  BIND(STRBEFORE(REPLACE(STRBEFORE(STR(?descriptor), '#'), 'https://purl.humanatlas.io/asct-b/', ''), '/') as ?asctb_table)\n  \n  FILTER(STRSTARTS(STR(?as), STR(ASCTB-TEMP:)) || STRSTARTS(STR(?ct), STR(ASCTB-TEMP:)) || STRSTARTS(STR(?biomarker), STR(ASCTB-TEMP:)))\n}\nORDER BY ?asctb_table ?record_number\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
