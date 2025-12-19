@@ -1,0 +1,52 @@
+#+ summary: A list of unmapped CTann CT terms in HRA
+
+PREFIX hint: <http://www.bigdata.com/queryHints#> 
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX sssom: <https://w3id.org/sssom/>
+PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT DISTINCT ?ctann ?asctb_table ?record_number ?ct ?ct_label
+FROM HRA:
+WHERE {
+  {
+    SELECT DISTINCT ?ctann ?ct_label
+    WHERE {
+      {
+        ?mapp a ccf:CtAnnMapping ; 
+          owl:annotatedProperty ?skos ;
+          sssom:subject_label ?ct_label_input .
+        BIND(LCASE(?ct_label_input) as ?ct_label)
+      }
+      UNION
+      {
+        ?mapp a ccf:CtAnnMapping ; 
+          owl:annotatedProperty ?skos ;
+          sssom:subject_label ?ct_label_plural .
+        FILTER(STRENDS(?ct_label_plural, 's'))
+        BIND(LCASE(STRENDS(?ct_label_plural, 's')) as ?ct_label)
+      }
+
+      FILTER(?skos = "skos:narrowMatch" || ?skos = "skos:broadMatch")
+      BIND(STRBEFORE(REPLACE(STRBEFORE(STR(?mapp), '#'), 'https://purl.humanatlas.io/ctann/', ''), '/') as ?ctann)
+    }
+  }
+
+  {
+    ?record a ccf:CellTypeRecord ;
+      ccf:record_number ?record_number ;
+      ccf:ccf_pref_label ?ct_label_big ;
+      ccf:source_concept ?ct .
+    BIND(STRBEFORE(REPLACE(STRBEFORE(STR(?record), '#'), 'https://purl.humanatlas.io/asct-b/', ''), '/') as ?asctb_table)
+    
+    # FILTER(STRSTARTS(STR(?ct), STR(ASCTB-TEMP:)))
+    BIND(LCASE(?ct_label_big) as ?ct_label)
+    hint:SubQuery hint:runOnce true .
+  }
+}
+ORDER BY ?ctann ?ct_label ?asctb_table ?record_number
