@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "2607d84f76e73e951eb72336827019e7bb212415"
+    "version": "2b71318ada16613db93caffb540cb014da0563f7"
   },
   "servers": [
     {
@@ -1313,6 +1313,75 @@
           }
         },
         "summary": "",
+        "tags": []
+      }
+    },
+    "/hra/ctann-narrow-broad-asctb-labels": {
+      "get": {
+        "description": "\n\n```\n#+ summary: A list of unmapped CTann CT terms in HRA\n\nPREFIX hint: <http://www.bigdata.com/queryHints#> \nPREFIX dct: <http://purl.org/dc/terms/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX sssom: <https://w3id.org/sssom/>\nPREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?ctann ?asctb_table ?record_number ?ct ?ct_label\nFROM HRA:\nWHERE {\n  {\n    SELECT DISTINCT ?ctann ?ct_label\n    WHERE {\n      {\n        ?mapp a ccf:CtAnnMapping ; \n          owl:annotatedProperty ?skos ;\n          sssom:subject_label ?ct_label_input .\n        BIND(LCASE(?ct_label_input) as ?ct_label)\n      }\n      UNION\n      {\n        ?mapp a ccf:CtAnnMapping ; \n          owl:annotatedProperty ?skos ;\n          sssom:subject_label ?ct_label_plural .\n        FILTER(STRENDS(?ct_label_plural, 's'))\n        BIND(LCASE(STRENDS(?ct_label_plural, 's')) as ?ct_label)\n      }\n\n      FILTER(?skos = \"skos:narrowMatch\" || ?skos = \"skos:broadMatch\")\n      BIND(STRBEFORE(REPLACE(STRBEFORE(STR(?mapp), '#'), 'https://purl.humanatlas.io/ctann/', ''), '/') as ?ctann)\n    }\n  }\n\n  {\n    ?record a ccf:CellTypeRecord ;\n      ccf:record_number ?record_number ;\n      ccf:ccf_pref_label ?ct_label_big ;\n      ccf:source_concept ?ct .\n    BIND(STRBEFORE(REPLACE(STRBEFORE(STR(?record), '#'), 'https://purl.humanatlas.io/asct-b/', ''), '/') as ?asctb_table)\n    \n    # FILTER(STRSTARTS(STR(?ct), STR(ASCTB-TEMP:)))\n    BIND(LCASE(?ct_label_big) as ?ct_label)\n    hint:SubQuery hint:runOnce true .\n  }\n}\nORDER BY ?ctann ?ct_label ?asctb_table ?record_number\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "A list of unmapped CTann CT terms in HRA",
         "tags": []
       }
     },
