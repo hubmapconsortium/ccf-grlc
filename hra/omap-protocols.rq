@@ -1,0 +1,14 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT DISTINCT ?omap ?protocol
+FROM HRA:
+WHERE {
+  ?omapExperiment a ccf:MultiplexedAntibodyBasedImagingExperiment ;
+  	ccf:protocol_doi ?protocol .
+  BIND(STRAFTER(STR(?omapExperiment), '#') as ?omap)
+}
+ORDER BY ?omap
