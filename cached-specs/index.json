@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "2b71318ada16613db93caffb540cb014da0563f7"
+    "version": "adc0a82dc6b965a760d24251eb2569fa7c2a4f88"
   },
   "servers": [
     {
@@ -2486,6 +2486,75 @@
           }
         },
         "summary": "All digital objects published to the HRA KG",
+        "tags": []
+      }
+    },
+    "/hra/omap-protocols": {
+      "get": {
+        "description": "\n\n```\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?omap ?protocol\nFROM HRA:\nWHERE {\n  ?omapExperiment a ccf:MultiplexedAntibodyBasedImagingExperiment ;\n  \tccf:protocol_doi ?protocol .\n  BIND(STRAFTER(STR(?omapExperiment), '#') as ?omap)\n}\nORDER BY ?omap\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "",
         "tags": []
       }
     },
