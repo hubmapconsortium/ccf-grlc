@@ -1,0 +1,19 @@
+#+ summary: Unique AS, CT, and B (gene, protein, etc) in HRA
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT ?asctb_type (COUNT(DISTINCT(?iri)) as ?count)
+FROM HRA:
+WHERE {
+  {
+    ?iri ccf:ccf_asctb_type ?asctb_type .
+    FILTER(?asctb_type != 'BM')
+  } UNION {
+    ?iri ccf:ccf_asctb_type 'BM'^^xsd:string ;
+      ccf:ccf_biomarker_type ?asctb_type .
+  }
+}
+GROUP BY ?asctb_type
+ORDER BY ?asctb_type
