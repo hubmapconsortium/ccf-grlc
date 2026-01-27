@@ -15,8 +15,11 @@ WHERE {
     ccf:primary_anatomical_structure ?as ;
     ccf:primary_cell_type ?ct ;
     ccf:biomarker ?biomarker ;
-    ccf:source_record ?record ;
-    dct:references ?reference .
+    ccf:source_record ?record .
+
+  OPTIONAL {
+    ?descriptor dct:references ?reference .
+  }
 
   ?as rdfs:label ?as_label .
   ?ct rdfs:label ?ct_label .
