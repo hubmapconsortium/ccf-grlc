@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/hra/LICENSE"
     },
     "title": "ccf-grlc",
-    "version": "adc0a82dc6b965a760d24251eb2569fa7c2a4f88"
+    "version": "3c962aeb3ae1b627bdf746725ecc43a3c9a877fd"
   },
   "servers": [
     {
@@ -717,6 +717,75 @@
           }
         },
         "summary": "AS, CT, and Biomarker trios by AS located in a given anatomical structure",
+        "tags": []
+      }
+    },
+    "/hra/as-ct-bx-counts": {
+      "get": {
+        "description": "\n\n```\n#+ summary: Unique AS, CT, and B (gene, protein, etc) in HRA\n\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT ?asctb_type (COUNT(DISTINCT(?iri)) as ?count)\nFROM HRA:\nWHERE {\n  {\n    ?iri ccf:ccf_asctb_type ?asctb_type .\n    FILTER(?asctb_type != 'BM')\n  } UNION {\n    ?iri ccf:ccf_asctb_type 'BM'^^xsd:string ;\n      ccf:ccf_biomarker_type ?asctb_type .\n  }\n}\nGROUP BY ?asctb_type\nORDER BY ?asctb_type\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Unique AS, CT, and B (gene, protein, etc) in HRA",
         "tags": []
       }
     },
@@ -2836,7 +2905,7 @@
     },
     "/hra/unmapped-asctb-term-list-with-refs": {
       "get": {
-        "description": "\n\n```\n#+ summary: A list of unmapped AS, CT, and B terms in HRA\n\nPREFIX dct: <http://purl.org/dc/terms/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?asctb_table ?record_number ?as ?as_label ?ct ?ct_label ?biomarker ?biomarker_label ?reference\nFROM HRA:\nWHERE {\n  ?descriptor a ccf:CellMarkerDescriptor ;\n    ccf:primary_anatomical_structure ?as ;\n    ccf:primary_cell_type ?ct ;\n    ccf:biomarker ?biomarker ;\n    ccf:source_record ?record ;\n    dct:references ?reference .\n\n  ?as rdfs:label ?as_label .\n  ?ct rdfs:label ?ct_label .\n  ?biomarker rdfs:label ?biomarker_label .\n\n  BIND(REPLACE(REPLACE(REPLACE(STR(?ct), 'http://purl.obolibrary.org/obo/CL_', 'CL:'),'http://purl.obolibrary.org/obo/PCL_', 'PCL:'), 'https://purl.org/ccf/ASCTB-TEMP_', 'ASCTB-TEMP:') as ?cell_id)\n  BIND(STRAFTER(STR(?record), '#R') as ?record_number)\n  BIND(REPLACE(REPLACE(STR(?biomarker), 'http://identifiers.org/hgnc/', 'HGNC:'), 'https://purl.org/ccf/ASCTB-TEMP_', 'ASCTB-TEMP:') as ?hgnc_id)\n  BIND(STRBEFORE(REPLACE(STRBEFORE(STR(?descriptor), '#'), 'https://purl.humanatlas.io/asct-b/', ''), '/') as ?asctb_table)\n  \n  FILTER(STRSTARTS(STR(?as), STR(ASCTB-TEMP:)) || STRSTARTS(STR(?ct), STR(ASCTB-TEMP:)) || STRSTARTS(STR(?biomarker), STR(ASCTB-TEMP:)))\n}\nORDER BY ?asctb_table ?record_number\n\n```",
+        "description": "\n\n```\n#+ summary: A list of unmapped AS, CT, and B terms in HRA\n\nPREFIX dct: <http://purl.org/dc/terms/>\nPREFIX owl: <http://www.w3.org/2002/07/owl#>\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra>\n\nSELECT DISTINCT ?asctb_table ?record_number ?as ?as_label ?ct ?ct_label ?biomarker ?biomarker_label ?reference\nFROM HRA:\nWHERE {\n  ?descriptor a ccf:CellMarkerDescriptor ;\n    ccf:primary_anatomical_structure ?as ;\n    ccf:primary_cell_type ?ct ;\n    ccf:biomarker ?biomarker ;\n    ccf:source_record ?record .\n\n  OPTIONAL {\n    ?descriptor dct:references ?reference .\n  }\n\n  ?as rdfs:label ?as_label .\n  ?ct rdfs:label ?ct_label .\n  ?biomarker rdfs:label ?biomarker_label .\n\n  BIND(REPLACE(REPLACE(REPLACE(STR(?ct), 'http://purl.obolibrary.org/obo/CL_', 'CL:'),'http://purl.obolibrary.org/obo/PCL_', 'PCL:'), 'https://purl.org/ccf/ASCTB-TEMP_', 'ASCTB-TEMP:') as ?cell_id)\n  BIND(STRAFTER(STR(?record), '#R') as ?record_number)\n  BIND(REPLACE(REPLACE(STR(?biomarker), 'http://identifiers.org/hgnc/', 'HGNC:'), 'https://purl.org/ccf/ASCTB-TEMP_', 'ASCTB-TEMP:') as ?hgnc_id)\n  BIND(STRBEFORE(REPLACE(STRBEFORE(STR(?descriptor), '#'), 'https://purl.humanatlas.io/asct-b/', ''), '/') as ?asctb_table)\n  \n  FILTER(STRSTARTS(STR(?as), STR(ASCTB-TEMP:)) || STRSTARTS(STR(?ct), STR(ASCTB-TEMP:)) || STRSTARTS(STR(?biomarker), STR(ASCTB-TEMP:)))\n}\nORDER BY ?asctb_table ?record_number\n\n```",
         "parameters": [
           {
             "description": "Alternative endpoint for SPARQL query",
