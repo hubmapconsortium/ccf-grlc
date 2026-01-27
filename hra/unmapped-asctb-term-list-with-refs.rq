@@ -8,7 +8,7 @@ PREFIX ccf: <http://purl.org/ccf/>
 PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 
-SELECT DISTINCT ?asctb_table ?record_number ?as ?as_label ?ct ?ct_label ?biomarker ?biomarker_label ?reference
+SELECT DISTINCT ?asctb_table ?record_number ?as ?as_label ?ct ?ct_label ?parent_ct ?parent_ct_label ?biomarker ?biomarker_label ?reference
 FROM HRA:
 WHERE {
   ?descriptor a ccf:CellMarkerDescriptor ;
@@ -19,6 +19,11 @@ WHERE {
 
   OPTIONAL {
     ?descriptor dct:references ?reference .
+  }
+  
+  OPTIONAL {
+    ?ct ccf:ccf_ct_isa ?parent_ct .
+    ?parent_ct rdfs:label ?parent_ct_label .
   }
 
   ?as rdfs:label ?as_label .
