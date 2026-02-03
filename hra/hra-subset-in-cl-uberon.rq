@@ -1,0 +1,8 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?term ?label
+WHERE {
+  ?term <http://www.geneontology.org/formats/oboInOwl#inSubset> <http://purl.obolibrary.org/obo/uberon/core#human_reference_atlas> ;
+    rdfs:label ?label .
+}
+ORDER BY ?term
