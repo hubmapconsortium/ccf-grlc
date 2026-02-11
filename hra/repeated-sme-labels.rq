@@ -1,0 +1,21 @@
+#+ summary: Repeated SME labels in ASCT+B tables
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
+
+SELECT ?asctb_type ?sme_label (COUNT(*) as ?duplicates) (GROUP_CONCAT(?ontology_label;SEPARATOR='; ') as ?ontology_labels) (GROUP_CONCAT(?iri;SEPARATOR='; ') as ?iris)
+FROM HRA:
+WHERE {
+  ?iri ccf:ccf_asctb_type ?asctb_type1 .
+  OPTIONAL {
+  	?iri ccf:ccf_biomarker_type ?bm_type . 
+  }
+  ?iri ccf:ccf_pref_label ?sme_label .
+  ?iri rdfs:label ?ontology_label .
+  BIND(IF(BOUND(?bm_type), CONCAT("BM (", ?bm_type, ")"), STR(?asctb_type1)) AS ?asctb_type)
+}
+GROUP BY ?asctb_type ?sme_label
+HAVING (?duplicates > 1)
+ORDER BY ?asctb_type ?sme_label
