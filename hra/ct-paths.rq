@@ -86,4 +86,4 @@ WHERE {
 
   FILTER(?_target_iri IN (?as1, ?as2, ?as3, ?as4, ?as5, ?as6, ?as7))
 }
-ORDER BY ?ordeer
+ORDER BY ?order
