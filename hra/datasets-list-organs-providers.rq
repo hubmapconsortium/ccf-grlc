@@ -35,12 +35,17 @@ WHERE {
     ccf:placement_relative_to ?ref_organ ;
   ] .
 
-  # ?ref_organ ccf:representation_of ?organ_iri .
-  ?ref_organ owl:sameAs* [
-    ccf:representation_of ?organ_iri ;
-  ] .
+  {
+    ?ref_organ ccf:representation_of ?organ_iri .
+  }
+  UNION
+  {
+    ?ref_organ owl:sameAs [
+      ccf:representation_of ?organ_iri ;
+    ] .
+  }
 
-  ?organ_iri ccf:ccf_pref_label ?organLabel .
+  ?organ_iri rdfs:label ?organLabel .
   BIND(LCASE(?organLabel) as ?organ)
 }
 ORDER BY ?organ ?consortium ?tissue_provider
