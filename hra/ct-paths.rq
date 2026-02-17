@@ -1,0 +1,89 @@
+#+ summary: get paths from source to target cell types
+
+#+ defaults:
+#+   - source: http://purl.obolibrary.org/obo/CL_0000066
+#+   - target: http://purl.obolibrary.org/obo/CL_0002071
+
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix CL: <http://purl.obolibrary.org/obo/CL_>
+
+SELECT DISTINCT 
+  (REPLACE(STR(?_target_iri), STR(CL:), 'CL:') AS ?TARGET_ID)
+  (?SRC_LABEL AS ?SRC) (REPLACE(STR(?_source_iri), STR(CL:), 'CL:') AS ?SRC_ID) ?SRC_LABEL
+  (?AS1_LABEL AS ?AS1) (REPLACE(STR(?as1), STR(CL:), 'CL:') AS ?AS1_ID) ?AS1_LABEL
+  (?AS2_LABEL AS ?AS2) ?AS2_ID ?AS2_LABEL
+  (?AS3_LABEL AS ?AS3) ?AS3_ID ?AS3_LABEL
+  (?AS4_LABEL AS ?AS4) ?AS4_ID ?AS4_LABEL
+  (?AS5_LABEL AS ?AS5) ?AS5_ID ?AS5_LABEL
+  (?AS6_LABEL AS ?AS6) ?AS6_ID ?AS6_LABEL
+FROM <https://purl.humanatlas.io/vocab/cl>
+WHERE {
+  # VALUES (?order ?_source_iri ?_target_iri) {
+  #   (1 CL:0000066 CL:0002071)
+  #   (2 CL:0000066 CL:0002275)
+  #   (3 CL:0000066 CL:0002370)
+  # }
+  
+  ?as1 rdfs:subClassOf ?_source_iri .
+  ?_source_iri rdfs:label ?SRC_LABEL .
+  ?as1 rdfs:label ?AS1_LABEL .
+  
+  OPTIONAL {
+    ?as2 rdfs:subClassOf ?as1 .
+    ?as2 rdfs:label ?as2__label .
+  }
+  OPTIONAL {
+    ?as2 rdfs:subClassOf ?as1 .
+    ?as3 rdfs:subClassOf ?as2 .
+    ?as3 rdfs:label ?as3__label .
+  }
+  OPTIONAL {
+    ?as2 rdfs:subClassOf ?as1 .
+    ?as3 rdfs:subClassOf ?as2 .
+    ?as4 rdfs:subClassOf ?as3 .
+    ?as4 rdfs:label ?as4__label .
+  }
+  OPTIONAL {
+    ?as2 rdfs:subClassOf ?as1 .
+    ?as3 rdfs:subClassOf ?as2 .
+    ?as4 rdfs:subClassOf ?as3 .
+    ?as5 rdfs:subClassOf ?as4 .
+    ?as5 rdfs:label ?as5__label .
+  }
+  OPTIONAL {
+    ?as2 rdfs:subClassOf ?as1 .
+    ?as3 rdfs:subClassOf ?as2 .
+    ?as4 rdfs:subClassOf ?as3 .
+    ?as5 rdfs:subClassOf ?as4 .
+    ?as6 rdfs:subClassOf ?as5 .
+    ?as6 rdfs:label ?as6__label .
+  }
+  OPTIONAL {
+    ?as2 rdfs:subClassOf ?as1 .
+    ?as3 rdfs:subClassOf ?as2 .
+    ?as4 rdfs:subClassOf ?as3 .
+    ?as5 rdfs:subClassOf ?as4 .
+    ?as6 rdfs:subClassOf ?as5 .
+    ?as7 rdfs:subClassOf ?as6 .
+    ?as7 rdfs:label ?as7__label .
+  }
+  
+  BIND(IF(?as1 = ?_target_iri, '', ?as2__label) as ?AS2_LABEL)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri, '', ?as3__label) as ?AS3_LABEL)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri, '', ?as4__label) as ?AS4_LABEL)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri, '', ?as5__label) as ?AS5_LABEL)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri, '', ?as6__label) as ?AS6_LABEL)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri, '', ?as7__label) as ?AS7_LABEL)
+  
+  BIND(IF(?as1 = ?_target_iri, '', REPLACE(STR(?as2), STR(CL:), 'CL:')) as ?AS2_ID)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri, '', REPLACE(STR(?as3), STR(CL:), 'CL:')) as ?AS3_ID)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri, '', REPLACE(STR(?as4), STR(CL:), 'CL:')) as ?AS4_ID)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri, '', REPLACE(STR(?as5), STR(CL:), 'CL:')) as ?AS5_ID)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri, '', REPLACE(STR(?as6), STR(CL:), 'CL:')) as ?AS6_ID)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri, '', REPLACE(STR(?as7), STR(CL:), 'CL:')) as ?AS7_ID)
+
+  FILTER(?_target_iri IN (?as1, ?as2, ?as3, ?as4, ?as5, ?as6, ?as7))
+}
+ORDER BY ?ordeer
