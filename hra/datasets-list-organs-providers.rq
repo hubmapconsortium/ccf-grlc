@@ -11,7 +11,7 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
 PREFIX DSGraphs: <https://purl.humanatlas.io/collection/ds-graphs>
 
-SELECT DISTINCT ?dataset ?organ_iri ?organ ?consortium ?tissue_provider
+SELECT DISTINCT ?dataset ?cell_count ?organ_iri ?organ ?consortium ?tissue_provider
 FROM HRA:
 FROM HRApop:
 FROM DSGraphs:
@@ -45,7 +45,21 @@ WHERE {
     ] .
   }
 
+  OPTIONAL {
+    SELECT ?dataset (SUM(?cell_type_count) as ?cell_count) 
+    WHERE {
+      GRAPH HRApop: {
+        ?dataset ccf:has_cell_summary [
+          ccf:has_cell_summary_row [
+            ccf:cell_count ?cell_type_count ;
+          ] ;
+        ] .
+      }
+    }
+    GROUP BY ?dataset
+  }
+
   ?organ_iri rdfs:label ?organLabel .
   BIND(LCASE(?organLabel) as ?organ)
 }
-ORDER BY ?organ ?consortium ?tissue_provider
+ORDER BY ?organ DESC(?cell_count) ?consortium ?tissue_provider
