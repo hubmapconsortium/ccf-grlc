@@ -1,0 +1,71 @@
+#+ summary: List of datasets with the organ and providers
+
+PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX hgnc: <http://purl.bioontology.org/ontology/HGNC/>
+PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
+PREFIX DSGraphs: <https://purl.humanatlas.io/collection/ds-graphs>
+
+SELECT DISTINCT ?millitome_id ?dataset ?cell_count ?organ_iri ?organ ?consortium ?tissue_provider
+FROM HRA:
+FROM HRApop:
+FROM DSGraphs:
+WHERE {
+  {
+    ?sample ccf:comes_from ?donor .
+    ?sample ccf:has_registration_location ?rui_location .
+    ?sample ccf:generates_dataset ?dataset .
+  } UNION {
+    ?block ccf:comes_from ?donor .
+    ?block ccf:subdivided_into_sections ?sample .
+    ?block ccf:has_registration_location ?rui_location .
+    ?sample ccf:generates_dataset ?dataset .
+  }
+
+  {
+    ?rui_location owl:sameAs ?millitome_iri .
+    FILTER(STRSTARTS(STR(?millitome_iri), 'https://purl.humanatlas.io/millitome/'))
+    BIND(REPLACE(STR(?millitome_iri), 'https://purl.humanatlas.io/millitome/', '') as ?millitome_id)
+  }
+
+  ?donor ccf:consortium_name ?consortium .
+  ?donor ccf:tissue_provider_name ?tissue_provider .
+
+  [ 
+    ccf:placement_for ?rui_location ;
+    ccf:placement_relative_to ?ref_organ ;
+  ] .
+
+  {
+    ?ref_organ ccf:representation_of ?organ_iri .
+  }
+  UNION
+  {
+    ?ref_organ owl:sameAs [
+      ccf:representation_of ?organ_iri ;
+    ] .
+  }
+
+  OPTIONAL {
+    SELECT ?dataset (SUM(?cell_type_count) as ?cell_count) 
+    WHERE {
+      GRAPH HRApop: {
+        ?dataset ccf:has_cell_summary [
+          ccf:has_cell_summary_row [
+            ccf:cell_count ?cell_type_count ;
+          ] ;
+        ] .
+      }
+    }
+    GROUP BY ?dataset
+  }
+
+  ?organ_iri rdfs:label ?organLabel .
+  BIND(LCASE(?organLabel) as ?organ)
+}
+ORDER BY ?millitome_id DESC(?cell_count) ?consortium ?tissue_provider
