@@ -14,7 +14,7 @@ PREFIX LOD: <https://lod.humanatlas.io>
 SELECT DISTINCT ?ftu_label ?ct_label ?in_2d_ftu ?in_asctb ?ftu_iri ?ct_iri
 FROM HRA:
 WHERE {
-  OPTIONAL {
+  {
     [
       a ccf:FtuIllustrationNode ;
       ccf:part_of_illustration [
@@ -27,7 +27,22 @@ WHERE {
     ?ct_iri rdfs:label ?ct_label .
     BIND(true as ?in_2d_ftu)
   }
-  
+
+  OPTIONAL {
+    [
+      a ccf:AsctbRecord ;
+      ccf:ftu_types [
+        ccf:source_concept ?ftu_iri
+      ];
+      ccf:cell_type [
+        ccf:source_concept ?ct_iri
+      ];
+    ] .
+    ?ftu_iri rdfs:label ?ftu_label .
+    ?ct_iri rdfs:label ?ct_label .
+    BIND(true as ?in_asctb)
+  }
+
   OPTIONAL {
     [
       a ccf:AsctbRecord ;
