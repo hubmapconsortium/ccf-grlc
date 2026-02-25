@@ -1,0 +1,46 @@
+#+ summary: FTU cell types that occur in 2D and ASCT+B
+
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX schema: <http://schema.org/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
+PREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>
+PREFIX obo: <http://purl.obolibrary.org/obo/>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+PREFIX LOD: <https://lod.humanatlas.io>
+
+SELECT DISTINCT ?ftu_label ?ct_label ?in_2d_ftu ?in_asctb ?ftu_iri ?ct_iri
+FROM HRA:
+WHERE {
+  OPTIONAL {
+    [
+      a ccf:FtuIllustrationNode ;
+      ccf:part_of_illustration [
+        ccf:representation_of ?ftu_iri ;
+      ];
+      ccf:representation_of ?ct_iri ;
+    ] .
+    FILTER(STRSTARTS(STR(?ct_iri), STR(CL:)))
+    ?ftu_iri rdfs:label ?ftu_label .
+    ?ct_iri rdfs:label ?ct_label .
+    BIND(true as ?in_2d_ftu)
+  }
+  
+  OPTIONAL {
+    [
+      a ccf:AsctbRecord ;
+      ccf:anatomical_structure [
+        ccf:source_concept ?ftu_iri
+      ];
+      ccf:cell_type [
+        ccf:source_concept ?ct_iri
+      ];
+    ] .
+    ?ftu_iri rdfs:label ?ftu_label .
+    ?ct_iri rdfs:label ?ct_label .
+    BIND(true as ?in_asctb)
+  }
+}
+ORDER BY ?ftu_iri ?ct_iri
