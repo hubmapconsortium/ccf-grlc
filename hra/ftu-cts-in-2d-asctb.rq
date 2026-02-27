@@ -11,18 +11,18 @@ PREFIX obo: <http://purl.obolibrary.org/obo/>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
 PREFIX LOD: <https://lod.humanatlas.io>
 
-SELECT DISTINCT ?ftu_label ?ct_label ?in_2d_ftu ?in_asctb ?ftu_iri ?ct_iri
+SELECT DISTINCT ?ftu_purl ?ftu_label ?ct_label ?in_2d_ftu ?in_asctb ?ftu_iri ?ct_iri
 FROM HRA:
 WHERE {
   {
     [
       a ccf:FtuIllustrationNode ;
-      ccf:part_of_illustration [
-        ccf:representation_of ?ftu_iri ;
-      ];
+      ccf:part_of_illustration ?ftu_illustration;
       ccf:representation_of ?ct_iri ;
     ] .
+    ?ftu_illustration ccf:representation_of ?ftu_iri .
     FILTER(STRSTARTS(STR(?ct_iri), STR(CL:)))
+    BIND(IRI(STRBEFORE(STR(?ftu_illustration), '#')) as ?ftu_purl)
     ?ftu_iri rdfs:label ?ftu_label .
     ?ct_iri rdfs:label ?ct_label .
     BIND(true as ?in_2d_ftu)
