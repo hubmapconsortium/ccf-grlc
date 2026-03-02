@@ -1,0 +1,28 @@
+#+ summary: A list of unmapped CTann CT terms and their closest match CL in HRA
+
+PREFIX hint: <http://www.bigdata.com/queryHints#> 
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX sssom: <https://w3id.org/sssom/>
+PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+SELECT DISTINCT ?ctann ?ct_label ?inexact_match_cl ?inexact_match_cl_label
+FROM HRA:
+WHERE {
+  ?mapp a ccf:CtAnnMapping ; 
+    owl:annotatedProperty ?skos ;
+    sssom:subject_label ?ct_label_input ;
+    owl:annotatedTarget ?inexact_match_cl ;
+    sssom:object_label ?inexact_match_cl_label ;
+  .
+  BIND(LCASE(?ct_label_input) as ?ct_label)
+
+  FILTER(?skos = "skos:narrowMatch" || ?skos = "skos:broadMatch")
+  BIND(STRBEFORE(REPLACE(STRBEFORE(STR(?mapp), '#'), 'https://purl.humanatlas.io/ctann/', ''), '/') as ?ctann)
+}
+ORDER BY ?ctann ?ct_label
