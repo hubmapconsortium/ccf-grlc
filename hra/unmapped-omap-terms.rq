@@ -1,0 +1,18 @@
+#+ summary: Unmapped OMAP terms in HRA
+#+ endpoint: https://lod.humanatlas.io/sparql
+
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
+
+SELECT ?omap (COUNT(DISTINCT(?iri)) as ?count)
+WHERE {
+  GRAPH ?omap {
+    ?iri rdfs:label ?label .
+    FILTER(STRSTARTS(STR(?iri), STR(ASCTB-TEMP:)))
+  }
+  FILTER(STRSTARTS(STR(?graph), 'https://purl.humanatlas.io/omap/'))
+}
+GROUP BY ?omap
+ORDER BY ?omap
