@@ -18,6 +18,12 @@ SELECT DISTINCT
   (?AS4_LABEL AS ?AS4) ?AS4_ID ?AS4_LABEL
   (?AS5_LABEL AS ?AS5) ?AS5_ID ?AS5_LABEL
   (?AS6_LABEL AS ?AS6) ?AS6_ID ?AS6_LABEL
+  (?AS7_LABEL AS ?AS7) ?AS7_ID ?AS7_LABEL
+  (?AS8_LABEL AS ?AS8) ?AS8_ID ?AS8_LABEL
+  (?AS9_LABEL AS ?AS9) ?AS9_ID ?AS9_LABEL
+  (?AS10_LABEL AS ?AS10) ?AS10_ID ?AS10_LABEL
+  (?AS11_LABEL AS ?AS11) ?AS11_ID ?AS11_LABEL
+  (?AS12_LABEL AS ?AS12) ?AS12_ID ?AS12_LABEL
 FROM <https://purl.humanatlas.io/vocab/cl>
 WHERE {
   # VALUES (?order ?_source_iri ?_target_iri) {
@@ -69,6 +75,66 @@ WHERE {
     ?as7 rdfs:subClassOf ?as6 .
     ?as7 rdfs:label ?as7__label .
   }
+  OPTIONAL {
+    ?as2 rdfs:subClassOf ?as1 .
+    ?as3 rdfs:subClassOf ?as2 .
+    ?as4 rdfs:subClassOf ?as3 .
+    ?as5 rdfs:subClassOf ?as4 .
+    ?as6 rdfs:subClassOf ?as5 .
+    ?as7 rdfs:subClassOf ?as6 .
+    ?as8 rdfs:subClassOf ?as7 .
+    ?as8 rdfs:label ?as8__label .
+  }
+  OPTIONAL {
+    ?as2 rdfs:subClassOf ?as1 .
+    ?as3 rdfs:subClassOf ?as2 .
+    ?as4 rdfs:subClassOf ?as3 .
+    ?as5 rdfs:subClassOf ?as4 .
+    ?as6 rdfs:subClassOf ?as5 .
+    ?as7 rdfs:subClassOf ?as6 .
+    ?as8 rdfs:subClassOf ?as7 .
+    ?as9 rdfs:subClassOf ?as8 .
+    ?as9 rdfs:label ?as9__label .
+  }
+  OPTIONAL {
+    ?as2 rdfs:subClassOf ?as1 .
+    ?as3 rdfs:subClassOf ?as2 .
+    ?as4 rdfs:subClassOf ?as3 .
+    ?as5 rdfs:subClassOf ?as4 .
+    ?as6 rdfs:subClassOf ?as5 .
+    ?as7 rdfs:subClassOf ?as6 .
+    ?as8 rdfs:subClassOf ?as7 .
+    ?as9 rdfs:subClassOf ?as8 .
+    ?as10 rdfs:subClassOf ?as9 .
+    ?as10 rdfs:label ?as10__label .
+  }
+  OPTIONAL {
+    ?as2 rdfs:subClassOf ?as1 .
+    ?as3 rdfs:subClassOf ?as2 .
+    ?as4 rdfs:subClassOf ?as3 .
+    ?as5 rdfs:subClassOf ?as4 .
+    ?as6 rdfs:subClassOf ?as5 .
+    ?as7 rdfs:subClassOf ?as6 .
+    ?as8 rdfs:subClassOf ?as7 .
+    ?as9 rdfs:subClassOf ?as8 .
+    ?as10 rdfs:subClassOf ?as9 .
+    ?as11 rdfs:subClassOf ?as10 .
+    ?as11 rdfs:label ?as11__label .
+  }
+  OPTIONAL {
+    ?as2 rdfs:subClassOf ?as1 .
+    ?as3 rdfs:subClassOf ?as2 .
+    ?as4 rdfs:subClassOf ?as3 .
+    ?as5 rdfs:subClassOf ?as4 .
+    ?as6 rdfs:subClassOf ?as5 .
+    ?as7 rdfs:subClassOf ?as6 .
+    ?as8 rdfs:subClassOf ?as7 .
+    ?as9 rdfs:subClassOf ?as8 .
+    ?as10 rdfs:subClassOf ?as9 .
+    ?as11 rdfs:subClassOf ?as10 .
+    ?as12 rdfs:subClassOf ?as11 .
+    ?as12 rdfs:label ?as12__label .
+  }
   
   BIND(IF(?as1 = ?_target_iri, '', ?as2__label) as ?AS2_LABEL)
   BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri, '', ?as3__label) as ?AS3_LABEL)
@@ -76,6 +142,11 @@ WHERE {
   BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri, '', ?as5__label) as ?AS5_LABEL)
   BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri, '', ?as6__label) as ?AS6_LABEL)
   BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri, '', ?as7__label) as ?AS7_LABEL)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri || ?as7 = ?_target_iri, '', ?as8__label) as ?AS8_LABEL)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri || ?as7 = ?_target_iri || ?as8 = ?_target_iri, '', ?as9__label) as ?AS9_LABEL)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri || ?as7 = ?_target_iri || ?as8 = ?_target_iri || ?as9 = ?_target_iri, '', ?as10__label) as ?AS10_LABEL)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri || ?as7 = ?_target_iri || ?as8 = ?_target_iri || ?as9 = ?_target_iri || ?as10 = ?_target_iri, '', ?as11__label) as ?AS11_LABEL)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri || ?as7 = ?_target_iri || ?as8 = ?_target_iri || ?as9 = ?_target_iri || ?as10 = ?_target_iri || ?as11 = ?_target_iri, '', ?as12__label) as ?AS12_LABEL)
   
   BIND(IF(?as1 = ?_target_iri, '', REPLACE(STR(?as2), STR(CL:), 'CL:')) as ?AS2_ID)
   BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri, '', REPLACE(STR(?as3), STR(CL:), 'CL:')) as ?AS3_ID)
@@ -83,7 +154,12 @@ WHERE {
   BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri, '', REPLACE(STR(?as5), STR(CL:), 'CL:')) as ?AS5_ID)
   BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri, '', REPLACE(STR(?as6), STR(CL:), 'CL:')) as ?AS6_ID)
   BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri, '', REPLACE(STR(?as7), STR(CL:), 'CL:')) as ?AS7_ID)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri || ?as7 = ?_target_iri, '', REPLACE(STR(?as8), STR(CL:), 'CL:')) as ?AS8_ID)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri || ?as7 = ?_target_iri || ?as8 = ?_target_iri, '', REPLACE(STR(?as9), STR(CL:), 'CL:')) as ?AS9_ID)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri || ?as7 = ?_target_iri || ?as8 = ?_target_iri || ?as9 = ?_target_iri, '', REPLACE(STR(?as10), STR(CL:), 'CL:')) as ?AS10_ID)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri || ?as7 = ?_target_iri || ?as8 = ?_target_iri || ?as9 = ?_target_iri || ?as10 = ?_target_iri, '', REPLACE(STR(?as11), STR(CL:), 'CL:')) as ?AS11_ID)
+  BIND(IF(?as1 = ?_target_iri || ?as2 = ?_target_iri || ?as3 = ?_target_iri || ?as4 = ?_target_iri || ?as5 = ?_target_iri || ?as6 = ?_target_iri || ?as7 = ?_target_iri || ?as8 = ?_target_iri || ?as9 = ?_target_iri || ?as10 = ?_target_iri || ?as11 = ?_target_iri, '', REPLACE(STR(?as12), STR(CL:), 'CL:')) as ?AS12_ID)
 
-  FILTER(?_target_iri IN (?as1, ?as2, ?as3, ?as4, ?as5, ?as6, ?as7))
+  FILTER(?_target_iri IN (?as1, ?as2, ?as3, ?as4, ?as5, ?as6, ?as7, ?as8, ?as9, ?as10, ?as11, ?as12))
 }
 ORDER BY ?order
