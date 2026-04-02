@@ -3339,6 +3339,75 @@
         "tags": []
       }
     },
+    "/hra-pop/as-datasets-extraction-sites": {
+      "get": {
+        "description": "For each atlas dataset, get extraction site and AS collisions with overlaps\n\n```\n#+ summary: Atlas dataset, extraction site, and AS\n#+ description: For each atlas dataset, get extraction site and AS collisions with overlaps\n\nPREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX FMA: <http://purl.org/sig/ont/fma/fma>\nPREFIX UBERON: <http://purl.obolibrary.org/obo/UBERON_>\nPREFIX HRA: <https://purl.humanatlas.io/collection/hra-api>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\nPREFIX ccf3d: <http://purl.org/ccf/latest/ccf.owl#>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX ctpop-graph: <https://purl.humanatlas.io/graph/ctpop>\nPREFIX ctpop: <https://purl.humanatlas.io/graph/ctpop#>\nPREFIX dc: <http://purl.org/dc/terms/>\nPREFIX hubmap: <https://entity.api.hubmapconsortium.org/entities/>\nPREFIX rui: <http://purl.org/ccf/1.5/>\n\n# dataset_id | extraction site IRI | anatomical structure IRI | anatomical structure label\nSELECT DISTINCT\n  ?dataset\n\t?rui_location\n  ?as_label\n\t?as_id\n  ?as_overlap_percentage\n  ?organId\n  ?organ_label\n  ?refOrgan\n  ?refOrganAs\n\nFROM HRApop:\nFROM HRA:\nWHERE {\n  {\n    ?sample ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  } UNION {\n    ?block ccf:subdivided_into_sections ?sample .\n    ?block ccf:has_registration_location ?rui_location .\n    ?sample ccf:generates_dataset ?dataset .\n  }\n\n  ?dataset ccf:has_cell_summary [\n    ccf:sex ?sex ;\n    ccf:cell_annotation_method ?tool ;\n    ccf:modality ?modality ;\n  ] .\n\n  ?rui_location ccf:has_collision_summary [\n      ccf:has_collision_item [\n          ccf:as_id ?refOrganAs ;\n          ccf:as_label ?as_label ;\n\t\t\t\t\tccf:as_id ?as_id;\n          ccf:percentage_of_total ?as_overlap_percentage ;\n          ccf:has_reference_organ ?refOrgan\n      ]\n  ] .\n\n  ?refOrgan ccf:representation_of ?organId .\n  ?organId rdfs:label ?organ_label .\n}\nORDER BY ?dataset\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Atlas dataset, extraction site, and AS",
+        "tags": []
+      }
+    },
     "/hra-pop/biomarkers-in-atlas": {
       "get": {
         "description": "\n\n```\n#+ summary: All biomarkers seen in Atlas Datasets\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?biomarker_label\nFROM HRApop:\nWHERE {\n  [] ccf:generates_dataset ?dataset .\n  ?dataset ccf:has_cell_summary [\n    ccf:has_cell_summary_row [\n      ccf:gene_expr [\n        ccf:gene_label ?biomarker_label ;\n      ]\n    ]\n  ] .\n}\nORDER BY ?biomarker_label\n\n```",
