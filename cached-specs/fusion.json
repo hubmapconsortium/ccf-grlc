@@ -11,7 +11,7 @@
             "url": "https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/fusion/LICENSE"
         },
         "title": "ccf-grlc",
-        "version": "90d51fdb15c11f82c5f9a7ae3d5725a3c2d76b10"
+        "version": "087d733925a2407bfcb124e3c6561aeb639ad46c"
     },
     "paths": {
         "/asct_by_biomarker": {
@@ -175,8 +175,8 @@
             }
         }
     },
-    "prev_commit": "d5fc84b1f323490da328dae07de1283ac55e946c",
-    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2025-08-18T20:53:41.591832\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2025-08-18T20:53:41.591832\"^^xsd:dateTime ;\n    prov:startedAtTime \"2025-08-18T20:53:27.983789\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/fusion/asct_by_biomarker.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/fusion/cell_by_location.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/fusion/asct_by_biomarker.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/fusion/cell_by_location.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
+    "prev_commit": "4375db844f0210fd37751a79d0953251ca922777",
+    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2026-06-12T15:52:01.252406\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2026-06-12T15:52:01.252406\"^^xsd:dateTime ;\n    prov:startedAtTime \"2026-06-12T15:51:45.395368\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/fusion/asct_by_biomarker.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/fusion/cell_by_location.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/fusion/asct_by_biomarker.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/fusion/cell_by_location.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
     "servers": [
         {
             "url": "https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/fusion/"

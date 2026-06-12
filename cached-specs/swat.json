@@ -7,7 +7,7 @@
         },
         "description": "ccf-grlc: Useful SPARQL queries for HRA work + API via grlc.io<div class=\"errors-wrapper\">Queries behind this API do not have a license. You may not be allowed to use them.</div>",
         "title": "ccf-grlc",
-        "version": "e2e714da4eea41e64d4a485dcbc5759d850392e7"
+        "version": "087d733925a2407bfcb124e3c6561aeb639ad46c"
     },
     "paths": {
         "/cells-genes": {
@@ -149,8 +149,8 @@
             }
         }
     },
-    "prev_commit": "edda4594f0561c2a306afb5af72602839521515e",
-    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2025-11-18T19:02:04.167020\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2025-11-18T19:02:04.167020\"^^xsd:dateTime ;\n    prov:startedAtTime \"2025-11-18T19:01:45.060934\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/cells-genes.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/placenta-cells-genes.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/cells-genes.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/placenta-cells-genes.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
+    "prev_commit": "4375db844f0210fd37751a79d0953251ca922777",
+    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2026-06-12T15:56:37.346378\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2026-06-12T15:56:37.346378\"^^xsd:dateTime ;\n    prov:startedAtTime \"2026-06-12T15:56:18.861241\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/cells-genes.rq>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/placenta-cells-genes.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/cells-genes.rq> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/swat/placenta-cells-genes.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
     "servers": [
         {
             "url": "https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/swat/"

@@ -7,7 +7,7 @@
         },
         "description": "ccf-grlc: Useful SPARQL queries for HRA work + API via grlc.io<div class=\"errors-wrapper\">Queries behind this API do not have a license. You may not be allowed to use them.</div>",
         "title": "ccf-grlc",
-        "version": "c985f05479a2f8292ff6ce4b33b8492e90e08697"
+        "version": "087d733925a2407bfcb124e3c6561aeb639ad46c"
     },
     "paths": {
         "/outer-cortex-datasets": {
@@ -80,8 +80,8 @@
             }
         }
     },
-    "prev_commit": "05118763d7426fbbcc6217c37d5bfb754015f782",
-    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2025-11-07T16:28:20.519613\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2025-11-07T16:28:20.519613\"^^xsd:dateTime ;\n    prov:startedAtTime \"2025-11-07T16:28:08.334646\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/kpmp/outer-cortex-datasets.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/kpmp/outer-cortex-datasets.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
+    "prev_commit": "4375db844f0210fd37751a79d0953251ca922777",
+    "prov": "@prefix prov: <http://www.w3.org/ns/prov#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec> a prov:Entity ;\n    prov:generatedAtTime \"2026-06-12T15:55:51.889256\"^^xsd:dateTime ;\n    prov:wasAttributedTo <http://grlc.io> ;\n    prov:wasGeneratedBy <http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> .\n\n<http://localhost/#commit-014dce894ef3f6ba392e4d068baeaeee206c29e0> a prov:Activity ;\n    prov:endedAtTime \"2025-05-12T17:06:50+00:00\"^^xsd:dateTime .\n\n<http://grlc.io/api/hubmapconsortium/ccf-grlc/spec-activity> a prov:Activity ;\n    prov:endedAtTime \"2026-06-12T15:55:51.889256\"^^xsd:dateTime ;\n    prov:startedAtTime \"2026-06-12T15:55:38.968849\"^^xsd:dateTime ;\n    prov:used <https://api.github.com/repos/hubmapconsortium/ccf-grlc>,\n        <https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/kpmp/outer-cortex-datasets.rq> ;\n    prov:wasAssociatedWith <http://grlc.io> .\n\n<https://api.github.com/repos/hubmapconsortium/ccf-grlc> a prov:Entity .\n\n<https://raw.githubusercontent.com/hubmapconsortium/ccf-grlc/main/kpmp/outer-cortex-datasets.rq> a prov:Entity .\n\n<http://grlc.io> a prov:Agent .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-bherr2> ;\n    prov:hadRole \"author\"@en .\n\n[] a prov:Association ;\n    prov:agent <http://localhost/#user-github-actions> .\n\n",
     "servers": [
         {
             "url": "https://grlc.io/api-git/hubmapconsortium/ccf-grlc/subdir/kpmp/"
