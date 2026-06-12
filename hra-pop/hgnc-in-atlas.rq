@@ -1,0 +1,22 @@
+#+ summary: All biomarkers seen in Atlas Datasets
+
+PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
+PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
+
+SELECT DISTINCT ?hgnc_id ?biomarker_label
+FROM HRApop:
+WHERE {
+  [] ccf:generates_dataset ?dataset .
+  ?dataset ccf:has_cell_summary [
+    ccf:has_cell_summary_row [
+      ccf:gene_expr [
+        ccf:gene_id ?hgnc_id ;
+        ccf:gene_label ?biomarker_label ;
+      ]
+    ]
+  ] .
+  FILTER(STRSTARTS(STR(?hgnc_id), 'HGNC:'))
+}
+ORDER BY ?hgnc_id

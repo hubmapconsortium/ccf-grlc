@@ -1,0 +1,23 @@
+#+ summary: All biomarkers seen in Atlas Datasets
+
+PREFIX CL: <http://purl.obolibrary.org/obo/CL_>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX CCF: <https://purl.humanatlas.io/graph/ccf>
+PREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>
+
+SELECT ?ontology (COUNT(DISTINCT ?gene_id) as ?term_count)
+FROM HRApop:
+WHERE {
+  [] ccf:generates_dataset ?dataset .
+  ?dataset ccf:has_cell_summary [
+    ccf:has_cell_summary_row [
+      ccf:gene_expr [
+        ccf:gene_id ?gene_id ;
+      ]
+    ]
+  ] .
+
+  BIND(STRBEFORE(STR(?gene_id), ':') as ?ontology)
+}
+GROUP BY ?ontology
+ORDER BY ?ontology
