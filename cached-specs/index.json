@@ -4740,6 +4740,75 @@
         "tags": []
       }
     },
+    "/hra-pop/hgnc-ids-in-atlas": {
+      "get": {
+        "description": "\n\n```\n#+ summary: All biomarkers seen in Atlas Datasets\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?hgnc_id\nFROM HRApop:\n# Use all 3 FROM clauses for universe \n# FROM <https://purl.humanatlas.io/ds-graph/hra-pop-full>\n# FROM <https://purl.humanatlas.io/graph/hra-pop#test-data>\nWHERE {\n  [] ccf:generates_dataset ?dataset .\n  ?dataset ccf:has_cell_summary [\n    ccf:has_cell_summary_row [\n      ccf:gene_expr [\n        ccf:gene_id ?hgnc_id ;\n      ]\n    ]\n  ] .\n  FILTER(STRSTARTS(STR(?hgnc_id), 'HGNC:'))\n}\nORDER BY ?hgnc_id\n\n```",
+        "parameters": [
+          {
+            "description": "Alternative endpoint for SPARQL query",
+            "in": "query",
+            "name": "endpoint",
+            "schema": {
+              "type": "string",
+              "default": "https://lod.humanatlas.io/sparql"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Query response",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "items": {
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "text/html": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        },
+        "summary": "All biomarkers seen in Atlas Datasets",
+        "tags": []
+      }
+    },
     "/hra-pop/hgnc-in-atlas": {
       "get": {
         "description": "\n\n```\n#+ summary: All biomarkers seen in Atlas Datasets\n\nPREFIX CL: <http://purl.obolibrary.org/obo/CL_>\nPREFIX ccf: <http://purl.org/ccf/>\nPREFIX CCF: <https://purl.humanatlas.io/graph/ccf>\nPREFIX HRApop: <https://purl.humanatlas.io/graph/hra-pop>\n\nSELECT DISTINCT ?hgnc_id ?biomarker_label\nFROM HRApop:\nWHERE {\n  [] ccf:generates_dataset ?dataset .\n  ?dataset ccf:has_cell_summary [\n    ccf:has_cell_summary_row [\n      ccf:gene_expr [\n        ccf:gene_id ?hgnc_id ;\n        ccf:gene_label ?biomarker_label ;\n      ]\n    ]\n  ] .\n  FILTER(STRSTARTS(STR(?hgnc_id), 'HGNC:'))\n}\nORDER BY ?hgnc_id\n\n```",
