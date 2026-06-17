@@ -7,6 +7,7 @@ SELECT ?asctb_table (COUNT(DISTINCT ?hgnc_iri) as ?count)
 FROM HRA:
 WHERE {
   ?record a ccf:BiomarkerRecord ;
+      ccf:ccf_biomarker_type "gene"^^xsd:string ;
       ccf:source_concept ?hgnc_iri .
   BIND(STRBEFORE(REPLACE(STRBEFORE(STR(?record), '#'), 'https://purl.humanatlas.io/asct-b/', ''), '/') as ?asctb_table)
   FILTER(!STRSTARTS(STR(?hgnc_iri), STR(hgnc:)))
