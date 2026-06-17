@@ -1,0 +1,15 @@
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+PREFIX hgnc: <http://identifiers.org/hgnc/>
+
+SELECT ?asctb_table (COUNT(DISTINCT ?hgnc_iri) as ?count)
+FROM HRA:
+WHERE {
+  ?record a ccf:BiomarkerRecord ;
+      ccf:source_concept ?hgnc_iri .
+  BIND(STRBEFORE(REPLACE(STRBEFORE(STR(?record), '#'), 'https://purl.humanatlas.io/asct-b/', ''), '/') as ?asctb_table)
+  FILTER(!STRSTARTS(STR(?hgnc_iri), STR(hgnc:)))
+}
+GROUP BY ?asctb_table
+ORDER BY ?asctb_table
