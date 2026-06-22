@@ -1,5 +1,5 @@
 #+ summary: Count of 3D Anatomical Structures
-#+ description: Count of 3D Anatomical Structures
+#+ description: Count of 3D Anatomical Structures. Returns three values: (1) 3D AS without united file and reference organ AS, (2) without united files, and (3) only 3D reference organs
 
 PREFIX ccf: <http://purl.org/ccf/>
 PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
