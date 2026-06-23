@@ -1,0 +1,36 @@
+#+ summary: A list of unmapped CTann CT terms and their closest match CL in HRA
+
+PREFIX hint: <http://www.bigdata.com/queryHints#> 
+PREFIX dct: <http://purl.org/dc/terms/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX ccf: <http://purl.org/ccf/>
+PREFIX sssom: <https://w3id.org/sssom/>
+PREFIX ASCTB-TEMP: <https://purl.org/ccf/ASCTB-TEMP_>
+PREFIX PREV_HRA: <https://purl.humanatlas.io/collection/hra/v2.4>
+PREFIX HRA: <https://purl.humanatlas.io/collection/hra>
+
+
+SELECT 
+  (COUNT(DISTINCT ?mapp_prev) as ?prev_count)
+  (COUNT(DISTINCT ?mapp) as ?current_count)
+  (COUNT(DISTINCT ?mapp_prev) - COUNT(DISTINCT ?mapp) as ?diff)
+WHERE {
+  {
+    GRAPH HRA: {
+      ?mapp a ccf:CtAnnMapping ; 
+        owl:annotatedProperty ?skos .
+      FILTER(?skos = "skos:narrowMatch" || ?skos = "skos:broadMatch")
+    }
+  }
+  UNION
+  {
+    GRAPH PREV_HRA: {
+      ?mapp_prev a ccf:CtAnnMapping ; 
+        owl:annotatedProperty ?skos .
+      FILTER(?skos = "skos:narrowMatch" || ?skos = "skos:broadMatch")
+    }
+  }
+}
