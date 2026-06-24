@@ -22,12 +22,17 @@ WHERE {
       ccf:aggregated_summary_count ?dataset_count ;
       ccf:has_cell_summary_row [
         ccf:cell_id ?cell_id ;
-        ccf:cell_label ?cell_label ;
+        ccf:cell_label ?summary_cell_label ;
         ccf:cell_count ?cell_count ;
         ccf:percentage_of_total ?cell_percentage ;
     ]
   ] .
   FILTER(STRSTARTS(STR(?as), STR(UBERON:)) || STRSTARTS(STR(?as), STR(FMA:)))
+
+  OPTIONAL {
+    ?cell_id rdfs:label ?cell_rdfs_label .
+  }
+  BIND(COALESCE(?cell_rdfs_label, ?summary_cell_label) as ?cell_label)
   
   ?refOrganPiece ccf:representation_of ?as ;
       ccf:has_reference_organ ?refOrgan .
